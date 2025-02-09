@@ -5,7 +5,7 @@ export class BootScene extends Phaser.Scene {
 
     preload() {
         // Set the base path for all assets
-        this.load.setBaseURL('./src/assets/');
+        this.load.setBaseURL('../src/assets/');
 
         // Load background
         this.load.image('old-room', 'images/backgrounds/old_room.png');
