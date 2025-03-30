@@ -11,6 +11,7 @@ let player, bullets = [], enemies = [], explosions = [], score = 0, wave = 1, he
 let gameRunning = true;
 let gameStarted = false;
 let isPaused = false;
+let meteors = [];
 
 // Load assets
 const playerImg = new Image();
@@ -29,6 +30,8 @@ const explosionImg = new Image();
 explosionImg.src = 'assets/images/explosion.png';
 const bgImg = new Image();
 bgImg.src = 'assets/images/background.png';
+const meteorImg = new Image();
+meteorImg.src = 'assets/images/meteor.png';
 
 // Load sounds
 const shootSound = new Audio('assets/sounds/shoot.mp3');
@@ -155,9 +158,34 @@ function update() {
         if (explosion.frame > 5) explosions.splice(index, 1);
     });
 
+    // Move meteors and check collisions
+    meteors.forEach((meteor, index) => {
+        meteor.y += meteor.speed;
+        
+        // Check collision with player
+        if (checkCollision(player, meteor)) {
+            health -= 15; // Meteors do more damage than aliens
+            damageSound.play();
+            meteors.splice(index, 1);
+            explosions.push({ x: meteor.x, y: meteor.y, frame: 0 });
+            if (health <= 0) gameOver();
+        }
+
+        // Remove meteors that hit the ground
+        if (meteor.y >= canvas.height) {
+            explosions.push({ x: meteor.x, y: canvas.height - 50, frame: 0 });
+            meteors.splice(index, 1);
+        }
+    });
+
     // Spawn new enemies
     if (Math.random() < 0.02 * wave) {
         spawnEnemy();
+    }
+
+    // Spawn new meteors
+    if (Math.random() < 0.005 * wave) {
+        spawnMeteor();
     }
 }
 
@@ -203,6 +231,11 @@ function draw() {
         ctx.drawImage(explosionImg, explosion.x, explosion.y, 50, 50);
     });
 
+    // Draw meteors
+    meteors.forEach(meteor => {
+        ctx.drawImage(meteorImg, meteor.x, meteor.y, meteor.width, meteor.height);
+    });
+
     // Draw UI
     document.getElementById('score').innerText = `Score: ${score}`;
     document.getElementById('wave').innerText = `Wave: ${wave}`;
@@ -240,6 +273,17 @@ function spawnEnemy() {
     });
 }
 
+// Spawn a meteor
+function spawnMeteor() {
+    meteors.push({
+        x: Math.random() * (canvas.width - 30), // Random x position
+        y: -30, // Start above the screen
+        width: 30,
+        height: 30,
+        speed: 5 + Math.random() * 3 + (wave * 0.5) // Speed increases with wave
+    });
+}
+
 // Check collision
 function checkCollision(a, b) {
     return a.x < b.x + b.width && a.x + a.width > b.x && a.y < b.y + b.height && a.y + a.height > b.y;
@@ -261,6 +305,7 @@ document.getElementById('restart-btn').addEventListener('click', () => {
 function startGame() {
     document.getElementById('menu-screen').classList.add('hidden');
     gameStarted = true;
+    meteors = []; // Reset meteors
     gameLoop();
 }
 

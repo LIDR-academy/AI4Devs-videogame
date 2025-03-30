@@ -480,6 +480,7 @@ High replayability through wave-based progression.
 
 ### prompt 11
 
+    add to the game that random meteors (saved in asset like meteor.png) with a size of height 30, width 30  fall from the sky at random values of x. if the meteors touch the player sprite, damage is done    
 
 ### prompt 12
 

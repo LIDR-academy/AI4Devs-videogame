@@ -123,3 +123,14 @@ button:hover {
 .game-btn:hover {
     background: #45a049;
 }
+
+@keyframes meteor-glow {
+    0% { filter: brightness(1); }
+    50% { filter: brightness(1.3); }
+    100% { filter: brightness(1); }
+}
+
+/* Add this class to be used if you want to add visual effects to meteors */
+.meteor-effect {
+    animation: meteor-glow 1s infinite;
+}
