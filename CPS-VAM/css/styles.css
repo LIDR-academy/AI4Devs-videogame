@@ -78,3 +78,48 @@ button:hover {
     background-color: #ffcc00;
     color: #0f0f0f;
 }
+
+.screen {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.8);
+    padding: 2rem;
+    border-radius: 10px;
+    text-align: center;
+    color: white;
+}
+
+#menu-screen {
+    min-width: 300px;
+}
+
+.instructions {
+    margin: 2rem 0;
+    text-align: left;
+}
+
+.instructions ul {
+    list-style: none;
+    padding: 1rem;
+}
+
+.instructions li {
+    margin: 1rem 0;
+}
+
+.game-btn {
+    padding: 1rem 2rem;
+    font-size: 1.2rem;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.game-btn:hover {
+    background: #45a049;
+}

@@ -471,11 +471,12 @@ High replayability through wave-based progression.
 
 ### prompt 9
 
+    i want you to add an initial menu with the instructions (how to jump, move, shoot, ...) and add a message box with a button to start the game 
 
 
 ### prompt 10
 
-
+    add a pause button with keyboard letter "p", and add it to instructions    
 
 ### prompt 11
 

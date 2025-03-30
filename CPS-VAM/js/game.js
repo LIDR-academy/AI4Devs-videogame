@@ -9,6 +9,8 @@ canvas.height = window.innerHeight;
 // Game variables
 let player, bullets = [], enemies = [], explosions = [], score = 0, wave = 1, health = 100;
 let gameRunning = true;
+let gameStarted = false;
+let isPaused = false;
 
 // Load assets
 const playerImg = new Image();
@@ -51,18 +53,39 @@ player = {
 
 // Key states
 const keys = {};
-document.addEventListener('keydown', (e) => keys[e.key] = true);
+document.addEventListener('keydown', (e) => {
+    keys[e.key] = true;
+    // Pause/Unpause when 'p' is pressed
+    if (e.key.toLowerCase() === 'p' && gameStarted) {
+        isPaused = !isPaused;
+        if (!isPaused) {
+            gameLoop();
+        }
+    }
+});
 document.addEventListener('keyup', (e) => keys[e.key] = false);
 
 // Main game loop
 function gameLoop() {
-    if (gameRunning) {
+    if (gameRunning && gameStarted && !isPaused) {
         bgMusic.loop = true;
         bgMusic.volume = 0.1;
         bgMusic.play();
         update();
         draw();
         requestAnimationFrame(gameLoop);
+    } else if (isPaused) {
+        // Draw pause screen
+        ctx.save();
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = 'white';
+        ctx.font = '48px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('PAUSED', canvas.width / 2, canvas.height / 2);
+        ctx.font = '24px Arial';
+        ctx.fillText('Press P to resume', canvas.width / 2, canvas.height / 2 + 40);
+        ctx.restore();
     }
 }
 
@@ -234,5 +257,15 @@ document.getElementById('restart-btn').addEventListener('click', () => {
     location.reload();
 });
 
-// Start the game
-gameLoop();
+// Add this function before gameLoop starts
+function startGame() {
+    document.getElementById('menu-screen').classList.add('hidden');
+    gameStarted = true;
+    gameLoop();
+}
+
+// Add this event listener with the other listeners
+document.getElementById('start-btn').addEventListener('click', startGame);
+
+// Initial draw of the background
+ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height);
