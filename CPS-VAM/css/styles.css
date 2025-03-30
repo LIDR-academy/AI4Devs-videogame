@@ -1,0 +1,80 @@
+body {
+    margin: 0;
+    overflow: hidden;
+    font-family: 'Arial', sans-serif;
+    background-color: #0f0f0f;
+    color: #fff;
+}
+
+#game-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
+
+canvas {
+    display: block;
+    background: url('../assets/images/background.png') no-repeat center center;
+    background-size: cover;
+}
+
+#ui {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    display: flex;
+    gap: 20px;
+}
+
+#health-bar {
+    width: 200px;
+    height: 20px;
+    background-color: #333;
+    border: 2px solid #fff;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+#health {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to right, #ff4d4d, #ffcc00);
+    transition: width 0.2s ease-in-out;
+}
+
+#score, #wave {
+    font-size: 18px;
+}
+
+#game-over-screen {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    background: rgba(0, 0, 0, 0.8);
+    padding: 20px;
+    border: 2px solid #fff;
+    border-radius: 10px;
+    z-index: 10;
+}
+
+.hidden {
+    display: none;
+}
+
+button {
+    background-color: #ff4d4d;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+button:hover {
+    background-color: #ffcc00;
+    color: #0f0f0f;
+}
