@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>MiniGolf - AI4Devs</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+        canvas {
+            border: 2px solid #333;
+            background-color: #90EE90;
+            margin: 20px;
+        }
+        #game-container {
+            position: relative;
+        }
+        #score {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 24px;
+            color: #333;
+        }
+        h1 {
+            color: #333;
+            margin-top: 20px;
+        }
+        .controls {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>MiniGolf</h1>
+    <div id="game-container">
+        <canvas id="gameCanvas" width="800" height="600"></canvas>
+        <div id="score">Strokes: 0</div>
+    </div>
+    <div class="controls">
+        <p>Click and drag from the ball to aim, release to shoot!</p>
+        <p><a href="../index.html">Back to Game Index</a></p>
+    </div>
+
+    <script>
+        // Game classes
+        class Ball {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.velocityX = 0;
+                this.velocityY = 0;
+            }
+
+            reset(newX, newY) {
+                this.x = newX;
+                this.y = newY;
+                this.velocityX = 0;
+                this.velocityY = 0;
+            }
+        }
+
+        class Hole {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+            }
+        }
+
+        // Main Game class
+        class Game {
+            constructor(canvas) {
+                this.canvas = canvas;
+                this.ctx = canvas.getContext("2d");
+                this.ball = new Ball(100, 300);
+                this.hole = new Hole(700, 300);
+                this.isAiming = false;
+                this.aimAngle = 0;
+                this.power = 15;
+                this.strokes = 0;
+                this.isMoving = false;
+
+                this.setupEventListeners();
+                this.gameLoop();
+            }
+
+            setupEventListeners() {
+                this.canvas.addEventListener("mousedown", (event) => {
+                    if (!this.isMoving) {
+                        this.isAiming = true;
+                        const rect = this.canvas.getBoundingClientRect();
+                        const mouseX = event.clientX - rect.left;
+                        const mouseY = event.clientY - rect.top;
+                        this.aimAngle = this.calculateAngle(mouseX, mouseY);
+                    }
+                });
+
+                this.canvas.addEventListener("mousemove", (event) => {
+                    if (this.isAiming) {
+                        const rect = this.canvas.getBoundingClientRect();
+                        const mouseX = event.clientX - rect.left;
+                        const mouseY = event.clientY - rect.top;
+                        this.aimAngle = this.calculateAngle(mouseX, mouseY);
+                        this.power = Math.min(30, Math.sqrt(
+                            Math.pow(mouseX - this.ball.x, 2) + 
+                            Math.pow(mouseY - this.ball.y, 2)
+                        ) / 5);
+                    }
+                });
+
+                this.canvas.addEventListener("mouseup", () => {
+                    if (this.isAiming) {
+                        this.isAiming = false;
+                        this.shoot();
+                    }
+                });
+            }
+
+            calculateAngle(mouseX, mouseY) {
+                const dx = mouseX - this.ball.x;
+                const dy = mouseY - this.ball.y;
+                return Math.atan2(dy, dx);
+            }
+
+            shoot() {
+                this.isMoving = true;
+                this.ball.velocityX = Math.cos(this.aimAngle) * this.power;
+                this.ball.velocityY = Math.sin(this.aimAngle) * this.power;
+                this.strokes++;
+                this.updateScore();
+            }
+
+            updateScore() {
+                const scoreElement = document.getElementById("score");
+                scoreElement.textContent = "Strokes: " + this.strokes;
+            }
+
+            gameLoop() {
+                if (this.isMoving) {
+                    this.update();
+                    if (this.checkHoleCollision()) {
+                        this.isMoving = false;
+                        this.ball.reset(100, 300);
+                        this.strokes = 0;
+                        this.updateScore();
+                        alert("Great shot! You got it in the hole!");
+                    }
+                }
+                this.draw();
+                requestAnimationFrame(() => this.gameLoop());
+            }
+
+            update() {
+                // Apply friction
+                this.ball.velocityX *= 0.99;
+                this.ball.velocityY *= 0.99;
+
+                // Update position
+                this.ball.x += this.ball.velocityX;
+                this.ball.y += this.ball.velocityY;
+
+                // Handle wall collisions
+                if (this.ball.x < 10 || this.ball.x > this.canvas.width - 10) {
+                    this.ball.velocityX *= -0.8;
+                    if (this.ball.x < 10) this.ball.x = 10;
+                    if (this.ball.x > this.canvas.width - 10) this.ball.x = this.canvas.width - 10;
+                }
+                
+                if (this.ball.y < 10 || this.ball.y > this.canvas.height - 10) {
+                    this.ball.velocityY *= -0.8;
+                    if (this.ball.y < 10) this.ball.y = 10;
+                    if (this.ball.y > this.canvas.height - 10) this.ball.y = this.canvas.height - 10;
+                }
+
+                // Check if ball has stopped
+                if (Math.sqrt(this.ball.velocityX * this.ball.velocityX + this.ball.velocityY * this.ball.velocityY) < 0.1) {
+                    this.isMoving = false;
+                    this.ball.velocityX = 0;
+                    this.ball.velocityY = 0;
+                }
+            }
+
+            checkHoleCollision() {
+                const dx = this.ball.x - this.hole.x;
+                const dy = this.ball.y - this.hole.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                return distance < 20;
+            }
+
+            draw() {
+                // Clear canvas
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+                // Draw hole
+                this.ctx.beginPath();
+                this.ctx.arc(this.hole.x, this.hole.y, 20, 0, 2 * Math.PI);
+                this.ctx.fillStyle = "black";
+                this.ctx.fill();
+                this.ctx.closePath();
+
+                // Draw ball
+                this.ctx.beginPath();
+                this.ctx.arc(this.ball.x, this.ball.y, 10, 0, 2 * Math.PI);
+                this.ctx.fillStyle = "white";
+                this.ctx.fill();
+                this.ctx.strokeStyle = "black";
+                this.ctx.stroke();
+                this.ctx.closePath();
+
+                // Draw aim line
+                if (this.isAiming) {
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(this.ball.x, this.ball.y);
+                    this.ctx.lineTo(
+                        this.ball.x + Math.cos(this.aimAngle) * (this.power * 5),
+                        this.ball.y + Math.sin(this.aimAngle) * (this.power * 5)
+                    );
+                    this.ctx.strokeStyle = "red";
+                    this.ctx.stroke();
+                    this.ctx.closePath();
+                }
+            }
+        }
+
+        // Initialize the game when the page loads
+        window.onload = function() {
+            console.log("Starting MiniGolf game...");
+            const canvas = document.getElementById("gameCanvas");
+            if (!canvas) {
+                console.error("Canvas element not found");
+                return;
+            }
+            
+            new Game(canvas);
+            console.log("Game initialized successfully");
+        };
+    </script>
+</body>
+</html> 
