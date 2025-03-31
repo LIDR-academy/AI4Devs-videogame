@@ -280,7 +280,7 @@ function spawnMeteor() {
         y: -30, // Start above the screen
         width: 30,
         height: 30,
-        speed: 5 + Math.random() * 3 + (wave * 0.5) // Speed increases with wave
+        speed: 5 + Math.random() * 3 + score * 0.005 // Speed increases with score
     });
 }
 
