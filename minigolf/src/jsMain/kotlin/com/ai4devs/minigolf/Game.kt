@@ -2,9 +2,9 @@ package com.ai4devs.minigolf
 
 import kotlinx.browser.document
 import kotlinx.browser.window
+import org.w3c.dom.CanvasRenderingContext2D
 import org.w3c.dom.HTMLCanvasElement
 import org.w3c.dom.HTMLElement
-import org.w3c.dom.events.Event
 import org.w3c.dom.events.MouseEvent
 import kotlin.math.PI
 import kotlin.math.cos
@@ -12,7 +12,7 @@ import kotlin.math.sin
 import kotlin.math.sqrt
 
 class Game(private val canvas: HTMLCanvasElement) {
-    private val ctx = canvas.getContext("2d")
+    private val ctx = canvas.getContext("2d") as CanvasRenderingContext2D
     private var ball = Ball(100.0, 300.0)
     private var hole = Hole(700.0, 300.0)
     private var isAiming = false
@@ -134,43 +134,36 @@ class Game(private val canvas: HTMLCanvasElement) {
 
     private fun draw() {
         // Clear canvas
-        jsObject(ctx) { 
-            clearRect(0.0, 0.0, canvas.width.toDouble(), canvas.height.toDouble())
+        ctx.clearRect(0.0, 0.0, canvas.width.toDouble(), canvas.height.toDouble())
 
-            // Draw hole
-            beginPath()
-            arc(hole.x, hole.y, 20.0, 0.0, 2 * PI)
-            fillStyle = "black"
-            fill()
-            closePath()
+        // Draw hole
+        ctx.beginPath()
+        ctx.arc(hole.x, hole.y, 20.0, 0.0, 2 * PI)
+        ctx.fillStyle = "black"
+        ctx.fill()
+        ctx.closePath()
 
-            // Draw ball
-            beginPath()
-            arc(ball.x, ball.y, 10.0, 0.0, 2 * PI)
-            fillStyle = "white"
-            fill()
-            strokeStyle = "black"
-            stroke()
-            closePath()
+        // Draw ball
+        ctx.beginPath()
+        ctx.arc(ball.x, ball.y, 10.0, 0.0, 2 * PI)
+        ctx.fillStyle = "white"
+        ctx.fill()
+        ctx.strokeStyle = "black"
+        ctx.stroke()
+        ctx.closePath()
 
-            // Draw aim line if aiming
-            if (isAiming) {
-                beginPath()
-                moveTo(ball.x, ball.y)
-                lineTo(
-                    ball.x + cos(aimAngle) * (power * 5),
-                    ball.y + sin(aimAngle) * (power * 5)
-                )
-                strokeStyle = "red"
-                stroke()
-                closePath()
-            }
+        // Draw aim line if aiming
+        if (isAiming) {
+            ctx.beginPath()
+            ctx.moveTo(ball.x, ball.y)
+            ctx.lineTo(
+                ball.x + cos(aimAngle) * (power * 5),
+                ball.y + sin(aimAngle) * (power * 5)
+            )
+            ctx.strokeStyle = "red"
+            ctx.stroke()
+            ctx.closePath()
         }
-    }
-    
-    // Helper function to work with dynamic JS objects
-    private inline fun <T> jsObject(obj: Any?, block: T.() -> Unit) {
-        js("block.call(obj)") as Unit
     }
 }
 

@@ -1,10 +1,44 @@
 # MiniGolf Game
 
-A simple minigolf game created for the AI4Devs project.
+A minigolf game implemented with Kotlin/JS and HTML5 Canvas.
 
-## How to Run
+## Prerequisites
 
-Simply open the `index.html` file in a web browser to play the game. No compilation or build step is required.
+- Java JDK 11 or higher
+- Gradle (or use the included wrapper)
+
+## How to Build and Run
+
+### Using Gradle Wrapper (Recommended)
+
+1. Open a terminal/command prompt in the `minigolf` directory
+2. Run the following commands:
+
+```bash
+# Clean and build the project
+./gradlew clean build
+
+# If you encounter yarn.lock issues, run:
+./gradlew kotlinUpgradeYarnLock
+
+# Start the development server
+./gradlew runGame
+```
+
+3. Open your web browser and navigate to: [http://localhost:8080](http://localhost:8080)
+
+### Verifying the Build
+
+After running the build command, you should see the compiled JavaScript file at:
+`build/js/packages/minigolf/kotlin/minigolf.js`
+
+### Troubleshooting the Development Server
+
+If the development server (http://localhost:8080) isn't working:
+
+1. Check if the Gradle process is running with `ps aux | grep gradle`
+2. Try a different port with `./gradlew -Dorg.gradle.jvmargs="-Ddev.server.port=8081" runGame`
+3. As a fallback, you can directly open the `index.html` file in your browser
 
 ## How to Play
 
@@ -15,29 +49,49 @@ Simply open the `index.html` file in a web browser to play the game. No compilat
 3. Release to shoot
 4. Try to get the ball into the black hole
 
-## Game Features
+## Troubleshooting
 
-- Physics-based ball movement with friction
-- Wall collisions
-- Stroke counter
-- Success message when the ball goes in the hole
+### Game Doesn't Load
+
+- Check that the build was successful without errors
+- Ensure the path to the JavaScript file is correct in index.html (should be `build/distributions/minigolf.js`)
+- Try opening browser developer tools (F12) to check for JavaScript errors
+- Try running with `./gradlew jsBrowserRun` which will open a browser automatically
+
+### Compilation Errors
+
+If you encounter compilation errors:
+
+```bash
+# Update Kotlin dependencies
+./gradlew kotlinUpgradeYarnLock
+
+# Clean and rebuild
+./gradlew clean build
+```
 
 ## Technical Details
 
-The game is implemented using HTML5 Canvas and JavaScript. The main components are:
-
-- Ball class: Represents the golf ball with position and velocity
-- Hole class: Represents the target hole
-- Game class: Main game logic including physics, rendering, and user interaction
-
-## Future Kotlin Implementation
-
-We originally planned to implement this game in Kotlin/JS but encountered setup issues. The current JavaScript implementation follows the same structure that would be used in the Kotlin version, with:
+The game is implemented using Kotlin/JS with:
 
 - Data classes for the Ball and Hole
-- A main Game class handling all game logic
 - Canvas-based rendering
 - Mouse-based controls
+- Physics simulation including friction and collisions
+
+### Project Structure
+
+- `src/jsMain/kotlin/com/ai4devs/minigolf/Game.kt`: Main game logic
+- `src/jsMain/kotlin/com/ai4devs/minigolf/Main.kt`: Entry point
+- `index.html`: HTML container with Canvas element
+- `build.gradle.kts`: Kotlin/JS build configuration
+
+### Technologies Used
+
+- Kotlin 1.9.22
+- Kotlin/JS for browser transpilation
+- HTML5 Canvas for rendering
+- Gradle for building and running
 
 ## Credits
 
