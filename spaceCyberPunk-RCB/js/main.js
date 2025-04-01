@@ -20,7 +20,9 @@ let player = {
   width: 64,
   height: 64,
   speed: 5,
-  bullets: []
+  bullets: [],
+  lives: 3,
+  maxBullets: 1
 };
 
 let keys = {};
@@ -76,24 +78,48 @@ function updatePlayer() {
 }
 
 function shoot() {
-  const shot = document.getElementById("shot1");
-  shot.volume = 0.2;
-  shot.currentTime = 0;
-  shot.play();
-  player.bullets.push({
-    x: player.x + player.width / 2 - 2,
-    y: player.y,
-    width: 4,
-    height: 10,
-    speed: 8
-  });
+  if (player.bullets.length < player.maxBullets) {
+    const shot = document.getElementById("shot1");
+    shot.volume = 0.2;
+    shot.currentTime = 0;
+    shot.play();
+    // Disparo central
+    player.bullets.push({
+      x: player.x + player.width / 2 - 2,
+      y: player.y,
+      width: 6,
+      height: 15,
+      speed: 8,
+      dx: 0
+    });
+    // Disparos adicionales solo si el maxBullets es mayor que 1
+    if (player.maxBullets > 1) {
+      player.bullets.push({
+        x: player.x + player.width / 2 - 2,
+        y: player.y,
+        width: 6,
+        height: 15,
+        speed: 8,
+        dx: -2
+      });
+      player.bullets.push({
+        x: player.x + player.width / 2 - 2,
+        y: player.y,
+        width: 6,
+        height: 15,
+        speed: 8,
+        dx: 2
+      });
+    }
+  }
 }
 
 let lastShotTime = 0;
 function updateBullets() {
   for (let i = 0; i < player.bullets.length; i++) {
     player.bullets[i].y -= player.bullets[i].speed;
-    if (player.bullets[i].y < 0) {
+    player.bullets[i].x += player.bullets[i].dx || 0;
+    if (player.bullets[i].y < 0 || player.bullets[i].x < 0 || player.bullets[i].x > canvas.width) {
       player.bullets.splice(i, 1);
       i--;
     }
@@ -107,7 +133,33 @@ function drawBullets() {
   }
 }
 
+function drawPlayerLives() {
+  const maxLives = 10;
+  const barWidth = 100;
+  const barHeight = 10;
+  const barX = 20;
+  const barY = 20;
+  const lifeWidth = (player.lives / maxLives) * barWidth;
+
+  ctx.fillStyle = "#000";
+  ctx.fillRect(barX, barY, barWidth, barHeight);
+  ctx.fillStyle = "#0f0";
+  ctx.fillRect(barX, barY, lifeWidth, barHeight);
+}
+
+function showLevelMessage(level) {
+  ctx.fillStyle = "#0ff";
+  ctx.font = "30px Orbitron";
+  ctx.textAlign = "center";
+  ctx.fillText(`Nivel ${level}`, canvas.width / 2, canvas.height / 2);
+  setTimeout(() => {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }, 2000); // Mostrar el mensaje durante 2 segundos
+}
+
 function gameLoop(timestamp) {
+  if (gameOver) return; // Detener el bucle si el juego ha terminado
+
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.drawImage(bgImage, 0, 0, canvas.width, canvas.height);
 
@@ -116,6 +168,7 @@ function gameLoop(timestamp) {
 
   ctx.drawImage(playerImg, player.x, player.y, player.width, player.height);
   drawBullets();
+  drawPlayerLives();
 
   if ((keys[" "] || keys["Enter"]) && timestamp - lastShotTime > 300) {
     shoot();
@@ -130,6 +183,13 @@ function gameLoop(timestamp) {
 
   updateEnemyBullets();
   drawEnemyBullets();
+
+  checkPlayerCollisions();
+
+  spawnPowerUp();
+  updatePowerUps();
+  drawPowerUps();
+  checkPowerUpCollection();
 
   requestAnimationFrame(gameLoop);
 }
@@ -155,14 +215,16 @@ function nextLevel() {
   player.bullets = [];
 
   if (currentLevel === 2) {
+    showLevelMessage(2);
     spawnEnemiesLevel2();
   } else if (currentLevel === 3) {
+    showLevelMessage(3);
     spawnEnemiesLevel3();
   } else if (currentLevel === 4) {
+    showLevelMessage(4);
     spawnEnemiesLevel4();
-  } else {
-    alert("¡Felicidades! Has completado todos los niveles.");
-    setTimeout(() => window.location.reload(), 2000); // Espera 2 segundos antes de reiniciar
+  } else if (currentLevel > 4) { // Asegurar que el mensaje de victoria se muestre
+    showVictoryMessage();
   }
 }
 
@@ -179,7 +241,8 @@ function checkLevelProgression() {
 let powerUps = [];
 
 function spawnPowerUp() {
-  if (Math.random() < 0.1) { // 10% de probabilidad de spawnear un power-up
+  let maxPowerUps = currentLevel; // Limitar el número de power-ups al nivel actual
+  if (powerUps.length < maxPowerUps && Math.random() < 0.002) { // Reducir la probabilidad a 0.2%
     powerUps.push({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height / 2,
@@ -215,6 +278,11 @@ function checkPowerUpCollection() {
       player.y < powerUps[i].y + powerUps[i].height &&
       player.y + player.height > powerUps[i].y
     ) {
+      const powerupSound = document.getElementById("powerupSound");
+      powerupSound.volume = 0.2;
+      powerupSound.currentTime = 0;
+      powerupSound.play();
+
       activatePowerUp(powerUps[i].type);
       powerUps.splice(i, 1);
       i--;
@@ -224,17 +292,11 @@ function checkPowerUpCollection() {
 
 function activatePowerUp(type) {
   if (type === 'extraLife') {
-    player.lives = Math.min(player.lives + 1, 5); // Máximo de 5 vidas
+    player.lives = Math.min(player.lives + 1, 10); // Máximo de 10 vidas
   } else if (type === 'doubleShot') {
-    // Implementar lógica para disparo doble
+    player.maxBullets += 1; // Aumentar en 1 bala adicional
   }
 }
-
-// En gameLoop, después de updateBullets
-  spawnPowerUp();
-  updatePowerUps();
-  drawPowerUps();
-  checkPowerUpCollection();
 
 function spawnEnemiesLevel1() {
   // Lógica para spawnear enemigos de nivel 1
@@ -320,14 +382,17 @@ function updateEnemies() {
         enemy.y = Math.max(0, Math.min(canvas.height / 2 - enemy.height, enemy.y));
       }
     }
-    // Disparo de enemigos
-    if (currentLevel >= 2 && Date.now() % enemy.shootInterval < 50) {
+    // Disparo de enemigos con límite de balas
+    const maxBulletsPerEnemy = currentLevel === 2 ? 1 : currentLevel === 3 ? 2 : 3;
+    const activeBullets = enemyBullets.filter(bullet => bullet.enemyId === enemy.id).length;
+    if (activeBullets < maxBulletsPerEnemy && Date.now() % enemy.shootInterval < 50) {
       enemyBullets.push({
         x: enemy.x + enemy.width / 2,
         y: enemy.y + enemy.height,
-        width: 4,
-        height: 10,
-        speed: 5
+        width: 6, // Aumentar el ancho de la bala del enemigo
+        height: 15, // Aumentar la altura de la bala del enemigo
+        speed: 5,
+        enemyId: enemy.id
       });
     }
   }
@@ -349,6 +414,14 @@ function checkCollisions() {
         player.bullets[i].y + player.bullets[i].height > enemies[j].y
       ) {
         // Eliminar enemigo y bala
+        const explosionImg = document.getElementById('explosionImg');
+        ctx.drawImage(explosionImg, enemies[j].x, enemies[j].y, enemies[j].width, enemies[j].height);
+
+        const killSound = document.getElementById("killSound");
+        killSound.volume = 0.2;
+        killSound.currentTime = 0;
+        killSound.play();
+
         enemies.splice(j, 1);
         player.bullets.splice(i, 1);
         i--;
@@ -372,5 +445,73 @@ function drawEnemyBullets() {
   ctx.fillStyle = "#f00";
   for (let bullet of enemyBullets) {
     ctx.fillRect(bullet.x, bullet.y, bullet.width, bullet.height);
+  }
+}
+
+let gameOver = false;
+
+function showGameOverMessage() {
+  ctx.fillStyle = "#f00";
+  ctx.font = "50px Orbitron";
+  ctx.textAlign = "center";
+  ctx.fillText("GAME OVER", canvas.width / 2, canvas.height / 2);
+  ctx.font = "20px Orbitron";
+  ctx.fillText("Presiona cualquier tecla para reiniciar", canvas.width / 2, canvas.height / 2 + 40);
+  document.addEventListener("keydown", resetGame);
+}
+
+function showVictoryMessage() {
+  ctx.fillStyle = "#0f0";
+  ctx.font = "50px Orbitron";
+  ctx.textAlign = "center";
+  ctx.fillText("VICTORIA", canvas.width / 2, canvas.height / 2);
+  ctx.font = "20px Orbitron";
+  ctx.fillText("Presiona cualquier tecla para reiniciar", canvas.width / 2, canvas.height / 2 + 40);
+  document.addEventListener("keydown", resetGame);
+}
+
+function resetGame() {
+  document.removeEventListener("keydown", resetGame);
+  window.location.reload();
+}
+
+function checkPlayerCollisions() {
+  if (gameOver) return; // Detener si el juego ha terminado
+
+  for (let i = 0; i < enemyBullets.length; i++) {
+    if (
+      enemyBullets[i].x < player.x + player.width &&
+      enemyBullets[i].x + enemyBullets[i].width > player.x &&
+      enemyBullets[i].y < player.y + player.height &&
+      enemyBullets[i].y + enemyBullets[i].height > player.y
+    ) {
+      // Impacto en el jugador
+      const hitSound = document.getElementById("hitSound");
+      hitSound.volume = 0.2;
+      hitSound.currentTime = 0;
+      hitSound.play();
+
+      let damage = 1; // Daño por defecto
+      if (currentLevel === 3) {
+        damage = 2;
+      } else if (currentLevel === 4) {
+        damage = 3;
+      }
+
+      player.lives -= damage;
+      enemyBullets.splice(i, 1); // Asegurar que la bala se elimine después del impacto
+      i--; // Ajustar el índice después de eliminar la bala
+
+      if (player.lives <= 0) {
+        gameOver = true;
+        const killSound = document.getElementById("killSound");
+        killSound.volume = 0.2;
+        killSound.currentTime = 0;
+        killSound.play();
+        setTimeout(() => {
+          showGameOverMessage();
+        }, 1000); // Espera 1 segundo antes de mostrar el mensaje
+      }
+    }
   }
 }

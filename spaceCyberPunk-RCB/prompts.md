@@ -1,5 +1,5 @@
 ### Model
-    gpt-4o
+    gpt-4o, imagenes con chatgpt y efectos de sonido descargados
 
 ### prompt 1
     act as a professional game developer of indie games using just html, js, and css that can run in the browser
@@ -53,4 +53,6 @@
       -sesiones cortas tipo arcade
 
 
-      
+
+## Desafios
+   verificar o probar el juego y poder concatenar las cosas, muchos detalles para realizar un juego
