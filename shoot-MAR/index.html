@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dispara al Enemigo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            font-family: 'VT323', monospace;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #2c3e50;
+            padding: 20px;
+            color: #ecf0f1;
+        }
+
+        .game-container {
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            display: none;
+            position: relative;
+        }
+
+        .welcome-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .welcome-content {
+            background: rgba(44, 62, 80, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 90%;
+            width: 400px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            border: 4px solid #3498db;
+            animation: animate__animated animate__fadeInDown;
+        }
+
+        .welcome-content h1 {
+            font-family: 'Press Start 2P', cursive;
+            color: #a9d7f6;
+            margin-bottom: 20px;
+            font-size: 2em;
+            text-shadow: 3px 3px 0 #2980b9;
+        }
+
+        .welcome-content p {
+            color: #ecf0f1;
+            margin-bottom: 30px;
+            line-height: 1.6;
+            font-size: 1.2em;
+        }
+
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: 15px;
+            right: 0;
+            background: rgba(44, 62, 80, 0.9);
+            border-bottom: 3px solid #3498db;
+        }
+
+        .game-stats {
+            background: #34495e;
+            padding: 10px 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            border: 2px solid #3498db;
+            animation: animate__animated animate__fadeInDown;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin: 20px auto;
+            max-width: 500px;
+            padding: 10px;
+            background: #34495e;
+            border-radius: 15px;
+            border: 4px solid #3498db;
+        }
+
+        .cell {
+            aspect-ratio: 1;
+            background: #2c3e50;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3em;
+            cursor: pointer;
+            transition: transform 0.2s;
+            animation: animate__animated animate__fadeIn;
+            border: 2px solid #3498db;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.3);
+        }
+
+        .cell:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(52, 152, 219, 0.5);
+        }
+
+        .cell.enemy {
+            background: #c0392b;
+            border-color: #e74c3c;
+            animation: animate__animated animate__pulse animate__infinite;
+        }
+
+        .cell.innocent {
+            background: #27ae60;
+            border-color: #2ecc71;
+            animation: animate__animated animate__bounce animate__infinite;
+        }
+
+        .cell.hit-enemy {
+            animation: animate__animated animate__tada;
+            background: #f1c40f;
+            border-color: #f39c12;
+        }
+
+        .cell.hit-innocent {
+            animation: animate__animated animate__shakeX;
+            background: #c0392b;
+            border-color: #e74c3c;
+        }
+
+        .particle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #f1c40f;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: particleAnimation 0.5s ease-out forwards;
+            box-shadow: 0 0 5px #f39c12;
+        }
+
+        .score-message {
+            position: absolute;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 1.2em;
+            font-weight: bold;
+            pointer-events: none;
+            animation: floatUp 1s ease-out forwards;
+            text-shadow: 2px 2px 0 rgba(0,0,0,0.5);
+        }
+
+        .score-message.positive {
+            color: #2ecc71;
+        }
+
+        .score-message.negative {
+            color: #e74c3c;
+        }
+
+        .game-over {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .game-over-content {
+            background: #2c3e50;
+            padding: 30px  8px;
+            border-radius: 15px;
+            text-align: center;
+            max-width: 90%;
+            width: 400px;
+            border: 4px solid #3498db;
+            box-shadow: 0 0 20px rgba(52, 152, 219, 0.3);
+        }
+
+        .game-over h2 {
+            font-family: 'Press Start 2P', cursive;
+            margin-bottom: 20px;
+            color: #a9d7f6;
+            text-shadow: 3px 3px 0 #2980b9;
+        }
+
+        #finalScore{
+            font-size: 2em;
+            line-height: 1.4;
+        }
+
+        .final-score {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 1em;
+            margin: 20px 0;
+            color: #f1c40f;
+        }
+
+        .game-stats-container {
+            display: grid;
+            grid-template-columns: repeat(1, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+            padding: 15px;
+            background: #34495e;
+            border-radius: 10px;
+            border: 2px solid #3498db;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 1.2em;
+            padding: 10px;
+            background: #2c3e50;
+            border-radius: 8px;
+            border: 2px solid #3498db;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .stat-item .emoji {
+            font-size: 1.5em;
+        }
+
+        .stat-item .value {
+            font-family: 'Press Start 2P', cursive;
+            font-weight: bold;
+            color: #3498db;
+        }
+
+        button {
+            font-family: 'Press Start 2P', cursive;
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 0 #2980b9;
+        }
+
+        button:hover {
+            background: #2980b9;
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #2980b9;
+        }
+
+        button:active {
+            transform: translateY(4px);
+            box-shadow: none;
+        }
+
+        .sound-controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 1001;
+        }
+
+        .sound-button {
+            background: #34495e;
+            border: 3px solid #3498db;
+            width: 45px;
+            height: 45px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 
+                4px 4px 0 #2980b9,
+                inset 2px 2px 0 rgba(255,255,255,0.2),
+                inset -2px -2px 0 rgba(0,0,0,0.2);
+            transition: all 0.1s;
+            position: relative;
+            overflow: hidden;
+            padding: 8px;
+        }
+
+        .sound-button .icon {
+            fill: #ecf0f1;
+            filter: drop-shadow(2px 2px 0 rgba(0,0,0,0.3));
+            transition: all 0.1s;
+        }
+
+        .sound-button:hover .icon {
+            fill: #3498db;
+            transform: scale(1.1);
+        }
+
+        .sound-button.muted .icon {
+            fill: #e74c3c;
+        }
+
+        .sound-button.muted:hover .icon {
+            fill: #c0392b;
+        }
+
+        .sound-button:hover {
+            transform: translate(2px, 2px);
+            box-shadow: 
+                2px 2px 0 #2980b9,
+                inset 2px 2px 0 rgba(255,255,255,0.2),
+                inset -2px -2px 0 rgba(0,0,0,0.2);
+            background: #3498db;
+        }
+
+        .sound-button:active {
+            transform: translate(4px, 4px);
+            box-shadow: 
+                0 0 0 #2980b9,
+                inset 2px 2px 0 rgba(255,255,255,0.2),
+                inset -2px -2px 0 rgba(0,0,0,0.2);
+        }
+
+        .sound-button.muted {
+            background: #c0392b;
+            border-color: #e74c3c;
+            box-shadow: 
+                4px 4px 0 #c0392b,
+                inset 2px 2px 0 rgba(255,255,255,0.2),
+                inset -2px -2px 0 rgba(0,0,0,0.2);
+        }
+
+        .sound-button.muted:hover {
+            box-shadow: 
+                2px 2px 0 #c0392b,
+                inset 2px 2px 0 rgba(255,255,255,0.2),
+                inset -2px -2px 0 rgba(0,0,0,0.2);
+            background: #e74c3c;
+        }
+
+        .sound-button.muted:active {
+            box-shadow: 
+                0 0 0 #c0392b,
+                inset 2px 2px 0 rgba(255,255,255,0.2),
+                inset -2px -2px 0 rgba(0,0,0,0.2);
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .cell.animate-pop {
+            animation: popIn 0.3s ease-out;
+        }
+
+        /* Efectos 8-bit adicionales */
+        .pixel-border {
+            position: relative;
+        }
+
+        .pixel-border::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: #3498db;
+            z-index: -1;
+            clip-path: polygon(
+                0 0,
+                calc(100% - 4px) 0,
+                100% 4px,
+                100% 100%,
+                4px 100%,
+                0 calc(100% - 4px)
+            );
+        }
+
+        /* Efecto de scanline */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                transparent 50%,
+                rgba(0, 0, 0, 0.05) 50%
+            );
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <div class="welcome-screen" id="welcomeScreen">
+        <div class="welcome-content">
+            <h1>Dispara al Enemigo</h1>
+            <p>¡Bienvenido al juego! Tu misión es eliminar a los enemigos (😈) y evitar dañar a los inocentes (😇). Cada enemigo eliminado te dará puntos y tiempo extra, pero ten cuidado con los inocentes...</p>
+            <button onclick="startGame()">¡Comenzar!</button>
+        </div>
+    </div>
+
+    <div class="game-container" id="gameContainer">
+        <div class="game-header">
+            <div class="game-stats">Tiempo: <span id="timer">30</span>s</div>
+            <div class="game-stats">Puntos: <span id="score">0</span></div>
+        </div>
+        <div class="grid" id="grid"></div>
+    </div>
+
+    <div class="game-over" id="gameOver">
+        <div class="game-over-content">
+            <h2>¡Fin del juego!</h2>
+            <div class="final-score">Puntuación final: <span id="finalScore">0</span></div>
+            <button onclick="startGame()">Jugar de nuevo</button>
+        </div>
+    </div>
+
+    <div class="sound-controls">
+        <button class="sound-button" id="toggleMusic" title="Música">
+            <svg class="icon" viewBox="0 0 24 24" width="24" height="24">
+                <path d="M12 3v18c-4.97 0-9-4.03-9-9s4.03-9 9-9zm0-2c-6.07 0-11 4.93-11 11s4.93 11 11 11 11-4.93 11-11S18.07 1 12 1zm0 14c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z"/>
+            </svg>
+        </button>
+        <button class="sound-button" id="toggleSound" title="Efectos">
+            <svg class="icon" viewBox="0 0 24 24" width="24" height="24">
+                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+            </svg>
+        </button>
+    </div>
+
+    <script>
+        // Configuración del juego
+        const config = {
+            gridSize: 4,
+            initialTime: 30,
+            initialScore: 0,
+            enemyPoints: 100,
+            innocentPenalty: -150,
+            timeBonus: 3,
+            timePenalty: -3,
+            initialSpawnInterval: 1000,
+            minSpawnInterval: 300,
+            characterLifetime: 2000,
+            enemies: ['😈', '👿', '👹', '🤡', '💀'],
+            innocents: ['😇', '👼', '🤗', '😊', '🥰'],
+            sounds: {
+                hitEnemy: { frequency: 880, duration: 0.1, volume: 0.5 },
+                hitInnocent: { frequency: 220, duration: 0.2, volume: 0.5 },
+                gameOver: { frequency: 110, duration: 0.5, volume: 0.5 }
+            },
+            melody: {
+                notes: [
+                    { frequency: 440, duration: 0.1 }, // La4
+                    { frequency: 494, duration: 0.1 }, // Si4
+                    { frequency: 523, duration: 0.1 }, // Do5
+                    { frequency: 587, duration: 0.1 }, // Re5
+                    { frequency: 659, duration: 0.1 }, // Mi5
+                    { frequency: 587, duration: 0.1 }, // Re5
+                    { frequency: 523, duration: 0.1 }, // Do5
+                    { frequency: 494, duration: 0.1 }  // Si4
+                ],
+                volume: 0.15
+            }
+        };
+
+        // Variables del juego
+        let timeLeft = config.initialTime;
+        let score = config.initialScore;
+        let gameInterval;
+        let spawnInterval;
+        let currentSpawnInterval = config.initialSpawnInterval;
+        let occupiedCells = new Set();
+        let activeCharacters = new Map();
+        let isMusicEnabled = true;
+        let isSoundEnabled = true;
+        let audioContext;
+        let melodyInterval;
+        let currentNoteIndex = 0;
+
+        // Estadísticas del juego
+        let gameStats = {
+            totalEnemies: 0,
+            totalInnocents: 0,
+            bestEnemyStreak: 0,
+            currentEnemyStreak: 0,
+            startTime: 0,
+            duration: 0
+        };
+
+        // Elementos del DOM
+        const welcomeScreen = document.getElementById('welcomeScreen');
+        const gameContainer = document.getElementById('gameContainer');
+        const grid = document.getElementById('grid');
+        const timerElement = document.getElementById('timer');
+        const scoreElement = document.getElementById('score');
+        const gameOverElement = document.getElementById('gameOver');
+        const finalScoreElement = document.getElementById('finalScore');
+        const toggleMusicButton = document.getElementById('toggleMusic');
+        const toggleSoundButton = document.getElementById('toggleSound');
+
+        // Funciones de audio
+        function initAudio() {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        }
+
+        function playSound(soundName) {
+            if (!isSoundEnabled || !audioContext) return;
+
+            const sound = config.sounds[soundName];
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+
+            oscillator.type = 'square';
+            oscillator.frequency.setValueAtTime(sound.frequency, audioContext.currentTime);
+            gainNode.gain.setValueAtTime(sound.volume, audioContext.currentTime);
+
+            oscillator.start();
+            oscillator.stop(audioContext.currentTime + sound.duration);
+        }
+
+        function startBackgroundMusic() {
+            if (!isMusicEnabled || !audioContext) return;
+
+            // Detener cualquier melodía existente
+            stopBackgroundMusic();
+
+            // Iniciar la melodía
+            playNextNote();
+            melodyInterval = setInterval(playNextNote, 800); // 0.1s * 8 notas = 0.8s por ciclo
+        }
+
+        function playNextNote() {
+            if (!isMusicEnabled || !audioContext) return;
+
+            const note = config.melody.notes[currentNoteIndex];
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+
+            oscillator.type = 'sawtooth';
+            oscillator.frequency.setValueAtTime(note.frequency, audioContext.currentTime);
+            gainNode.gain.setValueAtTime(config.melody.volume, audioContext.currentTime);
+
+            oscillator.start();
+            oscillator.stop(audioContext.currentTime + note.duration);
+
+            // Avanzar al siguiente índice de nota
+            currentNoteIndex = (currentNoteIndex + 1) % config.melody.notes.length;
+        }
+
+        function stopBackgroundMusic() {
+            if (melodyInterval) {
+                clearInterval(melodyInterval);
+                melodyInterval = null;
+            }
+            currentNoteIndex = 0;
+        }
+
+        function toggleMusic() {
+            isMusicEnabled = !isMusicEnabled;
+            toggleMusicButton.classList.toggle('muted');
+            if (isMusicEnabled) {
+                startBackgroundMusic();
+            } else {
+                stopBackgroundMusic();
+            }
+        }
+
+        function toggleSound() {
+            isSoundEnabled = !isSoundEnabled;
+            toggleSoundButton.classList.toggle('muted');
+        }
+
+        // Event listeners para controles de sonido
+        toggleMusicButton.addEventListener('click', toggleMusic);
+        toggleSoundButton.addEventListener('click', toggleSound);
+
+        // Inicialización del juego
+        function initGame() {
+            // Crear la cuadrícula
+            grid.innerHTML = '';
+            for (let i = 0; i < config.gridSize * config.gridSize; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'cell';
+                cell.dataset.index = i;
+                cell.addEventListener('click', handleCellClick);
+                grid.appendChild(cell);
+            }
+
+            // Reiniciar variables
+            timeLeft = config.initialTime;
+            score = config.initialScore;
+            currentSpawnInterval = config.initialSpawnInterval;
+            occupiedCells.clear();
+            activeCharacters.clear();
+
+            // Actualizar UI
+            updateUI();
+        }
+
+        // Iniciar el juego
+        function startGame() {
+            welcomeScreen.style.display = 'none';
+            gameContainer.style.display = 'block';
+            gameOverElement.style.display = 'none';
+
+            // Limpiar estadísticas anteriores
+            const previousStats = document.querySelector('.game-stats-container');
+            if (previousStats) {
+                previousStats.remove();
+            }
+
+            initGame();
+
+            // Reiniciar estadísticas
+            gameStats = {
+                totalEnemies: 0,
+                totalInnocents: 0,
+                bestEnemyStreak: 0,
+                currentEnemyStreak: 0,
+                startTime: Date.now(),
+                duration: 0
+            };
+
+            if (isMusicEnabled) {
+                startBackgroundMusic();
+            }
+
+            // Animar la aparición de los elementos del juego
+            const gameStatsElements = document.querySelectorAll('.game-stats');
+            gameStatsElements.forEach((stat, index) => {
+                setTimeout(() => {
+                    stat.classList.add('animate__animated', 'animate__fadeInDown');
+                }, index * 100);
+            });
+
+            gameInterval = setInterval(() => {
+                timeLeft--;
+                updateUI();
+                
+                if (timeLeft <= 0 || score < 0) {
+                    endGame();
+                }
+            }, 1000);
+
+            spawnCharacter();
+        }
+
+        // Obtener emoji aleatorio
+        function getRandomEmoji(isEnemy) {
+            const emojis = isEnemy ? config.enemies : config.innocents;
+            return emojis[Math.floor(Math.random() * emojis.length)];
+        }
+
+        // Generar personaje aleatorio
+        function spawnCharacter() {
+            if (occupiedCells.size >= config.gridSize * config.gridSize) return;
+
+            let cellIndex;
+            do {
+                cellIndex = Math.floor(Math.random() * (config.gridSize * config.gridSize));
+            } while (occupiedCells.has(cellIndex));
+
+            const cell = grid.children[cellIndex];
+            const isEnemy = Math.random() < 0.5;
+            
+            const character = {
+                element: cell,
+                isEnemy: isEnemy,
+                spawnTime: Date.now()
+            };
+
+            cell.textContent = getRandomEmoji(isEnemy);
+            cell.className = `cell ${isEnemy ? 'enemy' : 'innocent'} animate-pop`;
+            occupiedCells.add(cellIndex);
+            activeCharacters.set(cellIndex, character);
+
+            // Remover la clase de animación después de que termine
+            setTimeout(() => {
+                cell.classList.remove('animate-pop');
+            }, 300);
+
+            setTimeout(() => {
+                if (activeCharacters.has(cellIndex)) {
+                    removeCharacter(cellIndex);
+                }
+            }, config.characterLifetime);
+
+            setTimeout(spawnCharacter, currentSpawnInterval);
+
+            if (currentSpawnInterval > config.minSpawnInterval) {
+                currentSpawnInterval = Math.max(
+                    config.minSpawnInterval,
+                    currentSpawnInterval - 10
+                );
+            }
+        }
+
+        // Manejar clic en celda
+        function handleCellClick(event) {
+            const cellIndex = parseInt(event.target.dataset.index);
+            const cell = event.target;
+            const cellRect = cell.getBoundingClientRect();
+
+            if (!activeCharacters.has(cellIndex)) {
+                // Penalización por pulsar casilla vacía
+                score -= 50;
+                timeLeft = Math.max(0, timeLeft - 3); // Penalización de 3 segundos
+                playSound('hitInnocent'); // Usamos el mismo sonido que para inocentes
+                
+                // Mostrar mensaje de puntuación negativa
+                const scoreMessage = document.createElement('div');
+                scoreMessage.className = 'score-message negative';
+                scoreMessage.textContent = '-50';
+                scoreMessage.style.left = cellRect.left + cellRect.width / 2 + 'px';
+                scoreMessage.style.top = cellRect.top + cellRect.height / 2 + 'px';
+                document.body.appendChild(scoreMessage);
+                setTimeout(() => scoreMessage.remove(), 1000);
+
+                // Mostrar mensaje de penalización de tiempo
+                const timeMessage = document.createElement('div');
+                timeMessage.className = 'score-message negative';
+                timeMessage.textContent = '-3s';
+                timeMessage.style.left = cellRect.left + cellRect.width / 2 + 'px';
+                timeMessage.style.top = (cellRect.top + cellRect.height / 2 + 30) + 'px'; // 30px más abajo que el mensaje de puntos
+                document.body.appendChild(timeMessage);
+                setTimeout(() => timeMessage.remove(), 1000);
+
+                // Actualizar UI
+                updateUI();
+                return;
+            }
+
+            const character = activeCharacters.get(cellIndex);
+            handleCharacterHit(character);
+            removeCharacter(cellIndex);
+        }
+
+        // Manejar golpe a personaje
+        function handleCharacterHit(character) {
+            const cell = character.element;
+            const cellRect = cell.getBoundingClientRect();
+            
+            if (character.isEnemy) {
+                // Animación positiva para enemigos
+                cell.classList.add('hit-enemy');
+                
+                // Actualizar estadísticas
+                gameStats.totalEnemies++;
+                gameStats.currentEnemyStreak++;
+                gameStats.bestEnemyStreak = Math.max(gameStats.bestEnemyStreak, gameStats.currentEnemyStreak);
+                
+                // Crear partículas
+                for (let i = 0; i < 8; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle';
+                    particle.style.left = cellRect.left + cellRect.width / 2 + 'px';
+                    particle.style.top = cellRect.top + cellRect.height / 2 + 'px';
+                    
+                    // Dirección aleatoria para las partículas
+                    const angle = (i / 8) * Math.PI * 2;
+                    const distance = 50;
+                    const tx = Math.cos(angle) * distance;
+                    const ty = Math.sin(angle) * distance;
+                    
+                    particle.style.setProperty('--tx', `${tx}px`);
+                    particle.style.setProperty('--ty', `${ty}px`);
+                    
+                    document.body.appendChild(particle);
+                    
+                    // Eliminar partícula después de la animación
+                    setTimeout(() => particle.remove(), 500);
+                }
+                
+                score += config.enemyPoints;
+                timeLeft = Math.min(timeLeft + config.timeBonus, config.initialTime);
+                playSound('hitEnemy');
+
+                // Mostrar mensaje de puntuación positiva
+                const scoreMessage = document.createElement('div');
+                scoreMessage.className = 'score-message positive';
+                scoreMessage.textContent = `+${config.enemyPoints}`;
+                scoreMessage.style.left = cellRect.left + cellRect.width / 2 + 'px';
+                scoreMessage.style.top = cellRect.top + cellRect.height / 2 + 'px';
+                document.body.appendChild(scoreMessage);
+                setTimeout(() => scoreMessage.remove(), 1000);
+            } else {
+                // Animación negativa para inocentes
+                cell.classList.add('hit-innocent');
+                
+                // Actualizar estadísticas
+                gameStats.totalInnocents++;
+                gameStats.currentEnemyStreak = 0;
+                
+                // Crear efecto de grieta
+                const crack = document.createElement('div');
+                crack.className = 'crack';
+                cell.appendChild(crack);
+                
+                // Eliminar grieta después de la animación
+                setTimeout(() => crack.remove(), 500);
+                
+                score += config.innocentPenalty;
+                timeLeft += config.timePenalty;
+                playSound('hitInnocent');
+
+                // Mostrar mensaje de puntuación negativa
+                const scoreMessage = document.createElement('div');
+                scoreMessage.className = 'score-message negative';
+                scoreMessage.textContent = config.innocentPenalty;
+                scoreMessage.style.left = cellRect.left + cellRect.width / 2 + 'px';
+                scoreMessage.style.top = cellRect.top + cellRect.height / 2 + 'px';
+                document.body.appendChild(scoreMessage);
+                setTimeout(() => scoreMessage.remove(), 1000);
+            }
+            
+            // Actualizar UI y eliminar personaje después de las animaciones
+            updateUI();
+            setTimeout(() => {
+                removeCharacter(parseInt(cell.dataset.index));
+            }, 500);
+        }
+
+        // Eliminar personaje
+        function removeCharacter(cellIndex) {
+            const cell = grid.children[cellIndex];
+            cell.textContent = '';
+            cell.className = 'cell';
+            cell.classList.remove('hit-enemy', 'hit-innocent');
+            occupiedCells.delete(cellIndex);
+            activeCharacters.delete(cellIndex);
+        }
+
+        // Actualizar interfaz
+        function updateUI() {
+            timerElement.textContent = timeLeft;
+            scoreElement.textContent = score;
+        }
+
+        // Finalizar juego
+        function endGame() {
+            clearInterval(gameInterval);
+            stopBackgroundMusic();
+            playSound('gameOver');
+            
+            // Calcular duración
+            gameStats.duration = Math.floor((Date.now() - gameStats.startTime) / 1000);
+            
+            // Actualizar UI
+            finalScoreElement.textContent = score;
+            
+            // Crear y mostrar estadísticas
+            const statsContainer = document.createElement('div');
+            statsContainer.className = 'game-stats-container';
+            
+            const stats = [
+                { emoji: '😈', label: 'Enemigos', value: gameStats.totalEnemies },
+                { emoji: '🔥', label: 'Mejor racha', value: gameStats.bestEnemyStreak },
+                { emoji: '😇', label: 'Inocentes', value: gameStats.totalInnocents },
+                { emoji: '⏱️', label: 'Duración', value: `${gameStats.duration}s` }
+            ];
+            
+            stats.forEach((stat, index) => {
+                const statItem = document.createElement('div');
+                statItem.className = 'stat-item';
+                statItem.innerHTML = `
+                    <span class="emoji">${stat.emoji}</span>
+                    <span class="label">${stat.label}</span>
+                    <span class="value">${stat.value}</span>
+                `;
+                statsContainer.appendChild(statItem);
+                
+                // Animar cada estadística con un pequeño retraso
+                setTimeout(() => {
+                    statItem.classList.add('animate__animated', 'animate__fadeIn');
+                }, index * 100);
+            });
+            
+            // Insertar estadísticas después del puntaje final
+            finalScoreElement.after(statsContainer);
+            
+            gameOverElement.style.display = 'flex';
+            
+            // Animar la aparición del mensaje de fin de juego
+            const gameOverContent = document.querySelector('.game-over-content');
+            gameOverContent.classList.add('animate__animated', 'animate__zoomIn');
+        }
+
+        // Inicializar audio al cargar la página
+        window.onload = () => {
+            welcomeScreen.style.display = 'flex';
+            gameContainer.style.display = 'none';
+            initAudio();
+        };
+    </script>
+</body>
+</html>
