@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pong Claissic</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="game-wrapper">
+        <div id="main-menu" class="menu-screen">
+            <h1 class="pixel-title">Pong ClAIssic</h1>
+            <button id="newGameBtn" class="pixel-button">NEW GAME</button>
+        </div>
+        
+        <div id="game-container" class="hidden">
+            <div id="score-container">
+                <span id="player1Score">0</span>
+                <span class="score-divider">-</span>
+                <span id="player2Score">0</span>
+            </div>
+            <canvas id="gameCanvas"></canvas>
+            
+            <div id="pauseMenu" class="menu-screen hidden">
+                <h2 class="pixel-title">PAUSED</h2>
+                <button id="resumeButton" class="pixel-button">RESUME</button>
+                <button id="restartButton" class="pixel-button">RESTART</button>
+            </div>
+            
+            <div id="gameOverMenu" class="menu-screen hidden">
+                <h2 class="pixel-title">GAME OVER</h2>
+                <p id="winnerText" class="pixel-text"></p>
+                <button id="playAgainButton" class="pixel-button">PLAY AGAIN</button>
+            </div>
+        </div>
+    </div>
+    <script src="game.js"></script>
+</body>
+</html>

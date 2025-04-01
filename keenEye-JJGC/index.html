@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keen Eye - Test Your Attention to Detail</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="game-container">
+        <!-- Start Screen -->
+        <div id="start-screen" class="screen">
+            <h1>Keen Eye</h1>
+            <p>Test your attention to detail!</p>
+            <button id="start-button">Start Game</button>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="game-screen" class="screen hidden">
+            <div class="game-header">
+                <div class="timer">Time: <span id="timer">5</span>s</div>
+                <div class="score">Score: <span id="score">0</span></div>
+            </div>
+            <div class="game-content">
+                <div class="main-image-container">
+                    <img id="main-image" src="" alt="Main image to match">
+                </div>
+                <div class="options-container">
+                    <div class="option" data-index="0">
+                        <img src="" alt="Option 1">
+                    </div>
+                    <div class="option" data-index="1">
+                        <img src="" alt="Option 2">
+                    </div>
+                    <div class="option" data-index="2">
+                        <img src="" alt="Option 3">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Over Screen -->
+        <div id="game-over-screen" class="screen hidden">
+            <h2>Game Over!</h2>
+            <p>Final Score: <span id="final-score">0</span></p>
+            <button id="restart-button">Play Again</button>
+        </div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/animations.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html> 

@@ -1,0 +1,199 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 780">
+
+  
+  <!-- Letter Tiles -->
+  <!-- Row 1 -->
+  <!-- 1 point letters -->
+  <!-- A -->
+  <g transform="translate(30, 30)">
+    <rect width="120" height="120" rx="10" fill="#FFD700" stroke="#000" stroke-width="2"/>
+    <text x="60" y="65" font-family="Arial, sans-serif" font-size="50" font-weight="bold" text-anchor="middle">A</text>
+    <text x="100" y="100" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle">1</text>
+  </g>
+  
+  <!-- E -->
+  <g transform="translate(160, 30)">
+    <rect width="120" height="120" rx="10" fill="#FFD700" stroke="#000" stroke-width="2"/>
+    <text x="60" y="65" font-family="Arial, sans-serif" font-size="50" font-weight="bold" text-anchor="middle">E</text>
+    <text x="100" y="100" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle">1</text>
+  </g>
+  
+  <!-- I -->
+  <g transform="translate(290, 30)">
+    <rect width="120" height="120" rx="10" fill="#FFD700" stroke="#000" stroke-width="2"/>
+    <text x="60" y="65" font-family="Arial, sans-serif" font-size="50" font-weight="bold" text-anchor="middle">I</text>
+    <text x="100" y="100" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle">1</text>
+  </g>
+  
+  <!-- L -->
+  <g transform="translate(420, 30)">
+    <rect width="120" height="120" rx="10" fill="#FFD700" stroke="#000" stroke-width="2"/>
+    <text x="60" y="65" font-family="Arial, sans-serif" font-size="50" font-weight="bold" text-anchor="middle">L</text>
+    <text x="100" y="100" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle">1</text>
+  </g>
+  
+  <!-- N -->
+  <g transform="translate(550, 30)">
+    <rect width="120" height="120" rx="10" fill="#FFD700" stroke="#000" stroke-width="2"/>
+    <text x="60" y="65" font-family="Arial, sans-serif" font-size="50" font-weight="bold" text-anchor="middle">N</text>
+    <text x="100" y="100" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle">1</text>
+  </g>
+  
+  <!-- O -->
+  <g transform="translate(680, 30)">
+    <rect width="120" height="120" rx="10" fill="#FFD700" stroke="#000" stroke-width="2"/>
+    <text x="60" y="65" font-family="Arial, sans-serif" font-size="50" font-weight="bold" text-anchor="middle">O</text>
+    <text x="100" y="100" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle">1</text>
+  </g>
+  
+  <!-- Row 2 -->
+  <!-- R -->
+  <g transform="translate(30, 160)">
+    <rect width="120" height="120" rx="10" fill="#FFD700" stroke="#000" stroke-width="2"/>
+    <text x="60" y="65" font-family="Arial, sans-serif" font-size="50" font-weight="bold" text-anchor="middle">R</text>
+    <text x="100" y="100" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle">1</text>
+  </g>
+  
+  <!-- S -->
+  <g transform="translate(160, 160)">
+    <rect width="120" height="120" rx="10" fill="#FFD700" stroke="#000" stroke-width="2"/>
+    <text x="60" y="65" font-family="Arial, sans-serif" font-size="50" font-weight="bold" text-anchor="middle">S</text>
+    <text x="100" y="100" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle">1</text>
+  </g>
+  
+  <!-- T -->
+  <g transform="translate(290, 160)">
+    <rect width="120" height="120" rx="10" fill="#FFD700" stroke="#000" stroke-width="2"/>
+    <text x="60" y="65" font-family="Arial, sans-serif" font-size="50" font-weight="bold" text-anchor="middle">T</text>
+    <text x="100" y="100" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle">1</text>
+  </g>
+  
+  <!-- U -->
+  <g transform="translate(420, 160)">
+    <rect width="120" height="120" rx="10" fill="#FFD700" stroke="#000" stroke-width="2"/>
+    <text x="60" y="65" font-family="Arial, sans-serif" font-size="50" font-weight="bold" text-anchor="middle">U</text>
+    <text x="100" y="100" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle">1</text>
+  </g>
+  
+  <!-- 2 point letters -->
+  <!-- D -->
+  <g transform="translate(550, 160)">
+    <rect width="120" height="120" rx="10" fill="#FFA500" stroke="#000" stroke-width="2"/>
+    <text x="60" y="65" font-family="Arial, sans-serif" font-size="50" font-weight="bold" text-anchor="middle">D</text>
+    <text x="100" y="100" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle">2</text>
+  </g>
+  
+  <!-- G -->
+  <g transform="translate(680, 160)">
+    <rect width="120" height="120" rx="10" fill="#FFA500" stroke="#000" stroke-width="2"/>
+    <text x="60" y="65" font-family="Arial, sans-serif" font-size="50" font-weight="bold" text-anchor="middle">G</text>
+    <text x="100" y="100" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle">2</text>
+  </g>
+  
+  <!-- Row 3 -->
+  <!-- 3 point letters -->
+  <!-- B -->
+  <g transform="translate(30, 290)">
+    <rect width="120" height="120" rx="10" fill="#FF7F50" stroke="#000" stroke-width="2"/>
+    <text x="60" y="65" font-family="Arial, sans-serif" font-size="50" font-weight="bold" text-anchor="middle">B</text>
+    <text x="100" y="100" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle">3</text>
+  </g>
+  
+  <!-- C -->
+  <g transform="translate(160, 290)">
+    <rect width="120" height="120" rx="10" fill="#FF7F50" stroke="#000" stroke-width="2"/>
+    <text x="60" y="65" font-family="Arial, sans-serif" font-size="50" font-weight="bold" text-anchor="middle">C</text>
+    <text x="100" y="100" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle">3</text>
+  </g>
+  
+  <!-- M -->
+  <g transform="translate(290, 290)">
+    <rect width="120" height="120" rx="10" fill="#FF7F50" stroke="#000" stroke-width="2"/>
+    <text x="60" y="65" font-family="Arial, sans-serif" font-size="50" font-weight="bold" text-anchor="middle">M</text>
+    <text x="100" y="100" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle">3</text>
+  </g>
+  
+  <!-- P -->
+  <g transform="translate(420, 290)">
+    <rect width="120" height="120" rx="10" fill="#FF7F50" stroke="#000" stroke-width="2"/>
+    <text x="60" y="65" font-family="Arial, sans-serif" font-size="50" font-weight="bold" text-anchor="middle">P</text>
+    <text x="100" y="100" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle">3</text>
+  </g>
+  
+  <!-- 4 point letters -->
+  <!-- F -->
+  <g transform="translate(550, 290)">
+    <rect width="120" height="120" rx="10" fill="#FF6347" stroke="#000" stroke-width="2"/>
+    <text x="60" y="65" font-family="Arial, sans-serif" font-size="50" font-weight="bold" text-anchor="middle">F</text>
+    <text x="100" y="100" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle">4</text>
+  </g>
+  
+  <!-- H -->
+  <g transform="translate(680, 290)">
+    <rect width="120" height="120" rx="10" fill="#FF6347" stroke="#000" stroke-width="2"/>
+    <text x="60" y="65" font-family="Arial, sans-serif" font-size="50" font-weight="bold" text-anchor="middle">H</text>
+    <text x="100" y="100" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle">4</text>
+  </g>
+  
+  <!-- Row 4 -->
+  <!-- V -->
+  <g transform="translate(30, 420)">
+    <rect width="120" height="120" rx="10" fill="#FF6347" stroke="#000" stroke-width="2"/>
+    <text x="60" y="65" font-family="Arial, sans-serif" font-size="50" font-weight="bold" text-anchor="middle">V</text>
+    <text x="100" y="100" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle">4</text>
+  </g>
+  
+  <!-- Y -->
+  <g transform="translate(160, 420)">
+    <rect width="120" height="120" rx="10" fill="#FF6347" stroke="#000" stroke-width="2"/>
+    <text x="60" y="65" font-family="Arial, sans-serif" font-size="50" font-weight="bold" text-anchor="middle">Y</text>
+    <text x="100" y="100" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle">4</text>
+  </g>
+  
+  <!-- 5 point letter -->
+  <!-- K -->
+  <g transform="translate(290, 420)">
+    <rect width="120" height="120" rx="10" fill="#DC143C" stroke="#000" stroke-width="2"/>
+    <text x="60" y="65" font-family="Arial, sans-serif" font-size="50" font-weight="bold" text-anchor="middle">K</text>
+    <text x="100" y="100" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle">5</text>
+  </g>
+  
+  <!-- 8 point letters -->
+  <!-- J -->
+  <g transform="translate(420, 420)">
+    <rect width="120" height="120" rx="10" fill="#B22222" stroke="#000" stroke-width="2"/>
+    <text x="60" y="65" font-family="Arial, sans-serif" font-size="50" font-weight="bold" text-anchor="middle">J</text>
+    <text x="100" y="100" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle">8</text>
+  </g>
+  
+  <!-- Ñ -->
+  <g transform="translate(550, 420)">
+    <rect width="120" height="120" rx="10" fill="#B22222" stroke="#000" stroke-width="2"/>
+    <text x="60" y="65" font-family="Arial, sans-serif" font-size="50" font-weight="bold" text-anchor="middle">Ñ</text>
+    <text x="100" y="100" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle">8</text>
+  </g>
+  
+  <!-- X -->
+  <g transform="translate(680, 420)">
+    <rect width="120" height="120" rx="10" fill="#B22222" stroke="#000" stroke-width="2"/>
+    <text x="60" y="65" font-family="Arial, sans-serif" font-size="50" font-weight="bold" text-anchor="middle">X</text>
+    <text x="100" y="100" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle">8</text>
+  </g>
+  
+  <!-- Row 5 -->
+  <!-- 10 point letters -->
+  <!-- Q -->
+  <g transform="translate(30, 550)">
+    <rect width="120" height="120" rx="10" fill="#8B0000" stroke="#000" stroke-width="2"/>
+    <text x="60" y="65" font-family="Arial, sans-serif" font-size="50" font-weight="bold" text-anchor="middle" fill="white">Q</text>
+    <text x="100" y="100" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle" fill="white">10</text>
+  </g>
+  
+  <!-- Z -->
+  <g transform="translate(160, 550)">
+    <rect width="120" height="120" rx="10" fill="#8B0000" stroke="#000" stroke-width="2"/>
+    <text x="60" y="65" font-family="Arial, sans-serif" font-size="50" font-weight="bold" text-anchor="middle" fill="white">Z</text>
+    <text x="100" y="100" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle" fill="white">10</text>
+  </g>
+  
+  </svg>

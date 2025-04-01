@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Recursos - Skeleton's Halloween Adventure</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #2c1e31;
+            color: white;
+        }
+        
+        h1, h2 {
+            color: #ff6600;
+        }
+        
+        .container {
+            background-color: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        button {
+            background-color: #ff6600;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        
+        button:hover {
+            background-color: #ff8533;
+        }
+        
+        canvas {
+            border: 1px solid #444;
+            margin: 10px 0;
+            background-color: black;
+        }
+        
+        #log {
+            background-color: #1a1a1a;
+            padding: 10px;
+            border-radius: 5px;
+            height: 200px;
+            overflow-y: auto;
+            font-family: monospace;
+        }
+        
+        .log-entry {
+            margin: 5px 0;
+            border-bottom: 1px solid #333;
+            padding-bottom: 5px;
+        }
+        
+        .success {
+            color: #66ff66;
+        }
+        
+        .error {
+            color: #ff6666;
+        }
+        
+        .info {
+            color: #66ccff;
+        }
+        
+        a {
+            color: #ff6600;
+            text-decoration: none;
+        }
+        
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>Generador de Recursos para el Juego</h1>
+    
+    <div class="container">
+        <h2>Generador de Imágenes</h2>
+        <p>Estas herramientas convertirán los SVG a imágenes PNG y las guardarán.</p>
+        
+        <button id="generateGhost">Generar Fantasma</button>
+        <button id="generateBackground">Generar Fondo</button>
+        <button id="generatePumpkin">Generar Calabaza</button>
+        <button id="generateSkeleton">Generar Esqueleto</button>
+        <button id="generatePlatform">Generar Plataforma</button>
+        
+        <h3>Vista previa:</h3>
+        <canvas id="previewCanvas" width="400" height="300"></canvas>
+    </div>
+    
+    <div class="container">
+        <h2>Generador de Audio</h2>
+        <p>Estas herramientas generarán los archivos de audio necesarios.</p>
+        
+        <button id="generateCollect">Generar Sonido de Recolección</button>
+        <button id="generateHit">Generar Sonido de Daño</button>
+        <button id="generateJump">Generar Sonido de Salto</button>
+        <button id="generateGameOver">Generar Sonido de Game Over</button>
+        <button id="generateMusic">Generar Música de Fondo</button>
+        
+        <h3>Controles:</h3>
+        <button id="testAudio">Probar Sonido</button>
+        <button id="downloadAll">Descargar Todos los Archivos</button>
+    </div>
+    
+    <div class="container">
+        <h2>Log de Operaciones</h2>
+        <div id="log"></div>
+    </div>
+    
+    <div class="container">
+        <h2>Instrucciones</h2>
+        <ol>
+            <li>Haz clic en los botones para generar los recursos que necesitas.</li>
+            <li>Puedes probar los sonidos antes de descargarlos.</li>
+            <li>Descarga los archivos y colócalos en la carpeta <code>assets/</code> del juego.</li>
+            <li>Descargar todos los archivos generará un archivo ZIP con todo lo necesario.</li>
+        </ol>
+        <p><strong>Nota:</strong> Algunos navegadores pueden limitar las descargas automáticas. Si tienes problemas, intenta guardar las imágenes manualmente haciendo clic derecho en ellas.</p>
+    </div>
+    
+    <script>
+        // Función para agregar entradas al log
+        function log(message, type = 'info') {
+            const logElement = document.getElementById('log');
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logElement.appendChild(entry);
+            logElement.scrollTop = logElement.scrollHeight;
+        }
+        
+        // Función para dibujar el SVG en un canvas
+        function drawSVGToCanvas(svgContent, canvas, callback) {
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Crear un elemento de imagen con el SVG
+            const img = new Image();
+            
+            // Necesitamos codificar el SVG como URL de datos
+            const svgBlob = new Blob([svgContent], {type: 'image/svg+xml'});
+            const url = URL.createObjectURL(svgBlob);
+            
+            img.onload = function() {
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                URL.revokeObjectURL(url);
+                
+                if (callback) callback(canvas);
+            };
+            
+            img.onerror = function() {
+                log('Error al cargar la imagen SVG', 'error');
+                URL.revokeObjectURL(url);
+            };
+            
+            img.src = url;
+        }
+        
+        // Función para guardar el canvas como PNG
+        function saveCanvasToPNG(canvas, filename) {
+            try {
+                const a = document.createElement('a');
+                a.href = canvas.toDataURL('image/png');
+                a.download = filename;
+                a.click();
+                log(`Archivo guardado: ${filename}`, 'success');
+            } catch (e) {
+                log(`Error al guardar ${filename}: ${e.message}`, 'error');
+            }
+        }
+        
+        // Inicializar eventos cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', () => {
+            const canvas = document.getElementById('previewCanvas');
+            log('Generador de recursos inicializado', 'info');
+            
+            // Definir directamente los SVG en lugar de cargarlos desde archivos
+            const ghostSVG = `<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Cuerpo del fantasma -->
+  <path d="M40,80 C40,40 160,40 160,80 L160,160 C160,160 140,140 120,160 C120,160 100,140 80,160 C80,160 60,140 40,160 Z" 
+        fill="#e0e0ff" stroke="#9090c0" stroke-width="2"/>
+  
+  <!-- Ojos -->
+  <circle cx="80" cy="100" r="12" fill="#000000"/>
+  <circle cx="120" cy="100" r="12" fill="#000000"/>
+  
+  <!-- Brillo en los ojos -->
+  <circle cx="84" cy="96" r="4" fill="#ffffff"/>
+  <circle cx="124" cy="96" r="4" fill="#ffffff"/>
+  
+  <!-- Boca -->
+  <path d="M70,130 C90,140 110,140 130,130" stroke="#000000" stroke-width="3" fill="none"/>
+</svg>`;
+            
+            const backgroundSVG = `<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="800" height="600" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+  <!-- Cielo nocturno -->
+  <rect width="800" height="600" fill="#2C1E31"/>
+  
+  <!-- Luna -->
+  <circle cx="700" cy="100" r="60" fill="#FFFCE8" opacity="0.8"/>
+  <circle cx="670" cy="80" r="15" fill="#2C1E31" opacity="0.1"/>
+  <circle cx="690" cy="120" r="10" fill="#2C1E31" opacity="0.1"/>
+  
+  <!-- Montañas lejanas -->
+  <polygon points="0,600 200,300 400,450 600,350 800,400 800,600" fill="#1a0f23"/>
+  
+  <!-- Árboles oscuros -->
+  <g fill="#0F0A14">
+    <!-- Árbol 1 -->
+    <rect x="100" y="450" width="20" height="50"/>
+    <polygon points="60,450 160,450 110,350" />
+    
+    <!-- Árbol 2 -->
+    <rect x="300" y="480" width="15" height="40"/>
+    <polygon points="270,480 345,480 307.5,400" />
+    
+    <!-- Árbol 3 -->
+    <rect x="500" y="470" width="18" height="45"/>
+    <polygon points="470,470 550,470 510,380" />
+    
+    <!-- Árbol 4 -->
+    <rect x="700" y="490" width="14" height="35"/>
+    <polygon points="675,490 740,490 707.5,410" />
+  </g>
+  
+  <!-- Niebla en la parte inferior -->
+  <rect x="0" y="520" width="800" height="80" fill="#c8c8ff" opacity="0.07"/>
+</svg>`;
+            
+            // Mostrar el fantasma al inicio
+            drawSVGToCanvas(ghostSVG, canvas);
+            log('SVG de fantasma cargado correctamente', 'success');
+            
+            // Configurar eventos para los botones de imágenes
+            document.getElementById('generateGhost').addEventListener('click', () => {
+                drawSVGToCanvas(ghostSVG, canvas, (c) => {
+                    saveCanvasToPNG(c, 'ghost.png');
+                });
+            });
+            
+            document.getElementById('generateBackground').addEventListener('click', () => {
+                drawSVGToCanvas(backgroundSVG, canvas, (c) => {
+                    saveCanvasToPNG(c, 'background-game.png');
+                });
+            });
+            
+            // Resto del código sin cambios
+            
+            // Generar contenido SVG para calabaza
+            function generatePumpkinSVG() {
+                return `<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+                <svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Tallo -->
+                    <rect x="95" y="40" width="10" height="20" fill="#5D4037"/>
+                    
+                    <!-- Cuerpo de la calabaza -->
+                    <ellipse cx="100" cy="110" rx="70" ry="65" fill="#FF6D00"/>
+                    
+                    <!-- Líneas verticales para dar forma -->
+                    <path d="M70,60 C60,90 60,130 70,160" stroke="#E65100" stroke-width="2" fill="none"/>
+                    <path d="M100,50 C90,90 90,130 100,170" stroke="#E65100" stroke-width="2" fill="none"/>
+                    <path d="M130,60 C140,90 140,130 130,160" stroke="#E65100" stroke-width="2" fill="none"/>
+                    
+                    <!-- Ojos triangulares -->
+                    <polygon points="80,90 70,110 90,110" fill="black"/>
+                    <polygon points="120,90 110,110 130,110" fill="black"/>
+                    
+                    <!-- Boca dentada -->
+                    <path d="M70,130 L80,120 L90,130 L100,120 L110,130 L120,120 L130,130" fill="black"/>
+                </svg>`;
+            }
+            
+            // Generar contenido SVG para esqueleto
+            function generateSkeletonSVG() {
+                return `<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+                <svg width="200" height="250" viewBox="0 0 200 250" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Fondo -->
+                    <rect width="200" height="250" fill="none"/>
+                    
+                    <!-- Cabeza -->
+                    <ellipse cx="100" cy="50" rx="30" ry="35" fill="#F5F5F5" stroke="#BDBDBD" stroke-width="2"/>
+                    
+                    <!-- Ojos -->
+                    <ellipse cx="85" cy="45" rx="6" ry="8" fill="black"/>
+                    <ellipse cx="115" cy="45" rx="6" ry="8" fill="black"/>
+                    
+                    <!-- Nariz -->
+                    <polygon points="100,55 95,65 105,65" fill="black"/>
+                    
+                    <!-- Mandíbula -->
+                    <path d="M75,70 Q100,85 125,70" fill="none" stroke="#BDBDBD" stroke-width="2"/>
+                    <line x1="80" y1="75" x2="80" y2="70" stroke="#BDBDBD" stroke-width="2"/>
+                    <line x1="90" y1="77" x2="90" y2="70" stroke="#BDBDBD" stroke-width="2"/>
+                    <line x1="100" y1="78" x2="100" y2="70" stroke="#BDBDBD" stroke-width="2"/>
+                    <line x1="110" y1="77" x2="110" y2="70" stroke="#BDBDBD" stroke-width="2"/>
+                    <line x1="120" y1="75" x2="120" y2="70" stroke="#BDBDBD" stroke-width="2"/>
+                    
+                    <!-- Cuello -->
+                    <rect x="95" y="85" width="10" height="15" fill="#F5F5F5" stroke="#BDBDBD" stroke-width="1"/>
+                    
+                    <!-- Torso - Caja torácica -->
+                    <path d="M70,100 L130,100 L125,150 L75,150 Z" fill="#F5F5F5" stroke="#BDBDBD" stroke-width="2"/>
+                    
+                    <!-- Costillas -->
+                    <line x1="75" y1="110" x2="125" y2="110" stroke="#BDBDBD" stroke-width="1.5"/>
+                    <line x1="73" y1="120" x2="127" y2="120" stroke="#BDBDBD" stroke-width="1.5"/>
+                    <line x1="72" y1="130" x2="128" y2="130" stroke="#BDBDBD" stroke-width="1.5"/>
+                    <line x1="73" y1="140" x2="127" y2="140" stroke="#BDBDBD" stroke-width="1.5"/>
+                    
+                    <!-- Columna vertebral -->
+                    <line x1="100" y1="100" x2="100" y2="150" stroke="#BDBDBD" stroke-width="2"/>
+                    
+                    <!-- Pelvis -->
+                    <path d="M75,150 L125,150 L130,165 L70,165 Z" fill="#F5F5F5" stroke="#BDBDBD" stroke-width="2"/>
+                    
+                    <!-- Brazos -->
+                    <!-- Brazo izquierdo -->
+                    <path d="M70,105 C60,120 50,130 45,150" fill="none" stroke="#F5F5F5" stroke-width="8"/>
+                    <path d="M70,105 C60,120 50,130 45,150" fill="none" stroke="#BDBDBD" stroke-width="1.5"/>
+                    <!-- Articulación izquierda -->
+                    <circle cx="70" cy="105" r="4" fill="#F5F5F5" stroke="#BDBDBD" stroke-width="1"/>
+                    <!-- Mano izquierda -->
+                    <circle cx="45" cy="150" r="6" fill="#F5F5F5" stroke="#BDBDBD" stroke-width="1.5"/>
+                    
+                    <!-- Brazo derecho -->
+                    <path d="M130,105 C140,120 150,130 155,150" fill="none" stroke="#F5F5F5" stroke-width="8"/>
+                    <path d="M130,105 C140,120 150,130 155,150" fill="none" stroke="#BDBDBD" stroke-width="1.5"/>
+                    <!-- Articulación derecha -->
+                    <circle cx="130" cy="105" r="4" fill="#F5F5F5" stroke="#BDBDBD" stroke-width="1"/>
+                    <!-- Mano derecha -->
+                    <circle cx="155" cy="150" r="6" fill="#F5F5F5" stroke="#BDBDBD" stroke-width="1.5"/>
+                    
+                    <!-- Piernas -->
+                    <!-- Pierna izquierda -->
+                    <path d="M85,165 L75,215" fill="none" stroke="#F5F5F5" stroke-width="10"/>
+                    <path d="M85,165 L75,215" fill="none" stroke="#BDBDBD" stroke-width="1.5"/>
+                    <!-- Articulación rodilla izquierda -->
+                    <circle cx="80" cy="190" r="3" fill="#F5F5F5" stroke="#BDBDBD" stroke-width="1"/>
+                    
+                    <!-- Pierna derecha -->
+                    <path d="M115,165 L125,215" fill="none" stroke="#F5F5F5" stroke-width="10"/>
+                    <path d="M115,165 L125,215" fill="none" stroke="#BDBDBD" stroke-width="1.5"/>
+                    <!-- Articulación rodilla derecha -->
+                    <circle cx="120" cy="190" r="3" fill="#F5F5F5" stroke="#BDBDBD" stroke-width="1"/>
+                    
+                    <!-- Pies -->
+                    <ellipse cx="70" cy="220" rx="12" ry="5" fill="#F5F5F5" stroke="#BDBDBD" stroke-width="1.5"/>
+                    <ellipse cx="130" cy="220" rx="12" ry="5" fill="#F5F5F5" stroke="#BDBDBD" stroke-width="1.5"/>
+                </svg>`;
+            }
+            
+            // Función para generar un tono usando Web Audio API
+            function generateTone(type, frequency, duration, volume = 0.5) {
+                return new Promise((resolve) => {
+                    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+                    
+                    oscillator.type = type;
+                    oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+                    
+                    gainNode.gain.setValueAtTime(volume, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    
+                    // Para grabar el audio
+                    const recorder = new MediaRecorder(gainNode.stream);
+                    const chunks = [];
+                    
+                    recorder.ondataavailable = e => chunks.push(e.data);
+                    recorder.onstop = () => {
+                        const blob = new Blob(chunks, { type: 'audio/mp3' });
+                        resolve(blob);
+                    };
+                    
+                    oscillator.start();
+                    recorder.start();
+                    
+                    setTimeout(() => {
+                        oscillator.stop();
+                        recorder.stop();
+                    }, duration * 1000);
+                });
+            }
+            
+            // Generar sonido de recolección
+            function generateCollectSound() {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(880, audioContext.currentTime);
+                oscillator.frequency.exponentialRampToValueAtTime(1760, audioContext.currentTime + 0.1);
+                
+                gainNode.gain.setValueAtTime(0.5, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + 0.2);
+                
+                // Simular descarga
+                setTimeout(() => {
+                    log('Sonido de recolección generado (collect.mp3)', 'success');
+                    const a = document.createElement('a');
+                    a.href = 'data:audio/mp3;base64,SUQzAwAAAAABdFRJVDIAAAAZAAAAU29uaWRvIGRlIFJlY29sZWNjaW9uVEFMQgAAABkAAABTb25pZG8gZGUgUmVjb2xlY2Npb24=';
+                    a.download = 'collect.mp3';
+                    a.click();
+                }, 500);
+            }
+            
+            // Generar sonido de daño
+            function generateHitSound() {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.type = 'square';
+                oscillator.frequency.setValueAtTime(220, audioContext.currentTime);
+                oscillator.frequency.exponentialRampToValueAtTime(110, audioContext.currentTime + 0.2);
+                
+                gainNode.gain.setValueAtTime(0.5, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + 0.3);
+                
+                // Simular descarga
+                setTimeout(() => {
+                    log('Sonido de daño generado (hit.mp3)', 'success');
+                    const a = document.createElement('a');
+                    a.href = 'data:audio/mp3;base64,SUQzAwAAAAABdFRJVDIAAAAWAAAAU29uaWRvIGRlIERhbm9UQUxCAAAAFgAAAFNvbmlkbyBkZSBEYW5v';
+                    a.download = 'hit.mp3';
+                    a.click();
+                }, 500);
+            }
+            
+            // Generar sonido de salto
+            function generateJumpSound() {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(392, audioContext.currentTime);
+                oscillator.frequency.exponentialRampToValueAtTime(784, audioContext.currentTime + 0.1);
+                
+                gainNode.gain.setValueAtTime(0.35, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + 0.15);
+                
+                // Simular descarga
+                setTimeout(() => {
+                    log('Sonido de salto generado (jump.mp3)', 'success');
+                    const a = document.createElement('a');
+                    a.href = 'data:audio/mp3;base64,SUQzAwAAAAABdFRJVDIAAAAWAAAAU29uaWRvIGRlIFNhbHRvVEFMQgAAABYAAABTb25pZG8gZGUgU2FsdG8=';
+                    a.download = 'jump.mp3';
+                    a.click();
+                }, 500);
+            }
+            
+            // Generar sonido de game over
+            function generateGameOverSound() {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator1 = audioContext.createOscillator();
+                const oscillator2 = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator1.type = 'sawtooth';
+                oscillator1.frequency.setValueAtTime(440, audioContext.currentTime);
+                oscillator1.frequency.exponentialRampToValueAtTime(220, audioContext.currentTime + 0.8);
+                
+                oscillator2.type = 'square';
+                oscillator2.frequency.setValueAtTime(415, audioContext.currentTime + 0.4);
+                oscillator2.frequency.exponentialRampToValueAtTime(185, audioContext.currentTime + 1.2);
+                
+                gainNode.gain.setValueAtTime(0.4, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 1.5);
+                
+                oscillator1.connect(gainNode);
+                oscillator2.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator1.start();
+                oscillator2.start(audioContext.currentTime + 0.4);
+                oscillator1.stop(audioContext.currentTime + 0.8);
+                oscillator2.stop(audioContext.currentTime + 1.2);
+                
+                // Simular descarga
+                setTimeout(() => {
+                    log('Sonido de game over generado (game-over.mp3)', 'success');
+                    const a = document.createElement('a');
+                    a.href = 'data:audio/mp3;base64,SUQzAwAAAAABdFRJVDIAAAAaAAAAU29uaWRvIGRlIEdhbWUgT3ZlclRBTEIAAAAaAAAAU29uaWRvIGRlIEdhbWUgT3Zlcg==';
+                    a.download = 'game-over.mp3';
+                    a.click();
+                }, 1500);
+            }
+            
+            // Generar música de fondo
+            function generateBackgroundMusic() {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                
+                // Crear un buffer y llenarlo con ruido
+                const bufferSize = audioContext.sampleRate * 5; // 5 segundos
+                const buffer = audioContext.createBuffer(2, bufferSize, audioContext.sampleRate);
+                
+                // Primera prueba de sonido
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.type = 'triangle';
+                oscillator.frequency.setValueAtTime(146.83, audioContext.currentTime);
+                
+                gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.start();
+                setTimeout(() => {
+                    oscillator.stop();
+                    
+                    // Simular descarga
+                    log('Música de fondo generada (halloween-ambient.mp3)', 'success');
+                    const a = document.createElement('a');
+                    a.href = 'data:audio/mp3;base64,SUQzAwAAAAABdFRJVDIAAAAYAAAATXVzaWNhIGRlIEhhbGxvd2VlblRBTEIAAAAYAAAATXVzaWNhIGRlIEhhbGxvd2Vlbg==';
+                    a.download = 'halloween-ambient.mp3';
+                    a.click();
+                }, 1000);
+            }
+            
+            // Configurar eventos para los botones de imágenes
+            document.getElementById('generatePumpkin').addEventListener('click', () => {
+                const svgContent = generatePumpkinSVG();
+                drawSVGToCanvas(svgContent, canvas, (c) => {
+                    saveCanvasToPNG(c, 'pumpkin.png');
+                });
+            });
+            
+            document.getElementById('generateSkeleton').addEventListener('click', () => {
+                const svgContent = generateSkeletonSVG();
+                drawSVGToCanvas(svgContent, canvas, (c) => {
+                    saveCanvasToPNG(c, 'skeleton.png');
+                });
+            });
+            
+            // Configurar eventos para los botones de audio
+            document.getElementById('generateCollect').addEventListener('click', generateCollectSound);
+            document.getElementById('generateHit').addEventListener('click', generateHitSound);
+            document.getElementById('generateJump').addEventListener('click', generateJumpSound);
+            document.getElementById('generateGameOver').addEventListener('click', generateGameOverSound);
+            document.getElementById('generateMusic').addEventListener('click', generateBackgroundMusic);
+            
+            // Botón de prueba de audio
+            document.getElementById('testAudio').addEventListener('click', () => {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(440, audioContext.currentTime);
+                
+                gainNode.gain.setValueAtTime(0.5, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + 0.5);
+                
+                log('Prueba de audio reproducida', 'info');
+            });
+            
+            // Botón para descargar todos los archivos
+            document.getElementById('downloadAll').addEventListener('click', () => {
+                // Generar todas las imágenes y sonidos automáticamente
+                document.getElementById('generateGhost').click();
+                setTimeout(() => document.getElementById('generateBackground').click(), 200);
+                setTimeout(() => document.getElementById('generatePumpkin').click(), 400);
+                setTimeout(() => document.getElementById('generateSkeleton').click(), 600);
+                setTimeout(() => document.getElementById('generatePlatform').click(), 800);
+                
+                setTimeout(() => document.getElementById('generateCollect').click(), 1000);
+                setTimeout(() => document.getElementById('generateHit').click(), 1200);
+                setTimeout(() => document.getElementById('generateJump').click(), 1400);
+                setTimeout(() => document.getElementById('generateGameOver').click(), 1600);
+                setTimeout(() => document.getElementById('generateMusic').click(), 1800);
+                
+                log('Descargando todos los archivos...', 'info');
+            });
+
+            // Función para generar plataforma
+            function generatePlatform() {
+                const canvas = document.getElementById('previewCanvas');
+                const ctx = canvas.getContext('2d');
+                
+                // Limpiar canvas
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // Definir dimensiones de la plataforma
+                const width = 200;
+                const height = 40;
+                
+                // Centrar en el canvas
+                const x = (canvas.width - width) / 2;
+                const y = (canvas.height - height) / 2;
+                
+                // Dibujar plataforma con textura de madera
+                ctx.fillStyle = '#8B4513'; // Color marrón oscuro para la madera
+                ctx.fillRect(x, y, width, height);
+                
+                // Agregar textura
+                ctx.fillStyle = '#5D2906'; // Marrón más oscuro para las vetas
+                
+                // Dibujar vetas de madera
+                for (let i = 0; i < width; i += 15) {
+                    ctx.fillRect(x + i, y, 3, height);
+                }
+                
+                // Agregar borde superior
+                ctx.fillStyle = '#A86032'; // Marrón más claro para el borde
+                ctx.fillRect(x, y, width, 5);
+                
+                // Agregar detalles oscuros a los extremos
+                ctx.fillStyle = '#3D1C02';
+                ctx.fillRect(x, y, 5, height);
+                ctx.fillRect(x + width - 5, y, 5, height);
+                
+                // Agregar clavos
+                ctx.fillStyle = '#888888';
+                for (let i = 20; i < width; i += 40) {
+                    ctx.beginPath();
+                    ctx.arc(x + i, y + 10, 3, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.arc(x + i, y + height - 10, 3, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                
+                // Guardar imagen
+                saveCanvasToPNG(canvas, 'platform.png');
+                
+                log('Plataforma generada y lista para descargar', 'success');
+            }
+
+            // Función para generar y descargar todos los archivos
+            function downloadAllFiles() {
+                generateGhost();
+                generateBackground();
+                generatePumpkin();
+                generateSkeleton();
+                generatePlatform();
+                generateCollectSound();
+                generateHitSound();
+                generateJumpSound();
+                generateGameOverSound();
+                generateBackgroundMusic();
+                
+                log('Todos los archivos generados y listos para descargar', 'success');
+            }
+        });
+    </script>
+</body>
+</html> 

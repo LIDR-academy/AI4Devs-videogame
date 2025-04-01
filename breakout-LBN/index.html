@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Breakout Arcade</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="scanlines"></div>
+    <div class="container">
+        <div id="pantalla-inicio" class="pantalla">
+            <div class="logo-container">
+                <img src="img/inicio.png" alt="Breakout" class="logo-imagen pixel-border">
+            </div>
+            <h1>BREAKOUT</h1>
+            <button id="btn-jugar" class="pixel-border">JUGAR</button>
+        </div>
+
+        <div id="pantalla-seleccion-nivel" class="pantalla oculto">
+            <h2>SELECCIONA NIVEL</h2>
+            <div class="grid-niveles">
+                <!-- Los botones se generarán dinámicamente en JS -->
+            </div>
+            <button id="btn-volver-inicio" class="btn-secundario pixel-border">VOLVER</button>
+        </div>
+
+        <div id="pantalla-juego" class="pantalla oculto">
+            <div class="info-juego">
+                <div>
+                    <div class="puntuacion">Puntuación: <span id="puntuacion">0</span></div>
+                </div>
+                <div>
+                    <div class="nivel">Nivel: <span id="nivel">1</span></div>
+                </div>
+                <div>
+                    <div class="vidas">Vidas: <span id="vidas">3</span></div>
+                </div>
+                <div>
+                    <div class="tipo-ladrillo">Tipo: <span id="tipo-ladrillo">Normal</span></div>
+                </div>
+                <div>
+                    <button id="btn-salir" class="btn-salir">SALIR</button>
+                </div>
+            </div>
+            <canvas id="juego" width="800" height="600" class="pixel-border"></canvas>
+            <div id="pausa-overlay" class="oculto">
+                <div class="pausa-contenido pixel-border">
+                    <h2>JUEGO EN PAUSA</h2>
+                    <p>Presiona 'P' o haz clic para continuar</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="pantalla-game-over" class="pantalla oculto">
+            <h1>GAME OVER</h1>
+            <p>Puntuación final: <span id="puntuacion-final">0</span></p>
+            <button id="btn-reiniciar-go" class="pixel-border">JUGAR DE NUEVO</button>
+            <button id="btn-menu-niveles-go" class="btn-secundario pixel-border">SELECCIONAR NIVEL</button>
+        </div>
+
+        <div id="pantalla-victoria" class="pantalla oculto">
+            <h1>¡VICTORIA!</h1>
+            <p>Puntuación final: <span id="puntuacion-victoria">0</span></p>
+            <button id="btn-siguiente-nivel" class="pixel-border">SIGUIENTE NIVEL</button>
+            <button id="btn-reiniciar-v" class="btn-secundario pixel-border">JUGAR DE NUEVO</button>
+            <button id="btn-menu-niveles-v" class="btn-secundario pixel-border">SELECCIONAR NIVEL</button>
+        </div>
+    </div>
+
+    <script src="js/niveles.js"></script>
+    <script src="js/juego.js"></script>
+</body>
+</html> 

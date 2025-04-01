@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="200" height="100" xmlns="http://www.w3.org/2000/svg">
+  <rect width="200" height="100" fill="#2c3e50"/>
+  <text x="100" y="60" font-family="Arial" font-size="24" text-anchor="middle" fill="white">BATTLELINE</text>
+</svg>

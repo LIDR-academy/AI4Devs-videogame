@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vista previa de Arthur - Ghosts 'n Goblins</title>
+    <style>
+        body {
+            background-color: #222;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        h1 {
+            color: #ff9900;
+            text-shadow: 2px 2px 4px #000;
+        }
+        .sprite-container {
+            background-color: #333;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 800px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+        .sprite-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        .sprite-box {
+            background-color: #444;
+            border: 1px solid #555;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 10px;
+            min-width: 200px;
+            box-shadow: 0 0 5px rgba(0,0,0,0.3);
+        }
+        .sprite-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #ff9900;
+        }
+        .sprite-img {
+            image-rendering: pixelated;
+            height: 100px;
+            transform: scale(2);
+            margin: 15px 0;
+        }
+        .animation-canvas {
+            background-color: #000;
+            border: 1px solid #666;
+            margin: 10px auto;
+        }
+        button {
+            background-color: #ff9900;
+            color: #000;
+            border: none;
+            padding: 8px 16px;
+            margin: 5px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        button:hover {
+            background-color: #ffb84d;
+        }
+    </style>
+</head>
+<body>
+    <h1>Sprites de Arthur - Guerrero Enano</h1>
+    
+    <div class="sprite-container">
+        <div class="sprite-row">
+            <div class="sprite-box">
+                <div class="sprite-title">Idle (Reposo)</div>
+                <img src="assets/images/Arthur/Idle.png" alt="Arthur Idle" class="sprite-img">
+            </div>
+            <div class="sprite-box">
+                <div class="sprite-title">Run (Correr)</div>
+                <img src="assets/images/Arthur/Run.png" alt="Arthur Run" class="sprite-img">
+            </div>
+            <div class="sprite-box">
+                <div class="sprite-title">Jump (Saltar)</div>
+                <img src="assets/images/Arthur/Jump.png" alt="Arthur Jump" class="sprite-img">
+            </div>
+        </div>
+        
+        <div class="sprite-row">
+            <div class="sprite-box">
+                <div class="sprite-title">Throw (Lanzar)</div>
+                <img src="assets/images/Arthur/Throw.png" alt="Arthur Throw" class="sprite-img">
+            </div>
+            <div class="sprite-box">
+                <div class="sprite-title">Death (Muerte)</div>
+                <img src="assets/images/Arthur/Death.png" alt="Arthur Death" class="sprite-img">
+            </div>
+        </div>
+    </div>
+
+    <div class="sprite-container">
+        <h2>Animación en tiempo real</h2>
+        <canvas id="animationCanvas" class="animation-canvas" width="400" height="200"></canvas>
+        <div>
+            <button onclick="setAnimation('idle')">Idle</button>
+            <button onclick="setAnimation('run')">Run</button>
+            <button onclick="setAnimation('jump')">Jump</button>
+            <button onclick="setAnimation('throw')">Throw</button>
+            <button onclick="setAnimation('death')">Death</button>
+        </div>
+    </div>
+
+    <script>
+        // Configuración de la animación
+        const canvas = document.getElementById('animationCanvas');
+        const ctx = canvas.getContext('2d');
+        let currentAnimation = 'idle';
+        let frame = 0;
+        const frameWidth = 40;
+        const frameHeight = 52;
+        const sprites = {};
+        let lastTime = 0;
+        const frameDelay = 150; // ms entre frames
+        
+        // Cargar imágenes
+        function loadSprite(name) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.onload = () => {
+                    sprites[name] = img;
+                    resolve();
+                };
+                img.src = `assets/images/Arthur/${name}.png`;
+            });
+        }
+        
+        // Cargar todos los sprites
+        Promise.all([
+            loadSprite('Idle'),
+            loadSprite('Run'),
+            loadSprite('Jump'),
+            loadSprite('Throw'),
+            loadSprite('Death')
+        ]).then(() => {
+            // Iniciar la animación cuando todas las imágenes estén cargadas
+            requestAnimationFrame(animate);
+        });
+        
+        // Cambiar la animación actual
+        function setAnimation(name) {
+            currentAnimation = name;
+            frame = 0; // Reiniciar la animación
+        }
+        
+        // Función de animación
+        function animate(time) {
+            if (time - lastTime > frameDelay) {
+                // Limpiar el canvas
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // Dibujar fondo
+                ctx.fillStyle = '#333';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // Dibujar línea de suelo
+                ctx.fillStyle = '#555';
+                ctx.fillRect(0, 150, canvas.width, 2);
+                
+                // Determinar qué sprite dibujar
+                let spriteImg;
+                let maxFrames = 4; // Todos tienen 4 frames
+                
+                switch(currentAnimation) {
+                    case 'idle':
+                        spriteImg = sprites['Idle'];
+                        break;
+                    case 'run':
+                        spriteImg = sprites['Run'];
+                        break;
+                    case 'jump':
+                        spriteImg = sprites['Jump'];
+                        break;
+                    case 'throw':
+                        spriteImg = sprites['Throw'];
+                        break;
+                    case 'death':
+                        spriteImg = sprites['Death'];
+                        if (frame >= maxFrames - 1 && currentAnimation === 'death') {
+                            // Mantener el último frame para la muerte
+                            frame = maxFrames - 1;
+                        }
+                        break;
+                }
+                
+                // Dibujar el frame actual
+                if (spriteImg) {
+                    ctx.imageSmoothingEnabled = false; // Desactivar suavizado para píxeles nítidos
+                    ctx.drawImage(
+                        spriteImg,
+                        frame * frameWidth, 0, frameWidth, frameHeight,
+                        180, 98, frameWidth * 2, frameHeight * 2
+                    );
+                }
+                
+                // Avanzar al siguiente frame
+                frame = (frame + 1) % maxFrames;
+                lastTime = time;
+            }
+            
+            // Continuar la animación
+            requestAnimationFrame(animate);
+        }
+    </script>
+</body>
+</html> 

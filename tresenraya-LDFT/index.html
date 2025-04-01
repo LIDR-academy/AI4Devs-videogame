@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tres en Raya</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+        }
+        #game-container {
+            margin-top: 20px;
+        }
+        #board {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            grid-gap: 5px;
+            justify-content: center;
+        }
+        .cell {
+            width: 100px;
+            height: 100px;
+            background-color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            font-weight: bold;
+            cursor: pointer;
+            border: 2px solid #000;
+        }
+        .cell:hover {
+            background-color: #e0e0e0;
+        }
+        #status {
+            margin-top: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        #reset {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 1em;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Tres en Raya</h1>
+    <div id="game-container">
+        <div id="board"></div>
+        <p id="status">Turno de: X</p>
+        <button id="reset">Reiniciar</button>
+    </div>
+
+    <script>
+        const board = document.getElementById("board");
+        const statusText = document.getElementById("status");
+        const resetButton = document.getElementById("reset");
+        let currentPlayer = "X";
+        let boardState = ["", "", "", "", "", "", "", "", ""];
+        const winningCombinations = [
+            [0, 1, 2], [3, 4, 5], [6, 7, 8],
+            [0, 3, 6], [1, 4, 7], [2, 5, 8],
+            [0, 4, 8], [2, 4, 6]
+        ];
+
+        function createBoard() {
+            board.innerHTML = "";
+            boardState.forEach((cell, index) => {
+                const cellElement = document.createElement("div");
+                cellElement.classList.add("cell");
+                cellElement.dataset.index = index;
+                cellElement.textContent = cell;
+                cellElement.addEventListener("click", handleCellClick);
+                board.appendChild(cellElement);
+            });
+        }
+
+        function handleCellClick(event) {
+            const index = event.target.dataset.index;
+            if (boardState[index] !== "" || checkWinner()) return;
+            boardState[index] = currentPlayer;
+            event.target.textContent = currentPlayer;
+            if (checkWinner()) {
+                statusText.textContent = `¡Ganador: ${currentPlayer}!`;
+                return;
+            }
+            if (boardState.every(cell => cell !== "")) {
+                statusText.textContent = "¡Empate!";
+                return;
+            }
+            currentPlayer = currentPlayer === "X" ? "O" : "X";
+            statusText.textContent = `Turno de: ${currentPlayer}`;
+        }
+
+        function checkWinner() {
+            return winningCombinations.some(combination => {
+                const [a, b, c] = combination;
+                return boardState[a] && boardState[a] === boardState[b] && boardState[a] === boardState[c];
+            });
+        }
+
+        resetButton.addEventListener("click", () => {
+            boardState.fill("");
+            currentPlayer = "X";
+            statusText.textContent = "Turno de: X";
+            createBoard();
+        });
+
+        createBoard();
+    </script>
+</body>
+</html>

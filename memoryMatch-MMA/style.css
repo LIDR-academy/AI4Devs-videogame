@@ -1,0 +1,98 @@
+body {
+  background-image: url('star-wars.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: top center;
+  background-color: black;
+  color: white;
+  text-align: center;
+  font-family: sans-serif;
+}
+
+.grid {
+  width: 300px;
+  height: 300px;
+  display: grid;
+  grid-template-columns: repeat(15, 20px);
+  grid-template-rows: repeat(15, 20px);
+  margin: 0 auto;
+  background-color: #111;
+  border: 2px solid white;
+  position: relative;
+  background-image: url('star-planet.png');
+  background-size: 200% auto;
+  background-repeat: no-repeat;
+  background-position: center bottom;
+  animation-play-state: paused;
+}
+
+.animate-bg {
+  animation: moveBackground 40s linear infinite alternate;
+  animation-play-state: running;
+}
+
+.invader {
+  background-image: url('star-figter.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: transparent;
+  filter: brightness(1.5) contrast(1.2);
+}
+
+.laser {
+  background-color: yellow;
+  height: 20px;
+  width: 2px;
+}
+
+.boom {
+  background-image: url('boom.png'); /* Assuming the file was renamed to explosion.gif */
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  animation: boomAnimation 300ms steps(5) forwards;
+}
+
+.shooter {
+  background-image: url('star-ship.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: transparent; /* o elimina si no se necesita */
+}
+
+@keyframes moveBackground {
+  0% {
+    background-position: center bottom;
+  }
+  50% {
+    background-position: left center;
+  }
+  100% {
+    background-position: center top;
+  }
+}
+
+@keyframes boomAnimation {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+.control-button {
+  width: 25px;
+  height: 25px;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  cursor: pointer;
+}

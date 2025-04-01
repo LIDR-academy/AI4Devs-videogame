@@ -1,0 +1,98 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: rgba(255, 255, 255, 0.8); /* Para que el fondo sea visible pero no opaque el contenido */
+    background-blend-mode: lighten;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+#game-container {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+#word-display {
+    height: 200px;
+    width: 100%;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    margin: 1rem 0;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+.word-item {
+    padding: 0.25rem;
+    margin: 0.1rem 0;
+    border-radius: 3px;
+    background-color: #f0f0f0;
+    transition: all 0.3s ease;
+}
+
+.word-item:last-child {
+    background-color: #e0f7fa;
+    font-weight: bold;
+}
+
+#word-input {
+    padding: 0.5rem;
+    font-size: 1rem;
+    width: 200px;
+    margin-bottom: 1rem;
+}
+
+#timer {
+    font-size: 1.2rem;
+    color: #666;
+    margin-bottom: 1rem;
+}
+
+#score {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 1rem;
+}
+
+#settings {
+    margin-top: 1rem;
+}
+
+.player1 {
+    color: #1e90ff;
+    background-color: #e6f3ff;
+}
+
+.player2 {
+    color: #ff4500;
+    background-color: #ffe6e6;
+}
+
+@media (max-width: 600px) {
+    #game-container {
+        width: 90%;
+        padding: 1rem;
+    }
+
+    #word-input {
+        width: 100%;
+    }
+}
+
+@keyframes gameOverAnimation {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+.game-over {
+    animation: gameOverAnimation 1s ease-in-out;
+}

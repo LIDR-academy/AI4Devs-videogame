@@ -1,0 +1,391 @@
+/* Estilos generales */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #0a192f;
+  color: #e6f1ff;
+  line-height: 1.6;
+}
+
+.game-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+h1 {
+  font-size: 3rem;
+  margin-bottom: 15px;
+  color: #64ffda;
+  text-shadow: 0 0 10px rgba(100, 255, 218, 0.5);
+}
+
+/* Estilo para los indicadores de juego */
+#game-status {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  padding: 10px 20px;
+  margin-bottom: 20px;
+}
+
+#turn-indicator {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #64ffda;
+}
+
+#ships-counter {
+  display: flex;
+  gap: 30px;
+}
+
+.player-ships, .enemy-ships {
+  text-align: center;
+}
+
+/* Estilos para los tableros */
+.game-boards {
+  display: flex;
+  justify-content: space-between;
+  gap: 30px;
+  margin-bottom: 30px;
+}
+
+.board-container {
+  flex: 1;
+  text-align: center;
+}
+
+.board-container h2 {
+  margin-bottom: 15px;
+  color: #64ffda;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  grid-template-rows: repeat(10, 1fr);
+  width: 100%;
+  aspect-ratio: 1/1;
+  margin: 0 auto;
+  position: relative;
+}
+
+/* Estilo para la vista isométrica */
+.isometric-board {
+  transform: rotateX(45deg) rotateZ(0deg);
+  transform-style: preserve-3d;
+  perspective: 1000px;
+  box-shadow: 0 0 30px rgba(100, 255, 218, 0.3);
+}
+
+.cell {
+  position: relative;
+  border: 2px solid rgba(100, 255, 218, 0.6);
+  background-color: rgba(10, 25, 47, 0.9);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  transform-style: preserve-3d;
+}
+
+.cell:hover {
+  background-color: rgba(100, 255, 218, 0.4);
+}
+
+/* Estilo para las celdas con barcos */
+.cell.ship {
+  background-color: rgba(100, 255, 218, 0.7);
+  border: 2px solid rgba(255, 255, 255, 0.8);
+}
+
+.cell.enemy-ship {
+  background-color: rgba(10, 25, 47, 0.9); /* Mismo color que el agua para ocultar */
+}
+
+/* Estilo para disparos */
+.cell.hit {
+  background-color: rgba(255, 80, 80, 0.9);
+  border: 2px solid rgba(255, 255, 255, 0.8);
+}
+
+.cell.miss {
+  background-color: rgba(80, 80, 255, 0.7);
+  border: 2px solid rgba(255, 255, 255, 0.4);
+}
+
+/* Contenedor para modelos 3D de barcos */
+.ship-model {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transform: translateZ(0px);
+  z-index: 10;
+  pointer-events: none;
+}
+
+/* Estilos para barcos 3D */
+.ship-3d-model {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  transform-style: preserve-3d;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.ship-body {
+  position: absolute;
+  box-sizing: border-box;
+}
+
+/* Etiquetas para identificar barcos */
+.board-container h3 {
+  margin-top: 10px;
+  font-size: 0.9rem;
+}
+
+.ship-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.legend-color {
+  width: 15px;
+  height: 15px;
+  margin-right: 5px;
+  border: 1px solid white;
+}
+
+.legend-carrier {
+  background-color: #FF5252;
+}
+
+.legend-battleship {
+  background-color: #FFEB3B;
+}
+
+.legend-cruiser {
+  background-color: #2196F3;
+}
+
+.legend-submarine {
+  background-color: #4CAF50;
+}
+
+.legend-destroyer {
+  background-color: #9C27B0;
+}
+
+/* Controles del juego */
+#controls {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+button {
+  background-color: #64ffda;
+  color: #0a192f;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+button:hover {
+  background-color: #4cded9;
+  transform: translateY(-2px);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+/* Controles de colocación de barcos */
+#placement-controls {
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+.ship-selection h3 {
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.ship-options {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.ship-option {
+  background-color: rgba(100, 255, 218, 0.2);
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.ship-option:hover {
+  background-color: rgba(100, 255, 218, 0.4);
+}
+
+.ship-option.selected {
+  background-color: rgba(100, 255, 218, 0.7);
+  color: #0a192f;
+}
+
+.ship-option.placed {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.orientation-control {
+  text-align: center;
+}
+
+/* Modal */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal.active {
+  display: flex;
+}
+
+.modal-content {
+  background-color: #0a192f;
+  padding: 30px;
+  border-radius: 10px;
+  border: 2px solid #64ffda;
+  max-width: 500px;
+  width: 80%;
+  text-align: center;
+}
+
+#modal-title {
+  color: #64ffda;
+  margin-bottom: 15px;
+}
+
+#modal-message {
+  margin-bottom: 20px;
+}
+
+/* Animaciones para explosiones */
+@keyframes explosion {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+    background-color: #fff;
+  }
+  50% {
+    transform: scale(1.5);
+    opacity: 0.8;
+    background-color: #ff6464;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+    background-color: rgba(255, 100, 100, 0.7);
+  }
+}
+
+@keyframes splash {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+    background-color: #fff;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.8;
+    background-color: #6464ff;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+    background-color: rgba(100, 100, 255, 0.5);
+  }
+}
+
+.cell.hit::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  animation: explosion 0.6s forwards;
+}
+
+.cell.miss::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  animation: splash 0.6s forwards;
+}
+
+/* Para dispositivos móviles */
+@media (max-width: 768px) {
+  .game-boards {
+    flex-direction: column;
+  }
+  
+  .board {
+    max-width: 400px;
+  }
+  
+  #game-status {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  #ships-counter {
+    width: 100%;
+    justify-content: space-around;
+  }
+} 

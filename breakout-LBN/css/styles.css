@@ -1,0 +1,504 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Press Start 2P', cursive;
+    background-color: #222;
+    color: white;
+    overflow: hidden;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    width: 800px;
+    max-width: 100%;
+    text-align: center;
+    position: relative;
+}
+
+.pantalla {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 600px;
+}
+
+.oculto {
+    display: none !important;
+}
+
+h1 {
+    font-size: 3rem;
+    margin-bottom: 2.5rem;
+    color: #ffcc00;
+    text-shadow: 0 0 10px rgba(255, 204, 0, 0.6);
+    line-height: 1.3;
+    letter-spacing: 2px;
+}
+
+h2 {
+    font-size: 1.8rem;
+    margin-bottom: 2rem;
+    color: #ffcc00;
+    text-shadow: 0 0 5px rgba(255, 204, 0, 0.6);
+    line-height: 1.3;
+    letter-spacing: 1px;
+}
+
+button {
+    padding: 1rem 1.5rem;
+    font-size: 1rem;
+    font-family: 'Press Start 2P', cursive;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin: 0.5rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+button:hover {
+    background-color: #45a049;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+button:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+#btn-jugar {
+    background-color: #2196F3;
+    font-size: 1.2rem;
+    padding: 1.2rem 1.8rem;
+    margin-top: 1.5rem;
+    letter-spacing: 2px;
+    position: relative;
+    text-shadow: 2px 2px 0 #000;
+    overflow: hidden;
+}
+
+#btn-jugar::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: rgba(255, 255, 255, 0.1);
+    transform: rotate(45deg);
+    animation: btnShinning 4s infinite linear;
+}
+
+@keyframes btnShinning {
+    0% {
+        left: -50%;
+    }
+    100% {
+        left: 150%;
+    }
+}
+
+#btn-jugar:hover {
+    background-color: #0b7dda;
+}
+
+.btn-secundario {
+    background-color: #666;
+    font-size: 0.8rem;
+    padding: 0.8rem 1.2rem;
+    margin-top: 1rem;
+}
+
+.btn-secundario:hover {
+    background-color: #888;
+}
+
+.btn-nivel {
+    font-size: 1rem;
+    padding: 0.5rem;
+    margin: 0.5rem;
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Press Start 2P', cursive;
+    overflow: hidden;
+    position: relative;
+    transition: transform 0.3s, box-shadow 0.3s;
+    background-color: #2196F3;
+    color: white;
+    text-shadow: 1px 1px 0 #000;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.btn-nivel:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5), 0 0 15px rgba(33, 150, 243, 0.7);
+    background-color: #0b7dda;
+}
+
+.btn-nivel.pixel-border {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    border: 3px solid rgba(255, 255, 255, 0.3);
+}
+
+.btn-nivel.pixel-border::after {
+    display: none;
+}
+
+.nivel-completado {
+    background-color: #4CAF50;
+    position: relative;
+}
+
+.nivel-completado::after {
+    content: "✓";
+    font-size: 0.7rem;
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    color: white;
+    text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+}
+
+.nivel-actual {
+    background-color: #ff9800;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.08);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.nivel-bloqueado {
+    background-color: #777;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.grid-niveles {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 20px;
+    margin: 2rem 0;
+    width: 100%;
+    max-width: 500px;
+}
+
+canvas {
+    background-color: #333;
+    border: 4px solid #444;
+    border-radius: 5px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    position: relative;
+    image-rendering: pixelated;
+}
+
+.info-juego {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    width: 800px;
+    padding: 1rem;
+    background-color: #444;
+    border-radius: 5px 5px 0 0;
+    margin-bottom: 5px;
+    font-size: 0.7rem;
+    letter-spacing: 0px;
+}
+
+.info-juego > div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.puntuacion, .nivel, .vidas, .tipo-ladrillo {
+    padding: 0.5rem;
+    background-color: #333;
+    border-radius: 5px;
+    width: 100%;
+    text-align: center;
+    line-height: 1.4;
+}
+
+.btn-salir {
+    padding: 0.3rem 0.5rem;
+    font-size: 0.7rem;
+    font-family: 'Press Start 2P', cursive;
+    background-color: #d32f2f;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    height: 35px;
+    width: 100%;
+    letter-spacing: 1px;
+}
+
+.btn-salir:hover {
+    background-color: #f44336;
+    transform: scale(1.05);
+}
+
+p {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+    letter-spacing: 1px;
+}
+
+/* Pausa overlay */
+#pausa-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+}
+
+.pausa-contenido {
+    background-color: #444;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    text-align: center;
+}
+
+.pausa-contenido h2 {
+    margin-bottom: 1.5rem;
+    color: #ffcc00;
+}
+
+.pausa-contenido p {
+    font-size: 0.7rem;
+    line-height: 1.5;
+}
+
+/* Ladrillos especiales */
+.ladrillo-indestructible {
+    background-color: #999 !important;
+    border: 2px solid #ccc;
+}
+
+.ladrillo-explosivo {
+    background: linear-gradient(45deg, #ff4500, #ffcc00) !important;
+}
+
+.ladrillo-regenerativo {
+    background: linear-gradient(45deg, #4CAF50, #8BC34A) !important;
+}
+
+.ladrillo-movil {
+    background: linear-gradient(45deg, #2196F3, #03A9F4) !important;
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes parpadeo {
+    0% { opacity: 1; }
+    50% { opacity: 0.3; }
+    100% { opacity: 1; }
+}
+
+.pantalla {
+    animation: fadeIn 0.5s ease;
+}
+
+.regenerando {
+    animation: parpadeo 1s infinite;
+}
+
+.moviendo {
+    animation: parpadeo 0.5s infinite;
+}
+
+/* Logo de Breakout en la pantalla de inicio */
+.logo-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+    width: 100%;
+}
+
+.logo-imagen {
+    max-width: 800px;
+    height: auto;
+    border-radius: 5px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    image-rendering: pixelated;
+}
+
+.ladrillo {
+    width: 100%;
+    height: 100%;
+    border-radius: 3px;
+}
+
+.rojo {
+    background-color: #FF5252;
+}
+
+.naranja {
+    background-color: #FF9800;
+}
+
+.amarillo {
+    background-color: #FFEB3B;
+}
+
+.verde {
+    background-color: #4CAF50;
+}
+
+.pelota-logo {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background-color: white;
+    border-radius: 50%;
+    top: 70%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: flotar 2s infinite ease-in-out;
+}
+
+@keyframes flotar {
+    0%, 100% {
+        transform: translate(-50%, -50%);
+    }
+    50% {
+        transform: translate(-50%, -65%);
+    }
+}
+
+#pantalla-inicio {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+}
+
+#pantalla-inicio h1 {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    color: #FFD700;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
+    animation: pulsar 2s infinite;
+    letter-spacing: 3px;
+}
+
+@keyframes pulsar {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+/* Efectos retro adicionales */
+.pixel-border {
+    border: 4px solid white;
+    box-shadow: 
+        inset -4px -4px 0px 0px rgba(0,0,0,0.5),
+        inset 4px 4px 0px 0px rgba(255,255,255,0.5);
+    position: relative;
+}
+
+.pixel-border::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    border: 2px solid black;
+    z-index: -1;
+}
+
+/* Excepción para los botones de nivel */
+button.btn-nivel.pixel-border::after {
+    display: none;
+}
+
+.scanlines {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        to bottom,
+        rgba(255, 255, 255, 0) 50%,
+        rgba(0, 0, 0, 0.05) 50%
+    );
+    background-size: 100% 4px;
+    pointer-events: none;
+    z-index: 999;
+    opacity: 0.15;
+}
+
+/* Puntuación flotante */
+.puntuacion-flotante {
+    position: absolute;
+    font-family: 'Press Start 2P', cursive;
+    color: #ffcc00;
+    font-size: 16px;
+    text-shadow: 0 0 5px rgba(255, 204, 0, 0.8);
+    pointer-events: none;
+    z-index: 1000;
+    transition: all 1s ease-out;
+}
+
+/* Puntuación flotante para combos */
+.puntuacion-flotante.combo {
+    color: #ff9800;
+    font-size: 18px;
+    text-shadow: 0 0 6px rgba(255, 152, 0, 0.9);
+}
+
+/* Personalización de elementos específicos */
+canvas.pixel-border {
+    image-rendering: pixelated;
+} 

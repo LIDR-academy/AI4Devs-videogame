@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tetris AFR - 3D Edition</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+
+<body>
+    <div class="game-container">
+        <div class="game-header">
+            <h1>TETRIS 3D</h1>
+        </div>
+
+        <div class="game-layout">
+            <div class="game-info">
+                <div class="level-container">
+                    <h2><i class="fas fa-signal"></i> Nivel</h2>
+                    <div id="level">1</div>
+                    <div class="level-info">Cambia cada 1000 puntos</div>
+                </div>
+                <div class="next-piece">
+                    <h2><i class="fas fa-forward"></i> Siguiente</h2>
+                    <canvas id="nextPiece"></canvas>
+                </div>
+                <div class="controls-info">
+                    <h2><i class="fas fa-keyboard"></i> Controles</h2>
+                    <ul class="keys-list">
+                        <li><span class="key"><i class="fas fa-arrow-left"></i></span> Mover izquierda</li>
+                        <li><span class="key"><i class="fas fa-arrow-right"></i></span> Mover derecha</li>
+                        <li><span class="key"><i class="fas fa-arrow-down"></i></span> Bajar rápido</li>
+                        <li><span class="key"><i class="fas fa-arrow-up"></i></span> Rotar pieza</li>
+                        <li><span class="key space-key">Espacio</span> Caída instantánea</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="game-board">
+                <div class="board-frame">
+                    <canvas id="tetris" width="300" height="600"></canvas>
+                    <div class="board-reflection"></div>
+                </div>
+            </div>
+
+            <div class="controls">
+                <button id="startBtn"><i class="fas fa-play"></i> Iniciar</button>
+                <button id="pauseBtn"><i class="fas fa-pause"></i> Pausar</button>
+                <div class="score-container">
+                    <h2><i class="fas fa-trophy"></i> Puntuación</h2>
+                    <div id="score">0</div>
+                </div>
+                <div class="high-scores-container">
+                    <h2><i class="fas fa-star"></i> Top 5</h2>
+                    <ul id="highScoresList" class="high-scores-list">
+                        <li class="empty-scores">Aún no hay puntuaciones</li>
+                    </ul>
+                    <button id="resetScoresBtn" class="reset-scores-btn">
+                        <i class="fas fa-trash-alt"></i> Reiniciar Ranking
+                    </button>
+                </div>
+                <div class="mobile-controls">
+                    <button id="leftBtn"><i class="fas fa-arrow-left"></i></button>
+                    <button id="rotateBtn"><i class="fas fa-redo"></i></button>
+                    <button id="rightBtn"><i class="fas fa-arrow-right"></i></button>
+                    <button id="dropBtn"><i class="fas fa-arrow-down"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <div class="game-footer">
+            <p>© 2025 Tetris AFR - Disfruta del juego y compite por el mejor puntaje</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

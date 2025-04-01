@@ -1,0 +1,157 @@
+{
+  "humans": {
+    "swordsman": {
+      "name": "Swordsman",
+      "health": 100,
+      "damage": 20,
+      "moveSpeed": 60,
+      "attackRange": 20,
+      "attackSpeed": 1,
+      "isRanged": false,
+      "cost": 15,
+      "cooldown": 2000,
+      "description": "Fast and affordable melee unit"
+    },
+    "archer": {
+      "name": "Archer",
+      "health": 80,
+      "damage": 15,
+      "moveSpeed": 50,
+      "attackRange": 150,
+      "attackSpeed": 0.8,
+      "isRanged": true,
+      "cost": 20,
+      "cooldown": 3000,
+      "description": "Medium-range unit with decent damage"
+    },
+    "knight": {
+      "name": "Knight",
+      "health": 200,
+      "damage": 25,
+      "moveSpeed": 40,
+      "attackRange": 25,
+      "attackSpeed": 0.7,
+      "isRanged": false,
+      "cost": 30,
+      "cooldown": 5000,
+      "description": "Slow but tough melee unit, ideal for tanking"
+    },
+    "cleric": {
+      "name": "Cleric",
+      "health": 90,
+      "damage": 10,
+      "moveSpeed": 45,
+      "attackRange": 100,
+      "attackSpeed": 0.8,
+      "isRanged": true,
+      "cost": 25,
+      "cooldown": 4000,
+      "specialAbility": "heal",
+      "description": "Support unit that heals nearby allies"
+    }
+  },
+  "elves": {
+    "spearman": {
+      "name": "Forest Spearman",
+      "health": 80,
+      "damage": 18,
+      "moveSpeed": 70,
+      "attackRange": 30,
+      "attackSpeed": 1.2,
+      "isRanged": false,
+      "cost": 15,
+      "cooldown": 2000,
+      "description": "Very fast melee unit with low HP"
+    },
+    "archer": {
+      "name": "Elven Archer",
+      "health": 70,
+      "damage": 12,
+      "moveSpeed": 55,
+      "attackRange": 200,
+      "attackSpeed": 1,
+      "isRanged": true,
+      "cost": 20,
+      "cooldown": 3000,
+      "description": "Long-range unit with high precision"
+    },
+    "druid": {
+      "name": "Druid",
+      "health": 90,
+      "damage": 15,
+      "moveSpeed": 50,
+      "attackRange": 120,
+      "attackSpeed": 0.9,
+      "isRanged": true,
+      "cost": 25,
+      "cooldown": 4000,
+      "specialAbility": "slow",
+      "description": "Magic user that slows down enemies"
+    },
+    "sentinel": {
+      "name": "Magical Sentinel",
+      "health": 110,
+      "damage": 25,
+      "moveSpeed": 45,
+      "attackRange": 130,
+      "attackSpeed": 0.8,
+      "isRanged": true,
+      "cost": 30,
+      "cooldown": 5000,
+      "specialAbility": "area",
+      "description": "Casts area-of-effect magical attacks"
+    }
+  },
+  "orcs": {
+    "brute": {
+      "name": "Orc Brute",
+      "health": 130,
+      "damage": 30,
+      "moveSpeed": 40,
+      "attackRange": 25,
+      "attackSpeed": 0.7,
+      "isRanged": false,
+      "cost": 15,
+      "cooldown": 2000,
+      "description": "Strong melee unit but slow"
+    },
+    "thrower": {
+      "name": "Wild Thrower",
+      "health": 90,
+      "damage": 20,
+      "moveSpeed": 45,
+      "attackRange": 100,
+      "attackSpeed": 0.8,
+      "isRanged": true,
+      "cost": 20,
+      "cooldown": 3000,
+      "description": "Throws axes with low range"
+    },
+    "shaman": {
+      "name": "Shaman",
+      "health": 100,
+      "damage": 15,
+      "moveSpeed": 40,
+      "attackRange": 110,
+      "attackSpeed": 0.8,
+      "isRanged": true,
+      "cost": 25,
+      "cooldown": 4000,
+      "specialAbility": "weaken",
+      "description": "Casts curses that reduce enemy damage"
+    },
+    "beast": {
+      "name": "War Beast",
+      "health": 180,
+      "damage": 35,
+      "moveSpeed": 35,
+      "attackRange": 30,
+      "attackSpeed": 0.6,
+      "isRanged": false,
+      "cost": 30,
+      "cooldown": 5000,
+      "specialAbility": "aoe",
+      "description": "Heavy unit that can damage multiple enemies"
+    }
+  }
+}

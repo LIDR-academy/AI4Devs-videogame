@@ -1,0 +1,38 @@
+{
+  "goldRate": {
+    "name": "Gold Generation",
+    "description": "Increases passive gold generation",
+    "baseCost": 50,
+    "costIncrease": 1.5,
+    "effect": "goldPerInterval",
+    "multiplier": 1.2,
+    "maxLevel": 5
+  },
+  "unitHealth": {
+    "name": "Unit Health",
+    "description": "Increases health of all your units",
+    "baseCost": 40,
+    "costIncrease": 1.5,
+    "effect": "health",
+    "multiplier": 1.1,
+    "maxLevel": 5
+  },
+  "unitDamage": {
+    "name": "Unit Damage",
+    "description": "Increases damage of all your units",
+    "baseCost": 40,
+    "costIncrease": 1.5,
+    "effect": "damage",
+    "multiplier": 1.1,
+    "maxLevel": 5
+  },
+  "cooldownReduction": {
+    "name": "Cooldown Reduction",
+    "description": "Reduces unit spawning cooldowns",
+    "baseCost": 60,
+    "costIncrease": 1.5,
+    "effect": "cooldown",
+    "multiplier": 0.9,
+    "maxLevel": 5
+  }
+}

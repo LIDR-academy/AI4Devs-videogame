@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super Mario Clone - LPS</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #1a1a2e;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Arial', sans-serif;
+            color: #ffffff;
+        }
+        
+        h1 {
+            color: #e84a5f;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            margin-bottom: 10px;
+        }
+        
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        canvas {
+            display: block;
+            border: 4px solid #e84a5f;
+            border-radius: 4px;
+            box-shadow: 0 0 20px rgba(232, 74, 95, 0.5);
+        }
+        
+        .instructions {
+            margin-top: 20px;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 15px;
+            border-radius: 8px;
+            max-width: 800px;
+            text-align: center;
+        }
+        
+        .key {
+            display: inline-block;
+            background-color: #e84a5f;
+            color: white;
+            padding: 5px 10px;
+            margin: 0 5px;
+            border-radius: 4px;
+            font-weight: bold;
+            box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+    <!-- Phaser 3 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Super Mario Clone - LPS</h1>
+        
+        <!-- El juego se renderizará aquí -->
+        <div id="game"></div>
+        
+        <div class="instructions">
+            <p>Controles: <span class="key">←</span> Izquierda | <span class="key">→</span> Derecha | <span class="key">↑</span> Saltar</p>
+            <p>Objetivo: ¡Recoge todas las monedas para ganar!</p>
+        </div>
+    </div>
+    
+    <!-- Script principal -->
+    <script src="main.js"></script>
+</body>
+</html>
