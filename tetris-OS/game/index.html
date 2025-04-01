@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tetris MVP</title>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="game-container">
+        <div class="title-screen" id="title-screen">
+            <h1 class="game-title">TETRIS</h1>
+            <div class="start-button" id="start-button">START GAME</div>
+            <div class="options-button" id="options-button">OPTIONS</div>
+        </div>
+        
+        <div class="options-screen hidden" id="options-screen">
+            <div class="options-container">
+                <h2>OPTIONS</h2>
+                
+                <div class="option-item">
+                    <label for="theme-selector">MUSIC THEME</label>
+                    <select id="theme-selector" class="theme-selector">
+                        <option value="instrumental">Tetris Instrumental</option>
+                        <option value="piano">Tetris Piano</option>
+                        <option value="fun">Tetris Fun</option>
+                    </select>
+                </div>
+                
+                <div class="option-item">
+                    <label>BACKGROUND MUSIC</label>
+                    <div class="toggle-container">
+                        <input type="checkbox" id="music-toggle" class="toggle-checkbox" checked>
+                        <label for="music-toggle" class="toggle-label"></label>
+                    </div>
+                </div>
+                
+                <div class="options-footer">
+                    <div class="options-button" id="save-options-button">SAVE</div>
+                    <div class="options-button secondary" id="cancel-options-button">CANCEL</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="game-screen hidden" id="game-screen">
+            <div class="game-header">
+                <h2>TETRIS</h2>
+            </div>
+            
+            <div class="game-play-area">
+                <div class="side-panel left-panel">
+                    <div class="next-piece-container">
+                        <div class="panel-label">NEXT</div>
+                        <canvas id="next-piece-canvas" width="120" height="120"></canvas>
+                    </div>
+                </div>
+                
+                <div class="main-game-area">
+                    <canvas id="game-canvas" width="300" height="600"></canvas>
+                </div>
+                
+                <div class="side-panel right-panel">
+                    <div class="score-container">
+                        <div class="panel-label">SCORE</div>
+                        <div class="score-value" id="score">0</div>
+                    </div>
+                    
+                    <div class="level-container">
+                        <div class="panel-label">LEVEL</div>
+                        <div class="level-value" id="level">1</div>
+                    </div>
+                    
+                    <div class="lines-container">
+                        <div class="panel-label">LINES</div>
+                        <div class="lines-value" id="lines">0</div>
+                    </div>
+                    
+                    <div class="controls-container">
+                        <div class="panel-label">CONTROLS</div>
+                        <div class="controls-list">
+                            <p>← → : Move</p>
+                            <p>↓ : Soft Drop</p>
+                            <p>↑ : Hard Drop</p>
+                            <p>Z : Rotate</p>
+                            <p>P : Pause</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="game-footer">
+                <div class="footer-button" id="pause-button">PAUSE</div>
+                <div class="footer-button" id="restart-button">RESTART</div>
+                <div class="footer-button" id="quit-button">QUIT</div>
+            </div>
+        </div>
+        
+        <div class="pause-screen hidden" id="pause-screen">
+            <div class="pause-container">
+                <h2>GAME PAUSED</h2>
+                <div class="pause-button" id="resume-button">RESUME</div>
+                <div class="pause-button" id="restart-from-pause-button">RESTART</div>
+                <div class="pause-button" id="options-from-pause-button">OPTIONS</div>
+                <div class="pause-button" id="quit-from-pause-button">QUIT</div>
+            </div>
+        </div>
+        
+        <div class="game-over-screen hidden" id="game-over-screen">
+            <div class="game-over-container">
+                <h2>GAME OVER</h2>
+                <div class="final-score">
+                    <div class="panel-label">FINAL SCORE</div>
+                    <div class="final-score-value" id="final-score">0</div>
+                </div>
+                <div class="high-score-input">
+                    <label for="player-name">ENTER YOUR NAME:</label>
+                    <input type="text" id="player-name" maxlength="10">
+                    <div class="submit-score-button" id="submit-score-button">SUBMIT SCORE</div>
+                </div>
+                <div class="game-over-button" id="play-again-button">PLAY AGAIN</div>
+                <div class="game-over-button" id="quit-from-game-over-button">QUIT</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- High Scores Modal -->
+    <div class="high-scores-modal hidden" id="high-scores-modal">
+        <div class="high-scores-container">
+            <h2>HIGH SCORES</h2>
+            <div class="high-scores-list" id="high-scores-list">
+                <!-- High scores will be populated here -->
+            </div>
+            <div class="close-button" id="close-high-scores-button">CLOSE</div>
+        </div>
+    </div>
+    
+    <!-- Mobile Controls -->
+    <div class="mobile-controls hidden" id="mobile-controls">
+        <div class="mobile-control-row">
+            <div class="mobile-button" id="mobile-left">←</div>
+            <div class="mobile-button" id="mobile-rotate">ROTATE</div>
+            <div class="mobile-button" id="mobile-right">→</div>
+        </div>
+        <div class="mobile-control-row">
+            <div class="mobile-button wide-button" id="mobile-down">↓</div>
+            <div class="mobile-button wide-button" id="mobile-pause">PAUSE</div>
+        </div>
+    </div>
+    
+    <!-- Scripts -->
+    <script src="js/constants.js" defer></script>
+    <script src="js/tetrominos.js" defer></script>
+    <script src="js/renderer.js" defer></script>
+    <script src="js/collision.js" defer></script>
+    <script src="js/board.js" defer></script>
+    <script src="js/scorer.js" defer></script>
+    <script src="js/input.js" defer></script>
+    <script src="js/animation.js" defer></script>
+    <script src="js/audio.js" defer></script>
+    <script src="js/storage.js" defer></script>
+    <script src="js/game.js" defer></script>
+    <script src="js/main.js" defer></script>
+</body>
+</html> 
