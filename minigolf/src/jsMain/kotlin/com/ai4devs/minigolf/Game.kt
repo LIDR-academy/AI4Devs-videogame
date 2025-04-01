@@ -18,6 +18,19 @@ class Game(private val canvas: HTMLCanvasElement) {
     private var strokes = 0
     private var isMoving = false
     private var bestScores = mutableMapOf<Int, Int>()
+    private var clubAngle = 0.0
+    private var clubSwingSpeed = 0.0
+    private var isSwinging = false
+    private var swingStartTime = 0.0
+    private var ballStartX = 0.0
+    private var ballStartY = 0.0
+
+    // Golf club properties
+    private val clubLength = 60.0
+    private val clubHeadSize = 8.0
+    private val clubShaftWidth = 3.0
+    private val swingDuration = 500.0 // milliseconds
+    private val maxSwingAngle = PI / 2 // 90 degrees
 
     init {
         loadBestScores()
@@ -54,7 +67,9 @@ class Game(private val canvas: HTMLCanvasElement) {
         val level = Levels.allLevels.find { it.number == levelNumber }
             ?: throw IllegalStateException("Level $levelNumber not found")
         
-        ball.reset(level.ballStart.x, level.ballStart.y)
+        ballStartX = level.ballStart.x
+        ballStartY = level.ballStart.y
+        ball.reset(ballStartX, ballStartY)
         strokes = 0
         isMoving = false
         updateScore()
@@ -70,6 +85,7 @@ class Game(private val canvas: HTMLCanvasElement) {
                 val mouseX = mouseEvent.clientX - rect.left
                 val mouseY = mouseEvent.clientY - rect.top
                 aimAngle = calculateAngle(mouseX, mouseY)
+                clubAngle = aimAngle
             }
         })
 
@@ -80,16 +96,20 @@ class Game(private val canvas: HTMLCanvasElement) {
                 val mouseX = mouseEvent.clientX - rect.left
                 val mouseY = mouseEvent.clientY - rect.top
                 aimAngle = calculateAngle(mouseX, mouseY)
-                power = minOf(30.0, sqrt(
+                clubAngle = aimAngle
+                val distance = sqrt(
                     (mouseX - ball.x) * (mouseX - ball.x) + 
                     (mouseY - ball.y) * (mouseY - ball.y)
-                ) / 5.0)
+                )
+                // Use a fixed power scale that's consistent across all levels
+                power = minOf(30.0, distance / 3.0)
             }
         })
 
         canvas.addEventListener("mouseup", { _ ->
             if (isAiming) {
                 isAiming = false
+                isSwinging = false // Immediately stop the swing animation
                 shoot()
             }
         })
@@ -98,7 +118,13 @@ class Game(private val canvas: HTMLCanvasElement) {
     private fun calculateAngle(mouseX: Double, mouseY: Double): Double {
         val dx = mouseX - ball.x
         val dy = mouseY - ball.y
-        return kotlin.math.atan2(dy, dx)
+        return atan2(dy, dx)
+    }
+
+    private fun startSwing() {
+        isSwinging = true
+        swingStartTime = window.performance.now()
+        clubSwingSpeed = maxSwingAngle / (swingDuration / 1000.0)
     }
 
     private fun shoot() {
@@ -162,6 +188,23 @@ class Game(private val canvas: HTMLCanvasElement) {
     }
 
     private fun update() {
+        // Update club swing animation
+        if (isSwinging) {
+            val currentTime = window.performance.now()
+            val elapsedTime = currentTime - swingStartTime
+            
+            if (elapsedTime < swingDuration) {
+                // Calculate swing progress (0 to 1)
+                val progress = elapsedTime / swingDuration
+                // Calculate current club angle during swing
+                clubAngle = aimAngle + (maxSwingAngle * sin(progress * PI))
+            } else {
+                // Swing complete
+                isSwinging = false
+                clubAngle = aimAngle
+            }
+        }
+
         // Apply friction
         ball.velocityX *= 0.99
         ball.velocityY *= 0.99
@@ -345,18 +388,54 @@ class Game(private val canvas: HTMLCanvasElement) {
         ctx.stroke()
         ctx.closePath()
 
+        // Draw golf club only when aiming
+        if (isAiming) {
+            drawGolfClub()
+        }
+
         // Draw aim line if aiming
         if (isAiming) {
             ctx.beginPath()
             ctx.moveTo(ball.x, ball.y)
             ctx.lineTo(
-                ball.x + cos(aimAngle) * (power * 5),
-                ball.y + sin(aimAngle) * (power * 5)
+                ball.x + cos(aimAngle) * (power * 3),
+                ball.y + sin(aimAngle) * (power * 3)
             )
             ctx.strokeStyle = "red"
+            ctx.lineWidth = 3.0 // Set a consistent line width for the power line
             ctx.stroke()
             ctx.closePath()
         }
+    }
+
+    private fun drawGolfClub() {
+        // Save the current context state
+        ctx.save()
+        
+        // Move to current ball position and rotate
+        ctx.translate(ball.x, ball.y)
+        ctx.rotate(clubAngle)
+
+        // Draw club shaft
+        ctx.beginPath()
+        ctx.moveTo(0.0, 0.0)
+        ctx.lineTo(-clubLength, 0.0)
+        ctx.strokeStyle = "#8B4513" // Brown color
+        ctx.lineWidth = clubShaftWidth
+        ctx.stroke()
+        ctx.closePath()
+
+        // Draw club head
+        ctx.beginPath()
+        ctx.arc(-clubLength, 0.0, clubHeadSize, 0.0, 2 * PI)
+        ctx.fillStyle = "#8B4513"
+        ctx.fill()
+        ctx.strokeStyle = "#654321"
+        ctx.stroke()
+        ctx.closePath()
+
+        // Restore the context state
+        ctx.restore()
     }
 }
 
