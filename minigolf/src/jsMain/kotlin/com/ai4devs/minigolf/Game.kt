@@ -26,9 +26,9 @@ class Game(private val canvas: HTMLCanvasElement) {
     private var ballStartY = 0.0
 
     // Golf club properties
-    private val clubLength = 60.0
-    private val clubHeadSize = 8.0
-    private val clubShaftWidth = 3.0
+    private val clubLength = 100.0 // Increased length for better visibility
+    private val clubHeadSize = 12.0 // Larger club head
+    private val clubShaftWidth = 4.0 // Thicker shaft
     private val swingDuration = 500.0 // milliseconds
     private val maxSwingAngle = PI / 2 // 90 degrees
 
@@ -349,7 +349,11 @@ class Game(private val canvas: HTMLCanvasElement) {
         // Draw current level
         val level = Levels.allLevels.find { it.number == currentLevel }
         if (level != null) {
-            // Draw obstacles
+            // Draw grass background
+            ctx.fillStyle = "#90EE90"
+            ctx.fillRect(0.0, 0.0, canvas.width.toDouble(), canvas.height.toDouble())
+
+            // Draw obstacles with improved graphics
             for (obstacle in level.obstacles) {
                 when (obstacle) {
                     is Obstacle.Wall -> {
@@ -359,6 +363,13 @@ class Game(private val canvas: HTMLCanvasElement) {
                         ctx.strokeStyle = "#666"
                         ctx.lineWidth = obstacle.thickness
                         ctx.stroke()
+                        // Add wall shadow
+                        ctx.beginPath()
+                        ctx.moveTo(obstacle.start.x + 2, obstacle.start.y + 2)
+                        ctx.lineTo(obstacle.end.x + 2, obstacle.end.y + 2)
+                        ctx.strokeStyle = "rgba(0, 0, 0, 0.2)"
+                        ctx.lineWidth = obstacle.thickness
+                        ctx.stroke()
                         ctx.closePath()
                     }
                     is Obstacle.Circle -> {
@@ -366,26 +377,42 @@ class Game(private val canvas: HTMLCanvasElement) {
                         ctx.arc(obstacle.center.x, obstacle.center.y, obstacle.radius, 0.0, 2 * PI)
                         ctx.fillStyle = "#666"
                         ctx.fill()
+                        // Add circle shadow
+                        ctx.beginPath()
+                        ctx.arc(obstacle.center.x + 2, obstacle.center.y + 2, obstacle.radius, 0.0, 2 * PI)
+                        ctx.fillStyle = "rgba(0, 0, 0, 0.2)"
+                        ctx.fill()
                         ctx.closePath()
                     }
                 }
             }
 
-            // Draw hole
+            // Draw hole with improved graphics
             ctx.beginPath()
             ctx.arc(level.hole.x, level.hole.y, 20.0, 0.0, 2 * PI)
             ctx.fillStyle = "black"
             ctx.fill()
+            // Add hole shadow
+            ctx.beginPath()
+            ctx.arc(level.hole.x + 2, level.hole.y + 2, 20.0, 0.0, 2 * PI)
+            ctx.fillStyle = "rgba(0, 0, 0, 0.3)"
+            ctx.fill()
             ctx.closePath()
         }
 
-        // Draw ball
+        // Draw ball with improved graphics
         ctx.beginPath()
         ctx.arc(ball.x, ball.y, 10.0, 0.0, 2 * PI)
         ctx.fillStyle = "white"
         ctx.fill()
         ctx.strokeStyle = "black"
+        ctx.lineWidth = 2.0
         ctx.stroke()
+        // Add ball shadow
+        ctx.beginPath()
+        ctx.arc(ball.x + 2, ball.y + 2, 10.0, 0.0, 2 * PI)
+        ctx.fillStyle = "rgba(0, 0, 0, 0.2)"
+        ctx.fill()
         ctx.closePath()
 
         // Draw golf club only when aiming
@@ -393,7 +420,7 @@ class Game(private val canvas: HTMLCanvasElement) {
             drawGolfClub()
         }
 
-        // Draw aim line if aiming
+        // Draw aim line if aiming with improved graphics
         if (isAiming) {
             ctx.beginPath()
             ctx.moveTo(ball.x, ball.y)
@@ -401,8 +428,8 @@ class Game(private val canvas: HTMLCanvasElement) {
                 ball.x + cos(aimAngle) * (power * 3),
                 ball.y + sin(aimAngle) * (power * 3)
             )
-            ctx.strokeStyle = "red"
-            ctx.lineWidth = 3.0 // Set a consistent line width for the power line
+            ctx.strokeStyle = "rgba(255, 0, 0, 0.5)"
+            ctx.lineWidth = 3.0
             ctx.stroke()
             ctx.closePath()
         }
@@ -416,9 +443,18 @@ class Game(private val canvas: HTMLCanvasElement) {
         ctx.translate(ball.x, ball.y)
         ctx.rotate(clubAngle)
 
-        // Draw club shaft
+        // Draw club grip (handle)
         ctx.beginPath()
         ctx.moveTo(0.0, 0.0)
+        ctx.lineTo(-20.0, 0.0)
+        ctx.strokeStyle = "#4A4A4A" // Dark gray for grip
+        ctx.lineWidth = clubShaftWidth + 2
+        ctx.stroke()
+        ctx.closePath()
+
+        // Draw club shaft
+        ctx.beginPath()
+        ctx.moveTo(-20.0, 0.0)
         ctx.lineTo(-clubLength, 0.0)
         ctx.strokeStyle = "#8B4513" // Brown color
         ctx.lineWidth = clubShaftWidth
@@ -431,6 +467,15 @@ class Game(private val canvas: HTMLCanvasElement) {
         ctx.fillStyle = "#8B4513"
         ctx.fill()
         ctx.strokeStyle = "#654321"
+        ctx.lineWidth = 2.0
+        ctx.stroke()
+        ctx.closePath()
+
+        // Add club face detail
+        ctx.beginPath()
+        ctx.arc(-clubLength, 0.0, clubHeadSize * 0.8, 0.0, 2 * PI)
+        ctx.strokeStyle = "#654321"
+        ctx.lineWidth = 1.0
         ctx.stroke()
         ctx.closePath()
 
