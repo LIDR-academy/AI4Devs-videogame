@@ -6,3 +6,5 @@
 6) clean everything up, all the files and tasks you created so I can only run the game with the runGame task
 7) after several hours, it worked steadily
 8) and now in our game, i want to see a complete golf stick whenever i am choosing power and direction moving and improve the general graphics a little bit
+9) please modify the Readme file with an introduction and a description of the game, and algo add instructions on how to execute and play it
+10) can you add some minigolf images and some emojis so the readme is nicer and easier to read?
