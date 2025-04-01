@@ -1,0 +1,22 @@
+{
+  "name": "ai4devs-videogame",
+  "version": "1.0.0",
+  "description": "Como ejercicio final de la introducción, usa lo aprendido para crear un **videojuego** con HTML, CSS y JavaScript.",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ManuAlpuente2/AI4Devs-videogame.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ManuAlpuente2/AI4Devs-videogame/issues"
+  },
+  "homepage": "https://github.com/ManuAlpuente2/AI4Devs-videogame#readme",
+  "dependencies": {
+    "ffmpeg-static": "^5.2.0"
+  }
+}
