@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Endless Runner Game</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: #000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+      canvas {
+        display: block;
+      }
+    </style>
+    <!-- Include Phaser from CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.min.js"></script>
+    <script>
+      // Global variable to track jump requests
+      window.jumpRequested = false;
+
+      // Add event listeners before the game loads
+      document.addEventListener("keydown", function (e) {
+        if (e.code === "Space" || e.key === " ") {
+          window.jumpRequested = true;
+          console.log("Space pressed via document event");
+        }
+      });
+
+      document.addEventListener("click", function () {
+        window.jumpRequested = true;
+        console.log("Click detected via document event");
+      });
+
+      // Add a simple test to verify our event listeners are working
+      console.log("Event listeners added to document");
+      setTimeout(function () {
+        console.log("Please press space or click to test input");
+      }, 1000);
+    </script>
+  </head>
+  <body>
+    <!-- Game will be rendered here -->
+    <div id="game-container"></div>
+
+    <!-- Include our game code -->
+    <script src="main.js"></script>
+  </body>
+</html>
