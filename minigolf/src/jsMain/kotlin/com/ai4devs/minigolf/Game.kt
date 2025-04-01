@@ -6,24 +6,59 @@ import org.w3c.dom.CanvasRenderingContext2D
 import org.w3c.dom.HTMLCanvasElement
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.events.MouseEvent
-import kotlin.math.PI
-import kotlin.math.cos
-import kotlin.math.sin
-import kotlin.math.sqrt
+import kotlin.math.*
 
 class Game(private val canvas: HTMLCanvasElement) {
     private val ctx = canvas.getContext("2d") as CanvasRenderingContext2D
-    private var ball = Ball(100.0, 300.0)
-    private var hole = Hole(700.0, 300.0)
+    private var currentLevel = 1
+    private var ball = Ball(0.0, 0.0)
     private var isAiming = false
     private var aimAngle = 0.0
     private var power = 15.0
     private var strokes = 0
     private var isMoving = false
+    private var bestScores = mutableMapOf<Int, Int>()
 
     init {
+        loadBestScores()
         setupEventListeners()
+        loadLevel(currentLevel)
         gameLoop()
+    }
+
+    private fun loadBestScores() {
+        val savedScores = window.localStorage.getItem("minigolf_scores")
+        if (savedScores != null) {
+            try {
+                val scores = JSON.parse<dynamic>(savedScores)
+                for (level in 1..10) {
+                    if (scores[level] != undefined) {
+                        bestScores[level] = scores[level]
+                    }
+                }
+            } catch (e: Exception) {
+                console.error("Error loading scores: ${e.message}")
+            }
+        }
+    }
+
+    private fun saveBestScores() {
+        try {
+            window.localStorage.setItem("minigolf_scores", JSON.stringify(bestScores))
+        } catch (e: Exception) {
+            console.error("Error saving scores: ${e.message}")
+        }
+    }
+
+    private fun loadLevel(levelNumber: Int) {
+        val level = Levels.allLevels.find { it.number == levelNumber }
+            ?: throw IllegalStateException("Level $levelNumber not found")
+        
+        ball.reset(level.ballStart.x, level.ballStart.y)
+        strokes = 0
+        isMoving = false
+        updateScore()
+        updateLevelDisplay()
     }
 
     private fun setupEventListeners() {
@@ -45,7 +80,6 @@ class Game(private val canvas: HTMLCanvasElement) {
                 val mouseX = mouseEvent.clientX - rect.left
                 val mouseY = mouseEvent.clientY - rect.top
                 aimAngle = calculateAngle(mouseX, mouseY)
-                // Adjust power based on distance
                 power = minOf(30.0, sqrt(
                     (mouseX - ball.x) * (mouseX - ball.x) + 
                     (mouseY - ball.y) * (mouseY - ball.y)
@@ -77,22 +111,54 @@ class Game(private val canvas: HTMLCanvasElement) {
 
     private fun updateScore() {
         val scoreElement = document.getElementById("score") as HTMLElement?
-        scoreElement?.textContent = "Strokes: $strokes"
+        val level = Levels.allLevels.find { it.number == currentLevel }
+        val parText = level?.let { " (Par: ${it.par})" } ?: ""
+        scoreElement?.textContent = "Level $currentLevel - Strokes: $strokes$parText"
+    }
+
+    private fun updateLevelDisplay() {
+        val levelElement = document.getElementById("level") as HTMLElement?
+        levelElement?.textContent = "Level $currentLevel"
     }
 
     private fun gameLoop() {
         if (isMoving) {
             update()
-            if (checkHoleCollision()) {
+            val level = Levels.allLevels.find { it.number == currentLevel }
+            if (level != null && checkHoleCollision(level.hole)) {
                 isMoving = false
-                ball.reset(100.0, 300.0)
-                strokes = 0
-                updateScore()
-                window.alert("Great shot! You got it in the hole!")
+                handleLevelComplete(level)
             }
         }
         draw()
         window.requestAnimationFrame { gameLoop() }
+    }
+
+    private fun handleLevelComplete(level: Level) {
+        val currentBest = bestScores[level.number] ?: Int.MAX_VALUE
+        if (strokes < currentBest) {
+            bestScores[level.number] = strokes
+            saveBestScores()
+        }
+
+        val message = buildString {
+            append("Level ${level.number} Complete!\n")
+            append("Strokes: $strokes (Par: ${level.par})\n")
+            append("Best Score: ${bestScores[level.number]}\n\n")
+            
+            if (currentLevel < 10) {
+                append("Press OK to continue to Level ${currentLevel + 1}")
+            } else {
+                append("Congratulations! You've completed all levels!")
+            }
+        }
+
+        window.alert(message)
+
+        if (currentLevel < 10) {
+            currentLevel++
+            loadLevel(currentLevel)
+        }
     }
 
     private fun update() {
@@ -101,8 +167,35 @@ class Game(private val canvas: HTMLCanvasElement) {
         ball.velocityY *= 0.99
 
         // Update position
-        ball.x += ball.velocityX
-        ball.y += ball.velocityY
+        val newX = ball.x + ball.velocityX
+        val newY = ball.y + ball.velocityY
+
+        // Check for collisions with obstacles
+        val level = Levels.allLevels.find { it.number == currentLevel }
+        if (level != null) {
+            var collision = false
+            for (obstacle in level.obstacles) {
+                when (obstacle) {
+                    is Obstacle.Wall -> {
+                        if (checkWallCollision(ball.x, ball.y, newX, newY, obstacle)) {
+                            collision = true
+                            break
+                        }
+                    }
+                    is Obstacle.Circle -> {
+                        if (checkCircleCollision(ball.x, ball.y, newX, newY, obstacle)) {
+                            collision = true
+                            break
+                        }
+                    }
+                }
+            }
+
+            if (!collision) {
+                ball.x = newX
+                ball.y = newY
+            }
+        }
 
         // Handle wall collisions
         if (ball.x < 10 || ball.x > canvas.width - 10) {
@@ -125,7 +218,81 @@ class Game(private val canvas: HTMLCanvasElement) {
         }
     }
 
-    private fun checkHoleCollision(): Boolean {
+    private fun checkWallCollision(
+        oldX: Double, oldY: Double,
+        newX: Double, newY: Double,
+        wall: Obstacle.Wall
+    ): Boolean {
+        val wallVector = Point(wall.end.x - wall.start.x, wall.end.y - wall.start.y)
+        val wallLength = sqrt(wallVector.x * wallVector.x + wallVector.y * wallVector.y)
+        val wallNormal = Point(-wallVector.y / wallLength, wallVector.x / wallLength)
+        
+        val ballVector = Point(newX - oldX, newY - oldY)
+        val ballLength = sqrt(ballVector.x * ballVector.x + ballVector.y * ballVector.y)
+        
+        // Check if ball is moving towards wall
+        val dotProduct = ballVector.x * wallNormal.x + ballVector.y * wallNormal.y
+        if (dotProduct > 0) return false
+        
+        // Check if ball is within wall bounds
+        val wallStartToBall = Point(oldX - wall.start.x, oldY - wall.start.y)
+        val wallStartToNewBall = Point(newX - wall.start.x, newY - wall.start.y)
+        
+        val t = (wallStartToBall.x * wallVector.x + wallStartToBall.y * wallVector.y) / (wallLength * wallLength)
+        val newT = (wallStartToNewBall.x * wallVector.x + wallStartToNewBall.y * wallVector.y) / (wallLength * wallLength)
+        
+        if (t < 0 || t > 1 || newT < 0 || newT > 1) return false
+        
+        // Check distance to wall
+        val distance = abs(wallStartToBall.x * wallNormal.x + wallStartToBall.y * wallNormal.y)
+        if (distance > 10) return false
+        
+        // Reflect velocity
+        val reflection = Point(
+            ballVector.x - 2 * dotProduct * wallNormal.x,
+            ballVector.y - 2 * dotProduct * wallNormal.y
+        )
+        
+        ball.velocityX = reflection.x * 0.8
+        ball.velocityY = reflection.y * 0.8
+        
+        return true
+    }
+
+    private fun checkCircleCollision(
+        oldX: Double, oldY: Double,
+        newX: Double, newY: Double,
+        circle: Obstacle.Circle
+    ): Boolean {
+        val oldDistance = sqrt(
+            (oldX - circle.center.x) * (oldX - circle.center.x) +
+            (oldY - circle.center.y) * (oldY - circle.center.y)
+        )
+        val newDistance = sqrt(
+            (newX - circle.center.x) * (newX - circle.center.x) +
+            (newY - circle.center.y) * (newY - circle.center.y)
+        )
+        
+        if (oldDistance > circle.radius + 10 && newDistance > circle.radius + 10) {
+            return false
+        }
+        
+        // Calculate reflection
+        val normalX = (newX - circle.center.x) / newDistance
+        val normalY = (newY - circle.center.y) / newDistance
+        
+        val dotProduct = ball.velocityX * normalX + ball.velocityY * normalY
+        ball.velocityX = (ball.velocityX - 2 * dotProduct * normalX) * 0.8
+        ball.velocityY = (ball.velocityY - 2 * dotProduct * normalY) * 0.8
+        
+        // Move ball outside circle
+        ball.x = circle.center.x + (circle.radius + 10) * normalX
+        ball.y = circle.center.y + (circle.radius + 10) * normalY
+        
+        return true
+    }
+
+    private fun checkHoleCollision(hole: Point): Boolean {
         val dx = ball.x - hole.x
         val dy = ball.y - hole.y
         val distance = sqrt(dx * dx + dy * dy)
@@ -136,12 +303,38 @@ class Game(private val canvas: HTMLCanvasElement) {
         // Clear canvas
         ctx.clearRect(0.0, 0.0, canvas.width.toDouble(), canvas.height.toDouble())
 
-        // Draw hole
-        ctx.beginPath()
-        ctx.arc(hole.x, hole.y, 20.0, 0.0, 2 * PI)
-        ctx.fillStyle = "black"
-        ctx.fill()
-        ctx.closePath()
+        // Draw current level
+        val level = Levels.allLevels.find { it.number == currentLevel }
+        if (level != null) {
+            // Draw obstacles
+            for (obstacle in level.obstacles) {
+                when (obstacle) {
+                    is Obstacle.Wall -> {
+                        ctx.beginPath()
+                        ctx.moveTo(obstacle.start.x, obstacle.start.y)
+                        ctx.lineTo(obstacle.end.x, obstacle.end.y)
+                        ctx.strokeStyle = "#666"
+                        ctx.lineWidth = obstacle.thickness
+                        ctx.stroke()
+                        ctx.closePath()
+                    }
+                    is Obstacle.Circle -> {
+                        ctx.beginPath()
+                        ctx.arc(obstacle.center.x, obstacle.center.y, obstacle.radius, 0.0, 2 * PI)
+                        ctx.fillStyle = "#666"
+                        ctx.fill()
+                        ctx.closePath()
+                    }
+                }
+            }
+
+            // Draw hole
+            ctx.beginPath()
+            ctx.arc(level.hole.x, level.hole.y, 20.0, 0.0, 2 * PI)
+            ctx.fillStyle = "black"
+            ctx.fill()
+            ctx.closePath()
+        }
 
         // Draw ball
         ctx.beginPath()

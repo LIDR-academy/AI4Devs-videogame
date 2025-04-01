@@ -26,6 +26,19 @@
             left: 10px;
             font-size: 24px;
             color: #333;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+        #level {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 24px;
+            color: #333;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 5px 10px;
+            border-radius: 5px;
         }
         h1 {
             color: #333;
@@ -38,61 +51,41 @@
             border-radius: 5px;
             text-align: center;
         }
-    </style>
-    <!-- Load the Kotlin/JS game scripts, trying multiple possible locations -->
-    <script>
-        // Try to load the JS file from different possible locations
-        function loadScript(src) {
-            return new Promise((resolve, reject) => {
-                const script = document.createElement('script');
-                script.src = src;
-                script.onload = resolve;
-                script.onerror = () => reject(new Error(`Failed to load script: ${src}`));
-                document.head.appendChild(script);
-            });
+        #best-scores {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-
-        // List of possible script locations
-        const scriptPaths = [
-            'kotlin/minigolf.js',
-            'build/distributions/minigolf.js',
-            'build/js/packages/minigolf/kotlin/minigolf.js',
-            '../minigolf/build/js/packages/minigolf/kotlin/minigolf.js'
-        ];
-
-        // Try loading scripts in sequence until one succeeds
-        window.onload = async function() {
-            let loaded = false;
-            
-            for (const path of scriptPaths) {
-                try {
-                    console.log(`Trying to load script from: ${path}`);
-                    await loadScript(path);
-                    console.log(`Successfully loaded script from: ${path}`);
-                    loaded = true;
-                    break;
-                } catch (error) {
-                    console.error(`Failed to load from ${path}:`, error);
-                }
-            }
-            
-            if (!loaded) {
-                console.error('Failed to load the game script from any location');
-                document.getElementById('gameCanvas').insertAdjacentHTML('afterend', 
-                    '<div style="color: red; padding: 20px;">Failed to load the game script. Please check the console for details.</div>');
-            }
-        };
-    </script>
+        .score-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .score-row:last-child {
+            border-bottom: none;
+        }
+    </style>
 </head>
 <body>
     <h1>MiniGolf</h1>
     <div id="game-container">
         <canvas id="gameCanvas" width="800" height="600"></canvas>
-        <div id="score">Strokes: 0</div>
+        <div id="score">Level 1 - Strokes: 0</div>
+        <div id="level">Level 1</div>
     </div>
     <div class="controls">
         <p>Click and drag from the ball to aim, release to shoot!</p>
+        <p>Try to get the ball in the hole in as few strokes as possible.</p>
         <p><a href="../index.html">Back to Game Index</a></p>
     </div>
+    <div id="best-scores">
+        <h2>Best Scores</h2>
+        <div id="scores-list"></div>
+    </div>
+    
+    <script src="minigolf.js"></script>
 </body>
 </html>

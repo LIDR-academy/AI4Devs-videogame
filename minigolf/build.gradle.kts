@@ -1,4 +1,4 @@
-import java.io.ByteArrayOutputStream
+import java.io.File
 
 plugins {
     kotlin("multiplatform") version "1.9.22"
@@ -15,10 +15,21 @@ kotlin {
     js {
         browser {
             binaries.executable()
+            webpackTask {
+                output.libraryTarget = "umd"
+            }
+            runTask {
+                mainOutputFileName = "minigolf.js"
+                devServer = devServer?.copy(
+                    port = 8080,
+                    static = mutableListOf("$projectDir", "$rootDir")
+                )
+            }
             commonWebpackConfig {
                 cssSupport {
                     enabled.set(true)
                 }
+                outputFileName = "minigolf.js"
             }
         }
     }
@@ -42,6 +53,23 @@ kotlin {
     }
 }
 
+// Create a task to copy index.html to the output directory
+tasks.register<Copy>("copyIndexHtml") {
+    from("${rootDir}/index.html") 
+    into("${layout.buildDirectory.get()}/js/packages/minigolf")
+}
+
+// Make sure the copy task runs before the webpack task
+tasks.named("jsBrowserDevelopmentRun") {
+    dependsOn("copyIndexHtml")
+}
+
+// Ensure rootPackageJson depends on copyIndexHtml
+tasks.named("rootPackageJson") {
+    dependsOn("copyIndexHtml")
+}
+
+// Legacy task - kept for compatibility
 tasks.register("runGame") {
     dependsOn("jsBrowserDevelopmentRun")
     group = "application"
@@ -53,102 +81,4 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
         jvmTarget = "17"
         freeCompilerArgs += listOf("-Xjsr305=strict")
     }
-}
-
-// Add a task to serve the standalone HTML game
-tasks.register<Copy>("copyStandaloneGame") {
-    from(rootProject.projectDir.parentFile)
-    include("minigolf-standalone.html")
-    into(layout.buildDirectory.dir("standalone"))
-    doLast {
-        if (!file("${layout.buildDirectory}/standalone/minigolf-standalone.html").exists()) {
-            throw GradleException("Standalone game file not found. Please ensure minigolf-standalone.html exists in the project root.")
-        }
-    }
-}
-
-tasks.register("serveStandaloneGame") {
-    dependsOn("copyStandaloneGame")
-    group = "application"
-    description = "Serves the standalone MiniGolf game using a simple HTTP server"
-    
-    doLast {
-        // Create a simple server file
-        val serverFile = file("${layout.buildDirectory}/standalone/server.js")
-        serverFile.writeText("""
-            const http = require('http');
-            const fs = require('fs');
-            const path = require('path');
-
-            const PORT = 8080;
-            console.log("Starting server on port " + PORT);
-
-            const server = http.createServer((req, res) => {
-                let filePath = req.url === '/' ? './minigolf-standalone.html' : '.' + req.url;
-                
-                const extname = path.extname(filePath).toLowerCase();
-                const contentType = {
-                    '.html': 'text/html',
-                    '.js': 'text/javascript',
-                    '.css': 'text/css'
-                }[extname] || 'application/octet-stream';
-                
-                fs.readFile(filePath, (err, content) => {
-                    if (err) {
-                        if (err.code === 'ENOENT') {
-                            res.writeHead(404);
-                            res.end("File not found");
-                        } else {
-                            res.writeHead(500);
-                            res.end("Server Error: " + err.code);
-                        }
-                    } else {
-                        res.writeHead(200, { 'Content-Type': contentType });
-                        res.end(content, 'utf-8');
-                    }
-                });
-            });
-
-            server.listen(PORT, () => {
-                console.log("MiniGolf game is running at http://localhost:" + PORT + "/");
-                console.log("Press Ctrl+C to stop the server");
-            });
-        """.trimIndent())
-        
-        // Execute Node.js server in a new process
-        exec {
-            workingDir = file("${layout.buildDirectory}/standalone")
-            commandLine = listOf("node", "server.js")
-            // Keep running in the background
-            isIgnoreExitValue = true
-        }
-    }
-}
-
-tasks.register("runStandaloneGame") {
-    dependsOn("serveStandaloneGame")
-    group = "application"
-    description = "Runs the standalone MiniGolf game"
-}
-
-// This task will check if node is installed
-tasks.register("checkNodeInstalled") {
-    doLast {
-        try {
-            val result = exec {
-                commandLine = listOf("node", "--version")
-                isIgnoreExitValue = true
-            }
-            if (result.exitValue != 0) {
-                throw GradleException("Node.js check failed with exit code ${result.exitValue}")
-            }
-        } catch (e: Exception) {
-            throw GradleException("Node.js is required but not installed. Please install Node.js and try again.")
-        }
-    }
-}
-
-// Make the serve task depend on node check
-tasks.named("serveStandaloneGame") {
-    dependsOn("checkNodeInstalled")
 } 

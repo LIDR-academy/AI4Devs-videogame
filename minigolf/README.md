@@ -5,93 +5,52 @@ A minigolf game implemented with Kotlin/JS and HTML5 Canvas.
 ## Prerequisites
 
 - Java JDK 11 or higher
-- Gradle (or use the included wrapper)
-
-## How to Build and Run
-
-### Using Gradle Wrapper (Recommended)
-
-1. Open a terminal/command prompt in the `minigolf` directory
-2. Run the following commands:
-
-```bash
-# Clean and build the project
-./gradlew clean build
-
-# If you encounter yarn.lock issues, run:
-./gradlew kotlinUpgradeYarnLock
-
-# Start the development server
-./gradlew runGame
-```
-
-3. Open your web browser and navigate to: [http://localhost:8080](http://localhost:8080)
-
-### Verifying the Build
-
-After running the build command, you should see the compiled JavaScript file at:
-`build/js/packages/minigolf/kotlin/minigolf.js`
-
-### Troubleshooting the Development Server
-
-If the development server (http://localhost:8080) isn't working:
-
-1. Check if the Gradle process is running with `ps aux | grep gradle`
-2. Try a different port with `./gradlew -Dorg.gradle.jvmargs="-Ddev.server.port=8081" runGame`
-3. As a fallback, you can directly open the `index.html` file in your browser
+- Node.js (for serving the game)
 
 ## How to Play
 
+Simply run the game with Gradle and navigate to the provided URL:
+
+```bash
+# From the minigolf directory
+./gradlew runStandaloneGame
+```
+
+Then open your browser and navigate to: [http://localhost:8080](http://localhost:8080)
+
+## Game Controls
+
 1. Click and hold on the white ball to aim
-2. Move your mouse to adjust direction and power
-   - The red line shows the aim direction
-   - The length of the line indicates power
+2. Move your mouse to adjust direction and power (the red line shows aim and power)
 3. Release to shoot
-4. Try to get the ball into the black hole
+4. Try to get the ball into the black hole in as few strokes as possible
+
+## Available Gradle Tasks
+
+- `./gradlew runStandaloneGame` - Main task to run the game
+- `./gradlew createStandaloneGame` - Creates the standalone HTML game file
+- `./gradlew checkNodeInstalled` - Checks if Node.js is installed
+- `./gradlew serveStandaloneGame` - Serves the game on port 8080
+- `./gradlew runGame` - Legacy task that redirects to runStandaloneGame
 
 ## Troubleshooting
 
-### Game Doesn't Load
+If you encounter issues:
 
-- Check that the build was successful without errors
-- Ensure the path to the JavaScript file is correct in index.html (should be `build/distributions/minigolf.js`)
-- Try opening browser developer tools (F12) to check for JavaScript errors
-- Try running with `./gradlew jsBrowserRun` which will open a browser automatically
-
-### Compilation Errors
-
-If you encounter compilation errors:
-
-```bash
-# Update Kotlin dependencies
-./gradlew kotlinUpgradeYarnLock
-
-# Clean and rebuild
-./gradlew clean build
-```
+1. Ensure Node.js is installed and available in your PATH
+2. Make sure port 8080 is not being used by another application
+3. Check that you're running the command from the minigolf directory
+4. If you see Gradle errors, try running `./gradlew clean` before running the game
 
 ## Technical Details
 
-The game is implemented using Kotlin/JS with:
+The game uses a standalone HTML file with JavaScript for the game logic. This approach provides a simple and reliable way to run the game without complex build setups.
 
-- Data classes for the Ball and Hole
-- Canvas-based rendering
-- Mouse-based controls
-- Physics simulation including friction and collisions
-
-### Project Structure
-
-- `src/jsMain/kotlin/com/ai4devs/minigolf/Game.kt`: Main game logic
-- `src/jsMain/kotlin/com/ai4devs/minigolf/Main.kt`: Entry point
-- `index.html`: HTML container with Canvas element
-- `build.gradle.kts`: Kotlin/JS build configuration
-
-### Technologies Used
-
-- Kotlin 1.9.22
-- Kotlin/JS for browser transpilation
-- HTML5 Canvas for rendering
-- Gradle for building and running
+The Gradle task:
+1. Creates a standalone HTML/JS game file
+2. Kills any existing processes using port 8080 
+3. Starts a Node.js HTTP server to serve the game
+4. Opens the game on http://localhost:8080
 
 ## Credits
 
