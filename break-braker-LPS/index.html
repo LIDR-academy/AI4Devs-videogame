@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Break Braker</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="game-container">
+        <div class="score-container">
+            <span>Puntuación: <span id="score">0</span></span>
+            <span class="level-display">Nivel: <span id="level">1</span></span>
+        </div>
+        <canvas id="gameCanvas"></canvas>
+        <div class="menu-container">
+            <div id="startScreen" class="menu">
+                <h1>Break Braker</h1>
+                <button id="startButton">Iniciar Juego</button>
+                <p class="test-info">Modo prueba: Presiona 'T' para pasar al siguiente nivel</p>
+            </div>
+            <div id="gameOverScreen" class="menu hidden">
+                <h2>Game Over</h2>
+                <p>Puntuación final: <span id="finalScore">0</span></p>
+                <button id="restartButton">Reiniciar</button>
+            </div>
+            <div id="winScreen" class="menu hidden">
+                <h2>¡Victoria!</h2>
+                <p>Puntuación final: <span id="winScore">0</span></p>
+                <p id="levelCompleteText">Nivel completado</p>
+                <button id="nextLevelButton">Siguiente Nivel</button>
+            </div>
+        </div>
+    </div>
+    
+    <script type="module" src="js/main.js"></script>
+</body>
+</html> 
