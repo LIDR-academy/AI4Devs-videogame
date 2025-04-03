@@ -1,3 +1,7 @@
+
+#PROMPTS
+
+## PROMPT 1
 Desarrolla un juego del tipo memorama que se ejecute en el navegador utilizando, HTML, CSS y Javascript, lo siguiente son los requerimientos del juego
 
 1. **Descripción del juego**
@@ -22,3 +26,12 @@ Desarrolla un juego del tipo memorama que se ejecute en el navegador utilizando,
 - El juego deberá mostrar un contador en reversa del tiempo restante
 - El tiempo deberá pintarse en verde cada ves que el usuario encuentre un par
 - El tiempo deberá pintarse en rojo cada ves que el usuario falle al descubrir dos elementos desconocidos distintos
+
+---
+## PROMPT 2
+
+>@memory-ESPR Del juego de memorama, añade la opción de escoger niveles de dificultad, actualmente el juego inicia con 15 segundos, este seria el nivel dificil, añade el nivel facil con 45 segundos y el nivel intermedio con 30 segundos, donde el nivel facil quita 1 segundo por cada intento fallido y el nivel intermedio quita 2 segundos por cada intento fallido
+
+## PROMPT 3
+
+>actualmente el juego gira los iconos de modo que cuando quedan descubiertos quedan derecha a izquierda de forma que por ejemplo TS queda como ST pero con la fuente con efecto espejo, corrige este error visual de modo que al quedar descubierto el icono quede TS
