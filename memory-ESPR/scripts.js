@@ -3,10 +3,17 @@ class Memorama {
         this.gameBoard = document.getElementById('gameBoard');
         this.timeDisplay = document.getElementById('time');
         this.startButton = document.getElementById('startGame');
+        this.difficultySelect = document.getElementById('difficulty');
         this.cards = [];
         this.flippedCards = [];
         this.matchedPairs = 0;
-        this.timeLeft = 15;
+        this.difficultySettings = {
+            easy: { time: 45, penalty: 1 },
+            medium: { time: 30, penalty: 2 },
+            hard: { time: 15, penalty: 3 }
+        };
+        this.currentDifficulty = 'hard';
+        this.timeLeft = this.difficultySettings[this.currentDifficulty].time;
         this.timer = null;
         this.isPlaying = false;
         
@@ -16,6 +23,13 @@ class Memorama {
         ];
 
         this.startButton.addEventListener('click', () => this.startGame());
+        this.difficultySelect.addEventListener('change', () => {
+            if (!this.isPlaying) {
+                this.currentDifficulty = this.difficultySelect.value;
+                this.timeLeft = this.difficultySettings[this.currentDifficulty].time;
+                this.timeDisplay.textContent = this.timeLeft;
+            }
+        });
     }
 
     startGame() {
@@ -26,6 +40,7 @@ class Memorama {
         this.startTimer();
         this.isPlaying = true;
         this.startButton.disabled = true;
+        this.difficultySelect.disabled = true;
     }
 
     resetGame() {
@@ -33,7 +48,8 @@ class Memorama {
         this.cards = [];
         this.flippedCards = [];
         this.matchedPairs = 0;
-        this.timeLeft = 15;
+        this.currentDifficulty = this.difficultySelect.value;
+        this.timeLeft = this.difficultySettings[this.currentDifficulty].time;
         this.timeDisplay.textContent = this.timeLeft;
         this.timeDisplay.className = 'timer';
         
@@ -51,7 +67,21 @@ class Memorama {
             card.className = 'card';
             card.dataset.icon = icon;
             card.dataset.index = index;
-            card.style.backgroundImage = `url('images/pregunta.png')`;
+
+            // Crear cara frontal (imagen del lenguaje)
+            const cardFront = document.createElement('div');
+            cardFront.className = 'card-face card-front';
+            cardFront.style.backgroundImage = `url('images/${icon}')`;
+
+            // Crear cara trasera (signo de interrogación)
+            const cardBack = document.createElement('div');
+            cardBack.className = 'card-face card-back';
+            cardBack.style.backgroundImage = `url('images/pregunta.png')`;
+
+            // Agregar caras a la tarjeta
+            card.appendChild(cardFront);
+            card.appendChild(cardBack);
+
             card.addEventListener('click', () => this.flipCard(card));
             this.gameBoard.appendChild(card);
             this.cards.push(card);
@@ -71,7 +101,6 @@ class Memorama {
             card.classList.contains('matched') ||
             this.flippedCards.length >= 2) return;
 
-        card.style.backgroundImage = `url('images/${card.dataset.icon}')`;
         card.classList.add('flipped');
         this.flippedCards.push(card);
 
@@ -110,7 +139,8 @@ class Memorama {
     }
 
     handleMismatch() {
-        this.timeLeft -= 3;
+        const penalty = this.difficultySettings[this.currentDifficulty].penalty;
+        this.timeLeft -= penalty;
         this.timeDisplay.textContent = this.timeLeft;
         this.timeDisplay.classList.add('error');
         setTimeout(() => {
@@ -119,7 +149,6 @@ class Memorama {
 
         setTimeout(() => {
             this.flippedCards.forEach(card => {
-                card.style.backgroundImage = `url('images/pregunta.png')`;
                 card.classList.remove('flipped');
             });
             this.flippedCards = [];
@@ -141,6 +170,7 @@ class Memorama {
         clearInterval(this.timer);
         this.isPlaying = false;
         this.startButton.disabled = false;
+        this.difficultySelect.disabled = false;
         
         if (won) {
             alert('¡Felicidades! Has ganado el juego.');

@@ -34,6 +34,31 @@ h1 {
     padding: 10px;
     background-color: #f8f9fa;
     border-radius: 5px;
+    gap: 15px;
+}
+
+.difficulty-selector {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.difficulty-selector label {
+    font-weight: bold;
+    color: #333;
+}
+
+.difficulty-selector select {
+    padding: 6px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    background-color: white;
+    font-size: 0.9em;
+    cursor: pointer;
+}
+
+.difficulty-selector select:hover {
+    border-color: #007bff;
 }
 
 .timer {
@@ -77,12 +102,9 @@ h1 {
     background-color: #e9ecef;
     border-radius: 5px;
     cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transition: transform 0.3s;
-    background-size: cover;
-    background-position: center;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.6s;
 }
 
 .card:hover {
@@ -93,7 +115,32 @@ h1 {
     transform: rotateY(180deg);
 }
 
+.card .card-face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+    background-size: cover;
+    background-position: center;
+}
+
+.card .card-front {
+    background-color: #e9ecef;
+    transform: rotateY(180deg);
+}
+
+.card .card-back {
+    background-color: #e9ecef;
+}
+
 .card.matched {
-    background-color: #28a745;
     cursor: default;
+}
+
+.card.matched .card-front {
+    background-color: #28a745;
 }

@@ -11,6 +11,14 @@
         <h1>Memorama de Lenguajes de Programación</h1>
         <div class="game-info">
             <div class="timer">Tiempo: <span id="time">15</span>s</div>
+            <div class="difficulty-selector">
+                <label for="difficulty">Dificultad:</label>
+                <select id="difficulty">
+                    <option value="easy">Fácil (45s)</option>
+                    <option value="medium">Intermedio (30s)</option>
+                    <option value="hard" selected>Difícil (15s)</option>
+                </select>
+            </div>
             <button id="startGame">Iniciar Juego</button>
         </div>
         <div class="game-board" id="gameBoard">
