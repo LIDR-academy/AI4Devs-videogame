@@ -1,0 +1,690 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Montserrat:wght@400;700&display=swap');
+:root {
+    --primary-color: #1f2937;
+    --secondary-color: #111827;
+    --accent-color: #3b82f6;
+    --accent-light: #60a5fa;
+    --accent-dark: #2563eb;
+    --text-color: #f9fafb;
+    --block-shadow: rgba(0, 0, 0, 0.3);
+    --glow-color: rgba(59, 130, 246, 0.5);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    background: radial-gradient(circle at center, var(--secondary-color) 0%, #000 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--text-color);
+    perspective: 1000px;
+    overflow-x: hidden;
+}
+
+.game-container {
+    display: flex;
+    flex-direction: column;
+    max-width: 900px;
+    width: 95%;
+    gap: 1.5rem;
+    padding: 1.5rem;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 1rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transform-style: preserve-3d;
+    animation: container-intro 1s ease-out;
+}
+
+.game-header {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.game-header h1 {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 2rem;
+    letter-spacing: 3px;
+    text-shadow: 0 0 10px var(--glow-color), 0 0 20px var(--glow-color);
+    color: var(--accent-light);
+    animation: glow 2s ease-in-out infinite alternate;
+}
+
+.game-layout {
+    display: flex;
+    gap: 2rem;
+    width: 100%;
+    transform-style: preserve-3d;
+}
+
+.game-footer {
+    text-align: center;
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin-top: 1rem;
+}
+
+@keyframes container-intro {
+    0% {
+        transform: translateY(30px) rotateX(10deg);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0) rotateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes glow {
+    0% {
+        text-shadow: 0 0 10px var(--glow-color), 0 0 20px var(--glow-color);
+    }
+    100% {
+        text-shadow: 0 0 15px var(--glow-color), 0 0 30px var(--glow-color), 0 0 40px var(--glow-color);
+    }
+}
+
+.game-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    transform-style: preserve-3d;
+    width: 180px;
+}
+
+.game-board {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    transform-style: preserve-3d;
+}
+
+.board-frame {
+    position: relative;
+    transform-style: preserve-3d;
+    transform: rotateX(2deg) rotateY(-2deg);
+    transition: transform 0.3s ease;
+}
+
+.board-frame:hover {
+    transform: rotateX(0deg) rotateY(0deg);
+}
+
+.board-reflection {
+    position: absolute;
+    bottom: -20px;
+    left: 10%;
+    width: 80%;
+    height: 20px;
+    background: linear-gradient(to bottom, rgba(59, 130, 246, 0.3), transparent);
+    filter: blur(5px);
+    transform: rotateX(90deg);
+    border-radius: 50%;
+    z-index: -1;
+}
+
+canvas {
+    background: rgba(0, 0, 0, 0.8);
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+#tetris {
+    border: 3px solid var(--accent-color);
+    box-shadow: 0 0 15px var(--glow-color);
+    transform-style: preserve-3d;
+}
+
+#nextPiece {
+    width: 150px;
+    height: 150px;
+    border: 2px solid var(--accent-color);
+    box-shadow: 0 0 10px var(--glow-color);
+    transform: translateZ(5px);
+}
+
+.score-container,
+.level-container,
+.next-piece,
+.high-scores-container,
+.controls-info {
+    background: rgba(17, 24, 39, 0.8);
+    padding: 1.2rem;
+    border-radius: 0.7rem;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transform-style: preserve-3d;
+    transform: translateZ(5px);
+    transition: all 0.3s ease;
+}
+
+.score-container:hover,
+.level-container:hover,
+.next-piece:hover,
+.high-scores-container:hover,
+.controls-info:hover {
+    transform: translateZ(10px) scale(1.05);
+}
+
+h2 {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.8rem;
+    margin-bottom: 1rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+h2 i {
+    color: var(--accent-light);
+}
+
+#score,
+#level {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 1.5rem;
+    color: var(--accent-light);
+    text-shadow: 0 0 10px var(--glow-color);
+}
+
+.controls {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    transform-style: preserve-3d;
+    width: 220px;
+}
+
+button {
+    font-family: 'Press Start 2P', cursive;
+    background: linear-gradient(to bottom, var(--accent-light), var(--accent-color));
+    border: none;
+    padding: 0.8rem 1rem;
+    color: var(--text-color);
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3), 0 1px 3px rgba(0, 0, 0, 0.2);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    letter-spacing: 1px;
+    transform: translateZ(5px);
+    position: relative;
+    overflow: hidden;
+    outline: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+button:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.15), transparent);
+    pointer-events: none;
+}
+
+button:hover {
+    background: linear-gradient(to bottom, var(--accent-color), var(--accent-dark));
+    transform: translateZ(10px) scale(1.05);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3), 0 3px 6px rgba(0, 0, 0, 0.2);
+}
+
+button:active {
+    transform: translateZ(2px) scale(0.95);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+#startBtn {
+    background: linear-gradient(to bottom, #10b981, #059669);
+}
+
+#startBtn:hover {
+    background: linear-gradient(to bottom, #059669, #047857);
+}
+
+#pauseBtn {
+    background: linear-gradient(to bottom, #f59e0b, #d97706);
+}
+
+#pauseBtn:hover {
+    background: linear-gradient(to bottom, #d97706, #b45309);
+}
+
+.mobile-controls {
+    display: none;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.8rem;
+    margin-top: 1.5rem;
+}
+
+.mobile-controls button {
+    padding: 0.8rem;
+    font-size: 1rem;
+}
+
+.mobile-controls button:nth-child(4) {
+    grid-column: 2;
+}
+
+
+/* Estilos para cada bloque del tetromino */
+
+.tetromino-block {
+    border-radius: 2px;
+    box-shadow: inset 2px 2px 2px rgba(255, 255, 255, 0.3), inset -2px -2px 2px var(--block-shadow);
+}
+
+
+/* Animaciones */
+
+@keyframes lineComplete {
+    0% {
+        opacity: 1;
+        transform: scaleX(1);
+    }
+    50% {
+        opacity: 0.5;
+        transform: scaleX(1.05);
+        filter: brightness(1.5);
+    }
+    100% {
+        opacity: 1;
+        transform: scaleX(1);
+    }
+}
+
+.line-complete {
+    animation: lineComplete 0.4s ease-in-out;
+}
+
+@keyframes gameover-flash {
+    0% {
+        filter: brightness(1);
+    }
+    50% {
+        filter: brightness(2);
+    }
+    100% {
+        filter: brightness(1);
+    }
+}
+
+.game-over {
+    animation: gameover-flash 0.3s ease-in-out 3;
+}
+
+@keyframes level-up {
+    0% {
+        transform: translateZ(5px) scale(1);
+    }
+    50% {
+        transform: translateZ(15px) scale(1.2);
+    }
+    100% {
+        transform: translateZ(5px) scale(1);
+    }
+}
+
+.level-up {
+    animation: level-up 0.6s ease-in-out;
+}
+
+@media (max-width: 768px) {
+    .game-layout {
+        flex-direction: column;
+        align-items: center;
+        gap: 1.5rem;
+    }
+    .mobile-controls {
+        display: grid;
+    }
+    .board-frame {
+        transform: none;
+    }
+    #tetris {
+        width: 100%;
+        max-width: 300px;
+        height: auto;
+    }
+    .game-info {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1rem;
+        width: 100%;
+    }
+    .score-container,
+    .level-container,
+    .next-piece,
+    .high-scores-container,
+    .controls-info {
+        flex: 1 1 45%;
+        min-width: 120px;
+    }
+    .controls {
+        width: 100%;
+    }
+    .controls-info {
+        order: 3;
+    }
+    .mobile-controls {
+        order: 5;
+    }
+    .score-container {
+        order: 1;
+    }
+    .high-scores-container {
+        order: 2;
+    }
+}
+
+
+/* Efectos de bloque específicos */
+
+.i-block {
+    box-shadow: 0 0 10px #00f0f0;
+}
+
+.o-block {
+    box-shadow: 0 0 10px #f0f000;
+}
+
+.t-block {
+    box-shadow: 0 0 10px #a000f0;
+}
+
+.s-block {
+    box-shadow: 0 0 10px #00f000;
+}
+
+.z-block {
+    box-shadow: 0 0 10px #f00000;
+}
+
+.j-block {
+    box-shadow: 0 0 10px #0000f0;
+}
+
+.l-block {
+    box-shadow: 0 0 10px #f0a000;
+}
+
+
+/* Estilos para la lista de mejores puntuaciones */
+
+.high-scores-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    text-align: left;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.high-score-item {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    grid-template-areas: "position name score" "position date date";
+    gap: 4px 8px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text-color);
+    font-family: 'Montserrat', sans-serif;
+}
+
+.high-score-item:last-child {
+    border-bottom: none;
+}
+
+.high-score-item .position {
+    grid-area: position;
+    font-weight: bold;
+    color: var(--accent-light);
+    font-size: 1rem;
+}
+
+.high-score-item .player-name {
+    grid-area: name;
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.high-score-item .player-score {
+    grid-area: score;
+    font-weight: bold;
+    color: var(--accent-light);
+}
+
+.high-score-item .score-date {
+    grid-area: date;
+    font-size: 0.6rem;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.empty-scores {
+    text-align: center;
+    padding: 10px;
+    font-style: italic;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.reset-scores-btn {
+    margin-top: 10px;
+    padding: 0.5rem;
+    font-size: 0.7rem;
+    background: linear-gradient(to bottom, #ef4444, #b91c1c);
+    width: 100%;
+}
+
+.reset-scores-btn:hover {
+    background: linear-gradient(to bottom, #dc2626, #991b1b);
+}
+
+
+/* Estilos para el modal de puntuación alta */
+
+.high-score-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease;
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    border-radius: 1rem;
+    padding: 2rem;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 0 30px rgba(59, 130, 246, 0.3);
+    border: 1px solid var(--accent-color);
+    transform-style: preserve-3d;
+    transform: translateZ(0);
+    animation: scaleIn 0.3s ease;
+}
+
+.modal-content h2 {
+    margin-bottom: 1rem;
+    color: var(--accent-light);
+    text-shadow: 0 0 10px var(--glow-color);
+}
+
+.modal-content p {
+    margin-bottom: 1.5rem;
+    font-size: 1.2rem;
+}
+
+.modal-content form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.modal-content label {
+    font-size: 0.9rem;
+    text-align: left;
+}
+
+.modal-content input {
+    padding: 0.8rem;
+    border-radius: 0.5rem;
+    border: 2px solid var(--accent-color);
+    background: rgba(0, 0, 0, 0.3);
+    color: var(--text-color);
+    font-family: 'Montserrat', sans-serif;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.modal-content input:focus {
+    border-color: var(--accent-light);
+    box-shadow: 0 0 10px var(--glow-color);
+}
+
+.modal-content button {
+    margin-top: 1rem;
+    padding: 0.8rem;
+    background: linear-gradient(to bottom, var(--accent-light), var(--accent-color));
+    border: none;
+    border-radius: 0.5rem;
+    color: var(--text-color);
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.modal-content button:hover {
+    background: linear-gradient(to bottom, var(--accent-color), var(--accent-dark));
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        transform: translateZ(0) scale(0.8);
+        opacity: 0;
+    }
+    to {
+        transform: translateZ(0) scale(1);
+        opacity: 1;
+    }
+}
+
+
+/* Media queries para responsividad */
+
+@media (max-width: 768px) {
+    .high-scores-container {
+        width: 100%;
+    }
+    .modal-content {
+        width: 95%;
+        padding: 1.5rem;
+    }
+}
+
+
+/* Estilos para la información del nivel */
+
+.level-info {
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin-top: 0.5rem;
+    font-style: italic;
+}
+
+
+/* Estilos para la sección de controles en la columna izquierda */
+
+.game-info .controls-info {
+    text-align: left;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.controls-info h2 {
+    justify-content: flex-start;
+    margin-bottom: 0.8rem;
+}
+
+.keys-list {
+    list-style: none;
+    padding: 0;
+    margin: 0.5rem 0 0 0;
+}
+
+.keys-list li {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.7rem;
+    font-size: 0.75rem;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.key {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--accent-light), var(--accent-color));
+    border-radius: 0.3rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-right: 0.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    color: white;
+    font-size: 0.7rem;
+    flex-shrink: 0;
+}
+
+.space-key {
+    width: auto;
+    padding: 0 0.5rem;
+    font-size: 0.65rem;
+    letter-spacing: 0;
+}
+
+
+/* Estilos para la puntuación y ranking en la columna derecha */
+
+.controls .score-container,
+.controls .high-scores-container {
+    margin-top: 1.5rem;
+    width: 100%;
+}

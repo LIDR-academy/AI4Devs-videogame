@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Palabras Encadenadas</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body style="background-image: url('assets/background.png'); background-size: cover;">
+    <div id="game-container">
+        <div id="player-turn" class="player1">Turno: Jugador 1</div>
+        <div id="word-display"></div>
+        <input type="text" id="word-input" placeholder="Escribe tu palabra...">
+        <div id="timer">Tiempo restante: 30</div>
+        <div id="score">
+            <div>Jugador 1: <span id="player1-score">0</span></div>
+            <div>Jugador 2: <span id="player2-score">0</span></div>
+        </div>
+        <div id="settings">
+            <label for="rounds">Rondas:</label>
+            <input type="number" id="rounds" min="1" value="3">
+            <label for="time">Tiempo (seg):</label>
+            <input type="number" id="time" min="5" value="30">
+            <button id="start-game">Comenzar</button>
+        </div>
+    </div>
+    <audio id="turn-sound" src="assets/turn.mp3" preload="auto"></audio>
+    <audio id="game-over-sound" src="assets/game-over.mp3" preload="auto"></audio>
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrega de Paquetes - VMR</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="game-container">
+        <div class="game-header">
+            <div class="score">Puntuación: <span id="score">0</span></div>
+            <div class="time">Tiempo: <span id="time">60</span>s</div>
+        </div>
+        
+        <div class="game-area">
+            <div id="game-board"></div>
+            <div id="player"></div>
+        </div>
+
+        <div class="controls">
+            <button id="start-game">Iniciar Juego</button>
+            <div class="instructions">
+                <h3>Instrucciones:</h3>
+                <p>Use las flechas del teclado para mover el vehículo</p>
+                <p>Recoja los paquetes (amarillos) y entréguelos en los puntos de entrega (verdes)</p>
+                <p>Evite chocar con los obstáculos (rojos)</p>
+            </div>
+        </div>
+    </div>
+    <script src="game.js"></script>
+</body>
+</html> 

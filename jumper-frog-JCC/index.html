@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jumper Frog</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- SVG Assets -->
+    <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+        <!-- Frog SVG -->
+        <symbol id="frog" viewBox="0 0 40 40">
+            <!-- Cuerpo principal -->
+            <defs>
+                <linearGradient id="frogGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#2ecc71;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#27ae60;stop-opacity:1" />
+                </linearGradient>
+                <filter id="shadow">
+                    <feGaussianBlur in="SourceAlpha" stdDeviation="0.5"/>
+                    <feOffset dx="0" dy="0.5"/>
+                    <feMerge>
+                        <feMergeNode/>
+                        <feMergeNode in="SourceGraphic"/>
+                    </feMerge>
+                </filter>
+            </defs>
+            
+            <!-- Cuerpo -->
+            <ellipse cx="20" cy="22" rx="15" ry="12" fill="url(#frogGradient)" filter="url(#shadow)"/>
+            
+            <!-- Cabeza -->
+            <path d="M10 18 Q20 15 30 18 Q30 10 20 8 Q10 10 10 18" fill="url(#frogGradient)" filter="url(#shadow)"/>
+            
+            <!-- Ojos prominentes -->
+            <circle cx="14" cy="12" r="4" fill="#fff"/>
+            <circle cx="26" cy="12" r="4" fill="#fff"/>
+            <!-- Parte superior de los ojos -->
+            <path d="M10 12 Q14 8 18 12" fill="#2ecc71"/>
+            <path d="M22 12 Q26 8 30 12" fill="#2ecc71"/>
+            <!-- Pupilas -->
+            <circle cx="14" cy="12" r="2" fill="#2c3e50"/>
+            <circle cx="26" cy="12" r="2" fill="#2c3e50"/>
+            <!-- Brillo en los ojos -->
+            <circle cx="13" cy="11" r="0.8" fill="#fff"/>
+            <circle cx="25" cy="11" r="0.8" fill="#fff"/>
+            
+            <!-- Manchas características -->
+            <circle cx="20" cy="25" r="1.5" fill="#27ae60"/>
+            <circle cx="24" cy="23" r="1.5" fill="#27ae60"/>
+            <circle cx="16" cy="23" r="1.5" fill="#27ae60"/>
+            <circle cx="22" cy="27" r="1.2" fill="#27ae60"/>
+            <circle cx="18" cy="27" r="1.2" fill="#27ae60"/>
+            
+            <!-- Patas delanteras -->
+            <path d="M8 22 Q5 25 8 28" stroke="#2ecc71" stroke-width="3" fill="none"/>
+            <path d="M32 22 Q35 25 32 28" stroke="#2ecc71" stroke-width="3" fill="none"/>
+            <!-- Dedos delanteros -->
+            <path d="M6 27 L10 27" stroke="#2ecc71" stroke-width="1.5"/>
+            <path d="M30 27 L34 27" stroke="#2ecc71" stroke-width="1.5"/>
+            
+            <!-- Patas traseras -->
+            <path d="M12 28 Q15 32 20 28" stroke="#2ecc71" stroke-width="3" fill="none"/>
+            <path d="M28 28 Q25 32 20 28" stroke="#2ecc71" stroke-width="3" fill="none"/>
+            <!-- Dedos traseros -->
+            <path d="M14 31 L18 31" stroke="#2ecc71" stroke-width="1.5"/>
+            <path d="M22 31 L26 31" stroke="#2ecc71" stroke-width="1.5"/>
+            
+            <!-- Boca -->
+            <path d="M17 16 Q20 18 23 16" stroke="#27ae60" stroke-width="1" fill="none"/>
+        </symbol>
+
+        <!-- Car SVG -->
+        <symbol id="car" viewBox="0 0 130 98">
+            <!-- Borde negro exterior -->
+            <path d="M10 33 L120 33 C125 33 128 36 128 43 L128 75 L3 75 L3 43 C3 36 5 33 10 33 Z" fill="#2c3e50" stroke="#2c3e50" stroke-width="2.5"/>
+            <!-- Carrocería principal -->
+            <path d="M13 35 L117 35 C122 35 125 38 125 43 L125 73 L5 73 L5 43 C5 38 8 35 13 35 Z" fill="#e74c3c"/>
+            <!-- Ventanas -->
+            <path d="M17 39 L113 39 C117 39 120 40 120 43 L120 60 L10 60 L10 43 C10 40 13 39 17 39 Z" fill="#87CEEB"/>
+            <!-- Ruedas con borde negro -->
+            <circle cx="33" cy="75" r="13" fill="#2c3e50"/>
+            <circle cx="98" cy="75" r="13" fill="#2c3e50"/>
+            <!-- Detalles de ruedas -->
+            <circle cx="33" cy="75" r="9" fill="#7f8c8d"/>
+            <circle cx="98" cy="75" r="9" fill="#7f8c8d"/>
+            <circle cx="33" cy="75" r="4" fill="#2c3e50"/>
+            <circle cx="98" cy="75" r="4" fill="#2c3e50"/>
+            <!-- Luces traseras y delanteras -->
+            <circle cx="8" cy="47" r="4" fill="#e74c3c"/>
+            <circle cx="122" cy="47" r="4" fill="#f1c40f"/>
+        </symbol>
+
+        <!-- Taxi SVG -->
+        <symbol id="taxi" viewBox="0 0 130 98">
+            <!-- Borde negro exterior -->
+            <path d="M10 33 L120 33 C125 33 128 36 128 43 L128 75 L3 75 L3 43 C3 36 5 33 10 33 Z" fill="#2c3e50" stroke="#2c3e50" stroke-width="2.5"/>
+            <!-- Carrocería principal -->
+            <path d="M13 35 L117 35 C122 35 125 38 125 43 L125 73 L5 73 L5 43 C5 38 8 35 13 35 Z" fill="#f1c40f"/>
+            <!-- Ventanas -->
+            <path d="M17 39 L113 39 C117 39 120 40 120 43 L120 60 L10 60 L10 43 C10 40 13 39 17 39 Z" fill="#87CEEB"/>
+            <!-- Ruedas con borde negro -->
+            <circle cx="33" cy="75" r="13" fill="#2c3e50"/>
+            <circle cx="98" cy="75" r="13" fill="#2c3e50"/>
+            <!-- Detalles de ruedas -->
+            <circle cx="33" cy="75" r="9" fill="#7f8c8d"/>
+            <circle cx="98" cy="75" r="9" fill="#7f8c8d"/>
+            <circle cx="33" cy="75" r="4" fill="#2c3e50"/>
+            <circle cx="98" cy="75" r="4" fill="#2c3e50"/>
+            <!-- Luces traseras y delanteras -->
+            <circle cx="8" cy="47" r="4" fill="#e74c3c"/>
+            <circle cx="122" cy="47" r="4" fill="#f1c40f"/>
+            <!-- Letrero de TAXI -->
+            <rect x="46" y="22" width="39" height="10" fill="#2c3e50" rx="2"/>
+            <text x="52" y="30" font-size="9" fill="white">TAXI</text>
+            <!-- Franja de cuadros -->
+            <rect x="5" y="65" width="120" height="7" fill="url(#checkerPattern)"/>
+            <defs>
+                <pattern id="checkerPattern" x="0" y="0" width="13" height="7" patternUnits="userSpaceOnUse">
+                    <rect x="0" y="0" width="6.5" height="7" fill="#2c3e50"/>
+                    <rect x="6.5" y="0" width="6.5" height="7" fill="white"/>
+                </pattern>
+            </defs>
+        </symbol>
+
+        <!-- Ambulance SVG -->
+        <symbol id="ambulance" viewBox="0 0 130 98">
+            <!-- Borde negro exterior -->
+            <path d="M10 33 L120 33 C125 33 128 36 128 43 L128 75 L3 75 L3 43 C3 36 5 33 10 33 Z" fill="#2c3e50" stroke="#2c3e50" stroke-width="2.5"/>
+            <!-- Carrocería principal -->
+            <path d="M13 35 L117 35 C122 35 125 38 125 43 L125 73 L5 73 L5 43 C5 38 8 35 13 35 Z" fill="white"/>
+            <!-- Ventanas -->
+            <path d="M17 39 L113 39 C117 39 120 40 120 43 L120 60 L10 60 L10 43 C10 40 13 39 17 39 Z" fill="#87CEEB"/>
+            <!-- Ruedas con borde negro -->
+            <circle cx="33" cy="75" r="13" fill="#2c3e50"/>
+            <circle cx="98" cy="75" r="13" fill="#2c3e50"/>
+            <!-- Detalles de ruedas -->
+            <circle cx="33" cy="75" r="9" fill="#7f8c8d"/>
+            <circle cx="98" cy="75" r="9" fill="#7f8c8d"/>
+            <circle cx="33" cy="75" r="4" fill="#2c3e50"/>
+            <circle cx="98" cy="75" r="4" fill="#2c3e50"/>
+            <!-- Cruz roja -->
+            <rect x="59" y="43" width="18" height="18" fill="#e74c3c"/>
+            <rect x="65" y="36" width="5" height="31" fill="#e74c3c"/>
+            <!-- Sirena -->
+            <circle cx="65" cy="26" r="7" fill="#e74c3c"/>
+        </symbol>
+
+        <!-- Bus SVG -->
+        <symbol id="bus" viewBox="0 0 195 117">
+            <!-- Carrocería principal -->
+            <path d="M10 43 L185 43 L185 98 L10 98 Z" fill="#f1c40f"/>
+            <!-- Techo -->
+            <path d="M10 43 L185 43 L173 22 L22 22 Z" fill="#f1c40f"/>
+            <!-- Franja superior -->
+            <rect x="22" y="26" width="151" height="7" fill="#7f8c8d"/>
+            <!-- Ventanas -->
+            <rect x="17" y="49" width="23" height="26" fill="#87CEEB"/>
+            <rect x="46" y="49" width="23" height="26" fill="#87CEEB"/>
+            <rect x="74" y="49" width="23" height="26" fill="#87CEEB"/>
+            <rect x="103" y="49" width="23" height="26" fill="#87CEEB"/>
+            <rect x="131" y="49" width="23" height="26" fill="#87CEEB"/>
+            <rect x="160" y="49" width="21" height="26" fill="#87CEEB"/>
+            <!-- Ruedas -->
+            <circle cx="55" cy="98" r="16" fill="#2c3e50"/>
+            <circle cx="140" cy="98" r="16" fill="#2c3e50"/>
+            <!-- Detalles de ruedas -->
+            <circle cx="55" cy="98" r="10" fill="#95a5a6"/>
+            <circle cx="140" cy="98" r="10" fill="#95a5a6"/>
+            <circle cx="55" cy="98" r="5" fill="#2c3e50"/>
+            <circle cx="140" cy="98" r="5" fill="#2c3e50"/>
+            <!-- Detalles frontales -->
+            <rect x="10" y="69" width="7" height="17" fill="#7f8c8d"/>
+            <!-- Detalles traseros -->
+            <path d="M178 49 L185 49 L185 69 L178 69" fill="#7f8c8d"/>
+        </symbol>
+
+        <!-- Log SVG -->
+        <symbol id="log" viewBox="0 0 60 30">
+            <!-- Tronco -->
+            <path d="M5 15 L10 10 L50 10 L55 15 L55 25 L10 25 L5 15" fill="#8b4513"/>
+            <!-- Textura del tronco -->
+            <path d="M10 12 L50 12" stroke="#654321" stroke-width="1" fill="none"/>
+            <path d="M10 15 L50 15" stroke="#654321" stroke-width="1" fill="none"/>
+            <path d="M10 18 L50 18" stroke="#654321" stroke-width="1" fill="none"/>
+            <path d="M10 21 L50 21" stroke="#654321" stroke-width="1" fill="none"/>
+            <!-- Nudos -->
+            <circle cx="20" cy="15" r="3" fill="#654321"/>
+            <circle cx="40" cy="15" r="3" fill="#654321"/>
+        </symbol>
+
+        <!-- Truck SVG -->
+        <symbol id="truck" viewBox="0 0 195 104">
+            <!-- Contenedor trasero -->
+            <path d="M10 26 L130 26 L130 82 L10 82 Z" fill="#f39c12"/>
+            <!-- Líneas del contenedor -->
+            <path d="M43 26 L43 82" stroke="#e67e22" stroke-width="3"/>
+            <path d="M75 26 L75 82" stroke="#e67e22" stroke-width="3"/>
+            <path d="M108 26 L108 82" stroke="#e67e22" stroke-width="3"/>
+            <!-- Cabina -->
+            <path d="M130 39 L185 39 L185 82 L130 82 Z" fill="#e74c3c"/>
+            <!-- Ventana -->
+            <path d="M137 43 L178 43 L178 69 L137 69 Z" fill="#3498db"/>
+            <!-- Ruedas -->
+            <circle cx="43" cy="82" r="16" fill="#2c3e50"/>
+            <circle cx="98" cy="82" r="16" fill="#2c3e50"/>
+            <circle cx="152" cy="82" r="16" fill="#2c3e50"/>
+            <!-- Detalles de ruedas -->
+            <circle cx="43" cy="82" r="10" fill="#95a5a6"/>
+            <circle cx="98" cy="82" r="10" fill="#95a5a6"/>
+            <circle cx="152" cy="82" r="10" fill="#95a5a6"/>
+            <!-- Tapacubos -->
+            <circle cx="43" cy="82" r="5" fill="#ecf0f1"/>
+            <circle cx="98" cy="82" r="5" fill="#ecf0f1"/>
+            <circle cx="152" cy="82" r="5" fill="#ecf0f1"/>
+            <!-- Faros -->
+            <circle cx="179" cy="55" r="4" fill="#f1c40f"/>
+            <!-- Detalles adicionales -->
+            <rect x="10" y="75" width="174" height="7" fill="#95a5a6"/>
+            <!-- Techo de la cabina -->
+            <path d="M130 39 L185 39 L185 43 L130 43 Z" fill="#c0392b"/>
+        </symbol>
+    </svg>
+    
+    <div class="game-container">
+        <div class="game-header">
+            <div class="score">Puntuación: <span id="score">0</span></div>
+            <div class="lives">Vidas: <span id="lives">3</span></div>
+            <div class="speed">Velocidad: <span id="speed">1.0x</span></div>
+        </div>
+        
+        <div class="game-board">
+            <div class="safe-zone top"></div>
+            <div class="lane lane-1"></div>
+            <div class="lane lane-2"></div>
+            <div class="lane lane-3"></div>
+            <div class="lane lane-4"></div>
+            <div class="lane lane-5"></div>
+            <div class="safe-zone bottom"></div>
+        </div>
+
+        <div class="game-over hidden">
+            <h2>¡Juego Terminado!</h2>
+            <p>Puntuación final: <span id="final-score">0</span></p>
+            <button id="restart-button">Jugar de nuevo</button>
+        </div>
+
+        <div class="pause-overlay hidden">
+            <h2>Juego Pausado</h2>
+            <p>Presiona P para continuar</p>
+        </div>
+
+        <div class="start-screen">
+            <h1>Jumper Frog</h1>
+            <p>Usa las flechas del teclado para mover la rana</p>
+            <p>Presiona P para pausar</p>
+            <p>¡Evita los vehículos y llega a la zona segura!</p>
+            <button id="start-button">Iniciar Juego</button>
+        </div>
+    </div>
+    <script src="game.js"></script>
+</body>
+</html> 

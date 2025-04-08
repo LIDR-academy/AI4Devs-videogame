@@ -1,127 +1,302 @@
 body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-    background-color: #000;
-    color: #fff;
-    font-family: Arial, sans-serif;
-}
-#game-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    position: relative;
-    touch-action: none; /* Move touch-action: none here */
-}
-#maze-canvas {
-    border: 2px solid #fff;
-}
-#config-screen {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: #000;
-    color: #fff;
-    padding: 20px;
-    border: 2px solid #fff;
-}
-#config-screen label {
-    margin: 5px 0;
-}
-#config-screen input {
-    margin: 5px 0;
-    padding: 5px;
-    width: 50px;
-    text-align: center;
-}
-#config-screen button {
-    margin-top: 20px;
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-}
-#mobile-controls {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    position: absolute;
-    right: 20px;
-    top: 50%;
-    transform: translateY(-50%);
-}
-#mobile-controls button {
-    width: 50px;
-    height: 50px;
-    margin: 5px;
-    font-size: 24px;
-    background-color: #333;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-#mobile-controls div {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  margin: 0;
+  background-color: #000000;
+  color: #ffffff;
+  font-family: "Segoe UI", Arial, sans-serif;
+  line-height: 1.6;
+  background-image: linear-gradient(to bottom, #000000, #121212);
 }
 
-#instructions-modal {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: #000;
-    color: #fff;
-    padding: 20px;
-    border: 2px solid #fff;
-    z-index: 1000;
-    display: none;
+:root {
+  --columns: 4;
+  --item-width: calc((100% / var(--columns)) - 1rem);
+  --accent-color: #f0c040;
+  --text-color: #ffffff;
+  --bg-dark: #000000;
+  --bg-card: #111111;
+  --bg-hover: #222222;
 }
 
-#instructions-content {
-    text-align: center;
+#game-index {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: rgba(17, 17, 17, 0.7);
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
 }
 
-#instructions-content button {
-    margin-top: 20px;
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-    background-color: white;
-    color: black;
-    border: none;
-    border-radius: 5px;
+h1 {
+  text-align: center;
+  color: var(--accent-color);
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  text-shadow: 0 0 10px rgba(240, 192, 64, 0.5);
 }
 
-#instructions-button {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-    background-color: white;
-    color: black;
-    border: none;
-    border-radius: 5px;
+.controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
-#language-select {
-    padding: 5px;
-    font-size: 16px;
-    cursor: pointer;
-    background-color: white;
-    color: black;
-    border: none;
-    border-radius: 5px;
+.view-toggle,
+.column-control button {
+  background-color: #111111;
+  color: var(--text-color);
+  border: 1px solid #333;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
-#language-select,
-#instructions-button {
-    touch-action: auto; /* Ensure touch-action is auto for these elements */
+.view-toggle:hover,
+.column-control button:hover {
+  background-color: #222222;
+  border-color: var(--accent-color);
+}
+
+.view-toggle.active {
+  background-color: var(--accent-color);
+  color: #000000;
+}
+
+.column-control {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.column-display {
+  display: inline-block;
+  min-width: 2rem;
+  text-align: center;
+  color: var(--accent-color);
+  font-weight: bold;
+}
+
+/* Estilos para modo grid */
+ul.grid-view {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+ul.grid-view li {
+  flex: 0 0 var(--item-width);
+  margin-bottom: 1rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Estilos para modo lista */
+ul.list-view {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+ul.list-view li {
+  width: 100%;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+ul.list-view a {
+  justify-content: flex-start;
+  text-align: left;
+  height: 60px;
+}
+
+ul.list-view a i {
+  margin-right: 1rem;
+  font-size: 1.2rem;
+  color: var(--accent-color);
+}
+
+li:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(240, 192, 64, 0.2);
+}
+
+a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 80px;
+  padding: 1rem;
+  background-color: var(--bg-card);
+  color: var(--text-color);
+  text-decoration: none;
+  border-radius: 8px;
+  border: 1px solid #333;
+  transition: all 0.3s ease;
+  text-align: center;
+  font-weight: 500;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+a:hover {
+  background-color: var(--bg-hover);
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+}
+
+a:active {
+  transform: scale(0.98);
+}
+
+a i {
+  margin-right: 0.5rem;
+  font-size: 1.1rem;
+  color: var(--accent-color);
+}
+
+.status-success {
+  color: var(--accent-color);
+}
+
+.status-warning {
+  color: #ffc107;
+}
+
+.status-error {
+  color: #f44336;
+}
+
+.game-status {
+  font-size: 0.9rem;
+  margin-left: 0.5rem;
+  opacity: 0.9;
+}
+
+footer {
+  text-align: center;
+  padding: 1rem;
+  margin-top: auto;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: #888;
+  width: 100%;
+}
+
+footer p {
+  color: #888;
+}
+
+footer p span {
+  color: var(--accent-color);
+  font-weight: bold;
+}
+
+@media (max-width: 992px) {
+  :root {
+    --columns: 3;
+  }
+}
+
+@media (max-width: 768px) {
+  :root {
+    --columns: 2;
+  }
+
+  #game-index {
+    margin: 1rem;
+    padding: 1rem;
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
+
+  a {
+    height: 70px;
+    padding: 0.8rem;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --columns: 1;
+  }
+
+  a {
+    height: 60px;
+    padding: 0.6rem;
+    font-size: 0.85rem;
+  }
+}
+
+/* Estilos para los nombres de autor */
+.author-info {
+  display: block;
+  font-size: 0.75rem;
+  margin-top: 0.3rem;
+  color: #888;
+  font-style: italic;
+}
+
+/* Ajustes para vista grid */
+ul.grid-view a {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  height: auto;
+  padding: 1rem 0.5rem;
+}
+
+ul.grid-view i {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  margin-right: 0;
+  display: block;
+}
+
+ul.grid-view .author-info {
+  margin-top: 0.5rem;
+}
+
+/* Ajustes para vista lista */
+ul.list-view a {
+  justify-content: flex-start;
+  height: 60px;
+}
+
+ul.list-view i {
+  margin-right: 1rem;
+  font-size: 1.2rem;
+}
+
+ul.list-view .author-info {
+  margin-left: auto;
+  margin-right: 1rem;
+}
+
+a:hover .author-info {
+  color: var(--accent-color);
+}
+
+/* Mostrar/ocultar control de columnas según el modo */
+.list-mode .column-control {
+  display: none;
+}
+
+.grid-mode .column-control {
+  display: flex;
 }

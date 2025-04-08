@@ -1,0 +1,45 @@
+/* Cargar la fuente correctamente */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+/* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-family: 'Press Start 2P', monospace;
+    /* Fallback a monospace si la fuente no carga */
+}
+
+/* Contenedor principal del juego */
+#game-container {
+    position: relative;
+    width: 800px;
+    height: 600px;
+}
+
+/* Canvas del juego */
+#gameCanvas {
+    border: 2px solid #333;
+    background-color: #000;
+}
+
+/* Prevenir selección de texto */
+* {
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+/* Ocultar el favicon por defecto */
+link[rel="icon"] {
+    display: none;
+}

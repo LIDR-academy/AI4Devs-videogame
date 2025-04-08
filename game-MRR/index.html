@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skeleton's Halloween Adventure</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="game-container">
+        <canvas id="gameCanvas"></canvas>
+        <div class="game-ui">
+            <div class="score">Puntos: <span id="score">0</span></div>
+            <div class="lives">Vidas: <span id="lives">3</span></div>
+        </div>
+        <div id="soundControl" class="sound-control">🔊</div>
+        <div id="startScreen" class="screen">
+            <img src="assets/ghost.png" alt="Ghost" class="menu-ghost left" onerror="this.style.display='none'">
+            <div class="menu-content">
+                <h1>Skeleton's Halloween Adventure</h1>
+                <p>Ayuda al esqueleto a recolectar calabazas y evitar fantasmas en esta noche de Halloween</p>
+                <div class="menu-controls">
+                    <div class="control-info">
+                        <span class="key-icon">←→</span>
+                        <span class="key-desc">Mover</span>
+                    </div>
+                    <div class="control-info">
+                        <span class="key-icon">↑</span>
+                        <span class="key-desc">Saltar</span>
+                    </div>
+                </div>
+                <button id="startButton">COMENZAR JUEGO</button>
+            </div>
+            <img src="assets/ghost.png" alt="Ghost" class="menu-ghost right" onerror="this.style.display='none'">
+        </div>
+        <div id="gameOverScreen" class="screen hidden">
+            <h1>¡JUEGO TERMINADO!</h1>
+            <div class="game-over-message">
+                <img src="assets/ghost.png" alt="fantasma" class="game-over-icon" onerror="this.style.display='none'">
+                <p>El esqueleto ha perdido todas sus vidas</p>
+                <img src="assets/ghost.png" alt="fantasma" class="game-over-icon" onerror="this.style.display='none'">
+            </div>
+            <p class="score-display">Tu puntuación final: <span id="finalScore">0</span></p>
+            <button id="restartButton">JUGAR DE NUEVO</button>
+        </div>
+    </div>
+    <script src="debug.js"></script>
+    <script src="sprites.js"></script>
+    <script src="audio-fallback.js"></script>
+    <script src="audio.js"></script>
+    <script src="game.js"></script>
+</body>
+</html> 

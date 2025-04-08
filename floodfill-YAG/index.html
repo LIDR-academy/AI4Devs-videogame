@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flood-Fill Game</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-container">
+        <header>
+            <h1>Flood-Fill</h1>
+        </header>
+        
+        <div class="game-info">
+            <div class="stats">
+                <div class="moves">Moves: <span id="move-count">0</span></div>
+                <div class="timer">Time: <span id="time">00:00</span></div>
+            </div>
+        </div>
+        
+        <div class="game-board-container">
+            <div id="game-board" class="game-board"></div>
+        </div>
+        
+        <div class="color-controls">
+            <!-- Color buttons will be added dynamically by JavaScript -->
+        </div>
+        
+        <div class="keyboard-legend">
+            <h3>Keyboard Controls</h3>
+            <div class="legend-grid">
+                <div class="legend-item">
+                    <div class="key-icon">←</div>
+                    <span>Previous Color</span>
+                </div>
+                <div class="legend-item">
+                    <div class="key-icon">→</div>
+                    <span>Next Color</span>
+                </div>
+                <div class="legend-item">
+                    <div class="key-icon">↑</div>
+                    <span>Select Color</span>
+                </div>
+                <div class="legend-item">
+                    <div class="key-icon">↓</div>
+                    <span>Select Color</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="game-controls">
+            <button id="new-game-btn" class="pixel-btn">New Game</button>
+            <button id="settings-btn" class="pixel-btn">Settings</button>
+            <button id="scores-btn" class="pixel-btn">Scores</button>
+        </div>
+        
+        <!-- Settings Modal -->
+        <div id="settings-modal" class="modal">
+            <div class="modal-content">
+                <h2>Settings</h2>
+                <div class="settings-group">
+                    <label for="grid-size">Grid Size: <span id="grid-size-value">10x10</span></label>
+                    <input type="range" id="grid-size" min="5" max="20" value="10">
+                </div>
+                <div class="settings-group">
+                    <label for="color-count">Number of Colors: <span id="color-count-value">6</span></label>
+                    <input type="range" id="color-count" min="4" max="8" value="6">
+                </div>
+                <div class="settings-group">
+                    <label for="sound-toggle">Sound:</label>
+                    <input type="checkbox" id="sound-toggle" checked>
+                </div>
+                <div class="settings-group">
+                    <label for="music-toggle">Music:</label>
+                    <input type="checkbox" id="music-toggle" checked>
+                </div>
+                <button id="save-settings" class="pixel-btn">Save</button>
+                <button id="close-settings" class="pixel-btn">Cancel</button>
+            </div>
+        </div>
+        
+        <!-- Scores Modal -->
+        <div id="scores-modal" class="modal">
+            <div class="modal-content">
+                <h2>High Scores</h2>
+                <div class="scores-grid-selector">
+                    <label for="score-grid-size">Grid Size:</label>
+                    <select id="score-grid-size"></select>
+                </div>
+                <div class="high-scores-list">
+                    <table id="high-scores-table">
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Moves</th>
+                                <th>Time</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="high-scores-body">
+                            <!-- Scores will be added dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+                <button id="close-scores" class="pixel-btn">Close</button>
+            </div>
+        </div>
+        
+        <!-- Win Modal -->
+        <div id="win-modal" class="modal">
+            <div class="modal-content">
+                <h2>You Won!</h2>
+                <div class="win-stats">
+                    <p>Moves: <span id="win-moves"></span></p>
+                    <p>Time: <span id="win-time"></span></p>
+                </div>
+                <div id="high-score-message"></div>
+                <button id="play-again" class="pixel-btn">Play Again</button>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>Created with ❤️ by <a href="https://www.linkedin.com/in/YobertyAlej" target="_blank">@YobertyAlej</a> | <span id="current-year"></span></p>
+    </footer>
+    
+    <!-- Load all JS files -->
+    <script src="GameEngine.js"></script>
+    <script src="FloodAnimator.js"></script>
+    <script src="UIController.js"></script>
+    <script src="ScoreManager.js"></script>
+    <script src="GameTimer.js"></script>
+    <script src="SettingsManager.js"></script>
+    <script src="AudioController.js"></script>
+    <script src="AccessibilityService.js"></script>
+    <!-- Main script should be loaded last -->
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Space Star: Last Chance</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Three.js core and modules -->
+    <script async src="https://unpkg.com/es-module-shims@1.8.0/dist/es-module-shims.js"></script>
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://unpkg.com/three@0.174.0/build/three.module.js",
+            "three/addons/": "https://unpkg.com/three@0.174.0/examples/jsm/"
+        }
+    }
+    </script>
+    <script type="module" src="main.js"></script>
+</head>
+<body>
+    <!-- Main Container -->
+    <div id="game-container">
+        <!-- Menu Screen -->
+        <div id="menu-screen" class="game-screen active">
+            <h1>Space Star: Last Chance</h1>
+            <div class="menu-buttons">
+                <button id="start-button">Start</button>
+                <button id="controls-button">Controls</button>
+                <button id="ranking-button">Ranking</button>
+            </div>
+            <button id="toggle-music" class="toggle-button">🔊</button>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="game-screen" class="game-screen">
+            <div id="game-canvas"></div>
+            <div id="hud">
+                <div id="shields-container">
+                    <span>Shields:</span>
+                    <div id="shields-bar">
+                        <div id="shields-value"></div>
+                    </div>
+                    <span id="shields-percentage">100%</span>
+                </div>
+                <div id="stats-container">
+                    <div id="distance">Distance: 0m</div>
+                    <div id="speed">Speed: 10</div>
+                    <div id="kills">Enemies: 0</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controls Screen -->
+        <div id="controls-screen" class="game-screen">
+            <h1>Controls</h1>
+            <div class="controls-container">
+                <div class="control-item">
+                    <span class="key">↑ ↓ ← →</span>
+                    <span class="description">Move Spaceship</span>
+                </div>
+                <div class="control-item">
+                    <span class="key">Space</span>
+                    <span class="description">Fire Lasers</span>
+                </div>
+                <div class="control-item">
+                    <span class="key">ESC</span>
+                    <span class="description">Pause / Quit</span>
+                </div>
+            </div>
+            <button class="back-button">Back to Menu</button>
+        </div>
+
+        <!-- Ranking Screen -->
+        <div id="ranking-screen" class="game-screen">
+            <h1>Top Pilots</h1>
+            <div id="ranking-list">
+                <!-- Ranking entries will be inserted here by JS -->
+            </div>
+            <button class="back-button">Back to Menu</button>
+        </div>
+
+        <!-- Game Over Modal -->
+        <div id="game-over-modal" class="modal">
+            <div class="modal-content">
+                <h2>Game Over</h2>
+                <div class="stats">
+                    <p>Distance: <span id="final-distance"></span></p>
+                    <p>Speed: <span id="final-speed"></span></p>
+                    <p>Enemies Killed: <span id="final-kills"></span></p>
+                </div>
+                <div class="input-container">
+                    <label for="player-name">Enter Your Name:</label>
+                    <input type="text" id="player-name" maxlength="15">
+                </div>
+                <button id="save-score">Save Score</button>
+            </div>
+        </div>
+
+        <!-- Quit Modal -->
+        <div id="quit-modal" class="modal">
+            <div class="modal-content">
+                <h2>Quit Game?</h2>
+                <p>Are you sure you want to quit? All progress will be lost.</p>
+                <div class="modal-buttons">
+                    <button id="quit-cancel">Cancel</button>
+                    <button id="quit-confirm">Yes, Quit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Sound Effects -->
+    <audio id="laser-sound" src="assets/sounds/laser.mp3" preload="auto"></audio>
+    <audio id="explosion-sound" src="assets/sounds/explosion.mp3" preload="auto"></audio>
+    <audio id="hit-sound" src="assets/sounds/hit.mp3" preload="auto"></audio>
+    <audio id="game-over-sound" src="assets/sounds/game-over.mp3" preload="auto"></audio>
+    
+    <!-- Game Music -->
+    <audio id="menu-music" src="assets/music/menu-music.mp3" loop preload="auto"></audio>
+    <audio id="game-music" src="assets/music/game-music.mp3" loop preload="auto"></audio>
+</body>
+</html> 
