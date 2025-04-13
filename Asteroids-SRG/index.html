@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asteroids - Juego Clásico</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-container">
+        <div id="start-screen" class="screen">
+            <h1>ASTEROIDS</h1>
+            <div class="instructions">
+                <h2>CONTROLES</h2>
+                <p>← → : Rotar nave</p>
+                <p>↑ : Propulsión</p>
+                <p>ESPACIO : Disparar</p>
+                <p>H : Hiperespacio (teletransporte)</p>
+            </div>
+            <button id="start-button" onclick="startGameDirect()">INICIAR JUEGO</button>
+        </div>
+        
+        <div id="game-screen" class="screen hidden">
+            <div class="hud">
+                <div class="score">PUNTUACIÓN: <span id="score">0</span></div>
+                <div class="lives">VIDAS: <span id="lives">3</span></div>
+                <div class="level">NIVEL: <span id="level">1</span></div>
+            </div>
+            <canvas id="game-canvas"></canvas>
+        </div>
+        
+        <div id="game-over-screen" class="screen hidden">
+            <h1>GAME OVER</h1>
+            <div class="final-score">PUNTUACIÓN FINAL: <span id="final-score">0</span></div>
+            <button id="restart-button">JUGAR DE NUEVO</button>
+        </div>
+    </div>
+    
+    <script>
+        function startGameDirect() {
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('game-screen').classList.remove('hidden');
+            
+            if (typeof init === 'function') {
+                init();
+            }
+        }
+    </script>
+    
+    <script src="script.js"></script>
+</body>
+</html> 

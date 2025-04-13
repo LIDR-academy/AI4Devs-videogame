@@ -1,0 +1,131 @@
+.game-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+#board {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 2px;
+    background-color: black;
+    padding: 2px;
+    width: min(400px, 80vw);
+    height: min(400px, 80vw);
+    aspect-ratio: 1;
+}
+
+.cell {
+    background-color: darkgreen;
+    aspect-ratio: 1;
+    position: relative;
+    cursor: pointer;
+}
+
+.piece {
+    position: absolute;
+    width: 80%;
+    height: 80%;
+    border-radius: 50%;
+    top: 10%;
+    left: 10%;
+    transition: transform 0.3s;
+}
+
+.piece.black {
+    background-color: black;
+}
+
+.piece.white {
+    background-color: white;
+}
+
+#status {
+    margin-top: 20px;
+    font-size: 1.2em;
+}
+
+#size-selector {
+    margin-bottom: 20px;
+}
+
+#size-selector button {
+    padding: 8px 16px;
+    margin: 0 5px;
+    cursor: pointer;
+    border: 2px solid #333;
+    border-radius: 4px;
+    background: #fff;
+}
+
+#size-selector button.selected {
+    background: #333;
+    color: #fff;
+}
+
+#size-selector button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.hidden {
+    display: none !important;
+}
+
+#size-selector h2 {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+#acknowledge-forfeit {
+    margin-top: 15px;
+    padding: 8px 16px;
+    border: none;
+    background-color: #333;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#acknowledge-forfeit:hover {
+    background-color: #444;
+}
+
+@keyframes glimmer {
+    0% { background-color: #000000; }
+    25% { background-color: #DAA520; }
+    50% { background-color: #FFD700; }
+    75% { background-color: #DAA520; }
+    100% { background-color: #000000; }
+}
+
+.piece.winner {
+    animation: glimmer 2s infinite;
+}
+
+.piece.white.winner {
+    animation: none;
+    background: radial-gradient(circle at 30% 30%, #FFF, #FFD700);
+}

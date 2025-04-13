@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Sonidos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        button {
+            margin: 10px;
+            padding: 8px 16px;
+            cursor: pointer;
+        }
+        .download-btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            margin-left: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Generador de Sonidos para el Juego</h1>
+    <p>Haz clic en los botones para escuchar los sonidos y luego descárgalos usando el enlace correspondiente.</p>
+    
+    <div>
+        <h2>Sonido de disparo (shoot.mp3)</h2>
+        <button onclick="playShootSound()">Reproducir</button>
+        <a id="downloadShoot" class="download-btn" href="#" download="shoot.mp3">Descargar</a>
+    </div>
+    
+    <div>
+        <h2>Sonido de gol (goal.mp3)</h2>
+        <button onclick="playGoalSound()">Reproducir</button>
+        <a id="downloadGoal" class="download-btn" href="#" download="goal.mp3">Descargar</a>
+    </div>
+    
+    <div>
+        <h2>Sonido de atajada (save.mp3)</h2>
+        <button onclick="playSaveSound()">Reproducir</button>
+        <a id="downloadSave" class="download-btn" href="#" download="save.mp3">Descargar</a>
+    </div>
+    
+    <div>
+        <h2>Sonido de silbato (whistle.mp3)</h2>
+        <button onclick="playWhistleSound()">Reproducir</button>
+        <a id="downloadWhistle" class="download-btn" href="#" download="whistle.mp3">Descargar</a>
+    </div>
+    
+    <div>
+        <h2>Sonido de multitud (crowd.mp3)</h2>
+        <button onclick="playCrowdSound()">Reproducir</button>
+        <a id="downloadCrowd" class="download-btn" href="#" download="crowd.mp3">Descargar</a>
+    </div>
+    
+    <script>
+        let audioContext;
+        
+        function initAudioContext() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+        
+        // Función para generar un sonido de disparo
+        function playShootSound() {
+            initAudioContext();
+            
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.type = 'sine';
+            oscillator.frequency.setValueAtTime(330, audioContext.currentTime);
+            oscillator.frequency.exponentialRampToValueAtTime(50, audioContext.currentTime + 0.3);
+            
+            gainNode.gain.setValueAtTime(1, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.start();
+            oscillator.stop(audioContext.currentTime + 0.3);
+            
+            createDownloadLink('shoot', oscillator, gainNode, 0.3);
+        }
+        
+        // Función para generar un sonido de gol
+        function playGoalSound() {
+            initAudioContext();
+            
+            const oscillator1 = audioContext.createOscillator();
+            const oscillator2 = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator1.type = 'triangle';
+            oscillator1.frequency.setValueAtTime(440, audioContext.currentTime);
+            oscillator1.frequency.setValueAtTime(660, audioContext.currentTime + 0.1);
+            oscillator1.frequency.setValueAtTime(880, audioContext.currentTime + 0.2);
+            
+            oscillator2.type = 'sine';
+            oscillator2.frequency.setValueAtTime(880, audioContext.currentTime);
+            oscillator2.frequency.setValueAtTime(1320, audioContext.currentTime + 0.1);
+            oscillator2.frequency.setValueAtTime(1760, audioContext.currentTime + 0.2);
+            
+            gainNode.gain.setValueAtTime(0.5, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.7);
+            
+            oscillator1.connect(gainNode);
+            oscillator2.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator1.start();
+            oscillator2.start();
+            oscillator1.stop(audioContext.currentTime + 0.7);
+            oscillator2.stop(audioContext.currentTime + 0.7);
+            
+            createDownloadLink('goal', [oscillator1, oscillator2], gainNode, 0.7);
+        }
+        
+        // Función para generar un sonido de atajada
+        function playSaveSound() {
+            initAudioContext();
+            
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.type = 'sine';
+            oscillator.frequency.setValueAtTime(440, audioContext.currentTime);
+            oscillator.frequency.exponentialRampToValueAtTime(220, audioContext.currentTime + 0.4);
+            
+            gainNode.gain.setValueAtTime(0.8, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.4);
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.start();
+            oscillator.stop(audioContext.currentTime + 0.4);
+            
+            createDownloadLink('save', oscillator, gainNode, 0.4);
+        }
+        
+        // Función para generar un sonido de silbato
+        function playWhistleSound() {
+            initAudioContext();
+            
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.type = 'sine';
+            oscillator.frequency.setValueAtTime(1200, audioContext.currentTime);
+            oscillator.frequency.setValueAtTime(1600, audioContext.currentTime + 0.1);
+            oscillator.frequency.setValueAtTime(1200, audioContext.currentTime + 0.3);
+            
+            gainNode.gain.setValueAtTime(0.6, audioContext.currentTime);
+            gainNode.gain.setValueAtTime(0.8, audioContext.currentTime + 0.1);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.start();
+            oscillator.stop(audioContext.currentTime + 0.5);
+            
+            createDownloadLink('whistle', oscillator, gainNode, 0.5);
+        }
+        
+        // Función para generar un sonido de multitud
+        function playCrowdSound() {
+            initAudioContext();
+            
+            const noiseBuffer = createNoiseBuffer();
+            const noiseSource = audioContext.createBufferSource();
+            noiseSource.buffer = noiseBuffer;
+            
+            const filter = audioContext.createBiquadFilter();
+            filter.type = 'bandpass';
+            filter.frequency.value = 800;
+            filter.Q.value = 0.5;
+            
+            const gainNode = audioContext.createGain();
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.7, audioContext.currentTime + 0.5);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 1.5);
+            
+            noiseSource.connect(filter);
+            filter.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            noiseSource.start();
+            noiseSource.stop(audioContext.currentTime + 1.5);
+            
+            createDownloadLink('crowd', noiseSource, gainNode, 1.5);
+        }
+        
+        // Función para crear un buffer de ruido (para el sonido de multitud)
+        function createNoiseBuffer() {
+            const bufferSize = 2 * audioContext.sampleRate;
+            const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+            const data = buffer.getChannelData(0);
+            
+            for (let i = 0; i < bufferSize; i++) {
+                data[i] = Math.random() * 2 - 1;
+            }
+            
+            return buffer;
+        }
+        
+        // Función para crear enlaces de descarga
+        function createDownloadLink(soundName, oscillator, gainNode, duration) {
+            // Crear un nuevo audioContext para grabar el sonido
+            const recordContext = new (window.AudioContext || window.webkitAudioContext)();
+            const destination = recordContext.createMediaStreamDestination();
+            const mediaRecorder = new MediaRecorder(destination.stream);
+            const chunks = [];
+            
+            // Recrear el sonido para grabarlo
+            let sources = Array.isArray(oscillator) ? oscillator : [oscillator];
+            sources = sources.map(() => {
+                const newOsc = recordContext.createOscillator();
+                newOsc.type = 'sine';
+                return newOsc;
+            });
+            
+            const newGain = recordContext.createGain();
+            
+            sources.forEach(src => src.connect(newGain));
+            newGain.connect(destination);
+            
+            sources.forEach(src => src.start());
+            
+            mediaRecorder.ondataavailable = function(evt) {
+                chunks.push(evt.data);
+            };
+            
+            mediaRecorder.onstop = function() {
+                const blob = new Blob(chunks, { type: 'audio/mp3' });
+                const url = URL.createObjectURL(blob);
+                document.getElementById('download' + soundName.charAt(0).toUpperCase() + soundName.slice(1)).href = url;
+            };
+            
+            mediaRecorder.start();
+            
+            sources.forEach(src => {
+                setTimeout(() => {
+                    src.stop();
+                    mediaRecorder.stop();
+                }, duration * 1000);
+            });
+        }
+    </script>
+</body>
+</html> 

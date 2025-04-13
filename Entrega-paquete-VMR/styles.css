@@ -1,0 +1,677 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.game-container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 800px;
+    width: 100%;
+}
+
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.game-area {
+    position: relative;
+    width: 100%;
+    height: 500px;
+    background-color: #000;
+    border: 2px solid #333;
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+#game-board {
+    position: relative;
+    width: 100%;
+    height: 480px;
+    overflow: hidden;
+    background-color: #F5F5F5;
+    border-radius: 5px;
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.2);
+    margin-bottom: 20px;
+    
+    /* Adicionar grade ao fundo */
+    background-image: 
+        linear-gradient(to right, rgba(0,0,0,0.05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0,0,0,0.05) 1px, transparent 1px);
+    background-size: 40px 40px;
+    
+    /* Adicionar iluminação global */
+    position: relative;
+    overflow: hidden;
+}
+
+/* Adicionar efeito de iluminação global */
+#game-board::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.1), transparent 70%);
+    pointer-events: none;
+    z-index: 10;
+}
+
+/* Adicionar sombra lateral para efeito 3D */
+#game-board::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 20%;
+    background: linear-gradient(to left, rgba(0,0,0,0.1), transparent);
+    pointer-events: none;
+    z-index: 10;
+}
+
+/* Estilo para as ruas */
+.road, .road-corner, .intersection {
+    position: absolute;
+    background-color: #555555;
+    border: 1px solid #777777;
+    z-index: 0;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+}
+
+.road-horizontal {
+    height: 40px;
+    width: 40px;
+    background: linear-gradient(to bottom, #666666, #555555);
+}
+
+.road-vertical {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(to right, #666666, #555555);
+}
+
+/* Estilo para as curvas */
+.road-corner {
+    width: 40px;
+    height: 40px;
+    background: radial-gradient(circle at 50% 50%, #0000FF, #000088);
+}
+
+/* Estilo para as intersecções */
+.intersection {
+    width: 40px;
+    height: 40px;
+    background: #666666;
+    z-index: 0;
+}
+
+/* Faixa de pedestres mais sutil */
+.intersection::before, .intersection::after {
+    content: '';
+    position: absolute;
+    background-color: #FFFFFF;
+    opacity: 0.25;
+}
+
+/* Desligar algumas intersecções para reduzir densidade */
+.intersection:nth-child(odd)::before, .intersection:nth-child(even)::after {
+    display: none;
+}
+
+/* Estilos para edifícios */
+.building {
+    position: absolute;
+    background-color: #607D8B;
+    border: 1px solid #455A64;
+    z-index: 1;
+    box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.3);
+    perspective: 800px;
+    overflow: hidden;
+    transform-style: preserve-3d;
+    transform: rotateX(10deg) translateZ(0);
+    transition: all 0.3s ease;
+    cursor: default;
+}
+
+/* Efeito de hover para edifícios */
+.building:hover {
+    transform: rotateX(15deg) translateZ(5px) scale(1.05);
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.4);
+    z-index: 2;
+}
+
+.building::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: -8px;
+    width: 8px;
+    height: 100%;
+    background-color: #455A64;
+    transform: skewY(45deg) translateY(-4px);
+    transform-origin: top right;
+    box-shadow: inset -1px 0 3px rgba(0, 0, 0, 0.3);
+}
+
+.building::after {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: 0;
+    width: 100%;
+    height: 8px;
+    background-color: #78909C;
+    transform: skewX(45deg) translateX(4px);
+    transform-origin: top left;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+/* Variações de edifícios por posição */
+.building:nth-child(3n+1) {
+    background-color: #455A64;
+    background-image: linear-gradient(0deg, rgba(0,0,0,0.05) 1%, transparent 1%, transparent 50%, rgba(0,0,0,0.05) 50%, rgba(0,0,0,0.05) 51%, transparent 51%);
+    background-size: 30px 30px;
+}
+
+.building:nth-child(3n+2) {
+    background-color: #546E7A;
+    background-image: linear-gradient(90deg, rgba(0,0,0,0.05) 1%, transparent 1%, transparent 50%, rgba(0,0,0,0.05) 50%, rgba(0,0,0,0.05) 51%, transparent 51%);
+    background-size: 20px 20px;
+}
+
+.building:nth-child(5n+3) {
+    background-color: #37474F;
+    background-image: linear-gradient(45deg, rgba(0,0,0,0.05) 25%, transparent 25%, transparent 75%, rgba(0,0,0,0.05) 75%);
+    background-size: 20px 20px;
+}
+
+.building:nth-child(7n) {
+    background-color: #263238;
+    background-image: radial-gradient(circle, rgba(255,255,255,0.07) 1px, transparent 1px);
+    background-size: 10px 10px;
+}
+
+.building:nth-child(11n) {
+    background-color: #4E342E;
+    background-image: linear-gradient(30deg, #5D4037 25%, transparent 25%, transparent 50%, #5D4037 50%, #5D4037 75%, transparent 75%);
+    background-size: 15px 15px;
+}
+
+.building-window {
+    position: absolute;
+    border: 1px solid rgba(0,0,0,0.3);
+    box-shadow: 0 0 5px rgba(255,255,255,0.5), inset 0 0 10px rgba(255,235,59,0.6);
+    background-color: rgba(255, 235, 59, 0.7);
+    border-radius: 2px;
+    transform: translateZ(2px);
+    opacity: 0.9;
+}
+
+@keyframes windowGlow {
+    0% { box-shadow: 0 0 5px rgba(255,255,255,0.5), inset 0 0 4px rgba(255,235,59,0.6); }
+    100% { box-shadow: 0 0 8px rgba(255,255,255,0.8), inset 0 0 10px rgba(255,235,59,0.9); }
+}
+
+@keyframes windowBlink {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
+}
+
+.building:nth-child(3n) .building-window:nth-child(odd) {
+    animation: windowGlow 5s infinite alternate;
+}
+
+.building:nth-child(5n) .building-window:nth-child(even) {
+    animation: windowBlink 8s infinite;
+    animation-delay: calc(var(--window-index, 0) * 1s);
+}
+
+.building:nth-child(7n) .building-window {
+    animation: windowBlink 12s infinite;
+    animation-delay: calc(var(--window-index, 0) * 2s);
+}
+
+.building:nth-child(11n) .building-window:nth-child(3n) {
+    background-color: rgba(100, 181, 246, 0.8);
+    animation: windowGlow 7s infinite alternate-reverse;
+}
+
+/* Estilos para parques */
+.park {
+    position: absolute;
+    background-color: #4CAF50;
+    border: 1px solid #388E3C;
+    z-index: 1;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    transform-style: preserve-3d;
+    transform: rotateX(10deg) translateZ(1px);
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.park:hover {
+    transform: rotateX(15deg) translateZ(3px) scale(1.05);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    z-index: 2;
+}
+
+.park .tree {
+    border: 1px solid #2E7D32;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+    transition: all 0.3s ease;
+}
+
+.park:hover .tree {
+    transform: translateZ(5px) scale(1.1);
+    box-shadow: 0 3px 6px rgba(0,0,0,0.5);
+}
+
+/* Estilos para praças */
+.plaza {
+    position: absolute;
+    background-color: #8D6E63;
+    border: 1px solid #6D4C41;
+    z-index: 1;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    transform-style: preserve-3d;
+    transform: rotateX(10deg) translateZ(1px);
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.plaza:hover {
+    transform: rotateX(15deg) translateZ(3px) scale(1.05);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    z-index: 2;
+}
+
+.plaza .bench {
+    border: 1px solid #3E2723;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+    transition: all 0.3s ease;
+}
+
+.plaza:hover .bench {
+    transform: translateZ(3px) scale(1.1);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+/* Ajuste para os elementos do jogo */
+.package, .delivery-point, .obstacle {
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    border-radius: 50%;
+    margin: 5px;
+    z-index: 1;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.package {
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    background-color: #FFD700;
+    border: 2px solid #8B4513;
+    border-radius: 0;
+    margin: 5px;
+    z-index: 1;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    animation: pulse 1s infinite;
+    /* Linhas da caixa */
+    background-image: linear-gradient(90deg, transparent 50%, rgba(139, 69, 19, 0.4) 50%),
+                      linear-gradient(0deg, transparent 50%, rgba(139, 69, 19, 0.4) 50%);
+    background-size: 10px 10px;
+    /* Efeito 3D */
+    position: relative;
+}
+
+.package::before, .package::after {
+    content: '';
+    position: absolute;
+    background-color: #E6C200;
+    z-index: -1;
+}
+
+.package::before {
+    /* Face lateral direita */
+    width: 5px;
+    height: 100%;
+    right: -5px;
+    top: 0;
+    transform: skewY(45deg);
+    transform-origin: top right;
+    border-right: 1px solid #8B4513;
+}
+
+.package::after {
+    /* Face superior */
+    width: 100%;
+    height: 5px;
+    left: 0;
+    top: -5px;
+    transform: skewX(45deg);
+    transform-origin: bottom left;
+    border-top: 1px solid #8B4513;
+}
+
+.delivery-point {
+    background-color: #00FF00;
+    border: 2px solid #00CC00;
+    animation: glow 1s infinite;
+}
+
+.obstacle {
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    background-color: #FF0000;
+    border: 3px solid #800000;
+    border-radius: 50%;
+    margin: 5px;
+    z-index: 1;
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.8);
+    animation: pulse-red 1s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+@keyframes glow {
+    0% { box-shadow: 0 0 5px #00FF00; }
+    50% { box-shadow: 0 0 20px #00FF00; }
+    100% { box-shadow: 0 0 5px #00FF00; }
+}
+
+@keyframes pulse-red {
+    0% { box-shadow: 0 0 5px rgba(255, 0, 0, 0.8); }
+    50% { box-shadow: 0 0 15px rgba(255, 0, 0, 0.8); }
+    100% { box-shadow: 0 0 5px rgba(255, 0, 0, 0.8); }
+}
+
+/* Ajuste para a van */
+#player {
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    transform-origin: center;
+    z-index: 100;
+    pointer-events: none;
+    background-color: #FFA500;
+    border-radius: 8px;
+    border: 2px solid #FF8C00;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    /* Simplificar para garantir compatibilidade */
+    transition: left 0.1s linear, top 0.1s linear, transform 0.1s linear;
+}
+
+/* Disable transitions when moving for smoother direct positioning */
+#player.moving {
+    /* Manter uma transição mínima para movimento suave */
+    transition: left 0.1s linear, top 0.1s linear;
+}
+
+/* Corpo principal da van */
+#player::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    border-radius: 6px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3),
+                inset 0 2px 4px rgba(255,255,255,0.2),
+                inset 0 -2px 4px rgba(0,0,0,0.2);
+    pointer-events: none;
+    will-change: box-shadow;
+    z-index: 1;
+}
+
+/* Rodas */
+#player .wheel {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    background: #333;
+    border-radius: 50%;
+    bottom: -5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.4),
+                inset 0 2px 4px rgba(255,255,255,0.2);
+}
+
+#player .wheel::after {
+    content: '';
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: #666;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#player .wheel-front {
+    right: 4px;
+}
+
+#player .wheel-back {
+    left: 4px;
+}
+
+/* Janelas laterais */
+#player .window {
+    position: absolute;
+    width: 15px;
+    height: 12px;
+    background: rgba(255,255,255,0.9);
+    border-radius: 4px;
+    top: 6px;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+}
+
+#player .window-front {
+    left: 6px;
+}
+
+#player .window-back {
+    right: 6px;
+}
+
+/* Janela traseira */
+#player .window-rear {
+    position: absolute;
+    width: 30px;
+    height: 25px;
+    background: rgba(255,255,255,0.9);
+    border-radius: 4px;
+    top: 5px;
+    right: 5px;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Faróis */
+#player .headlight {
+    position: absolute;
+    width: 6px;
+    height: 4px;
+    background: #FFD700;
+    border-radius: 3px;
+    top: 6px;
+    box-shadow: 0 0 5px #FFD700;
+}
+
+#player .headlight-left {
+    left: 4px;
+}
+
+#player .headlight-right {
+    right: 4px;
+}
+
+/* Grade frontal */
+#player .grille {
+    position: absolute;
+    width: 20px;
+    height: 15px;
+    border: 2px solid #1976D2;
+    border-radius: 4px;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(45deg, #1976D2 25%, transparent 25%),
+                linear-gradient(-45deg, #1976D2 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, #1976D2 75%),
+                linear-gradient(-45deg, transparent 75%, #1976D2 75%);
+    background-size: 15px 15px;
+    background-position: 0 0, 0 7px, 7px -7px, -7px 0px;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* Porta traseira */
+#player .rear-door {
+    position: absolute;
+    width: 20px;
+    height: 25px;
+    background: #1976D2;
+    border: 2px solid #1565C0;
+    border-radius: 4px;
+    right: 2px;
+    top: 2px;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* Logo da empresa */
+#player .company-logo {
+    position: absolute;
+    width: 25px;
+    height: 12px;
+    background: linear-gradient(to bottom, #FFC107, #FFA000);
+    border-radius: 4px;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #1976D2;
+    font-size: 8px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    text-shadow: 1px 1px 2px rgba(255,255,255,0.5);
+}
+
+/* Luzes traseiras */
+#player .taillight {
+    position: absolute;
+    width: 5px;
+    height: 3px;
+    background: #FF0000;
+    border-radius: 3px;
+    bottom: 2px;
+    box-shadow: 0 0 5px #FF0000;
+}
+
+#player .taillight-left {
+    left: 4px;
+}
+
+#player .taillight-right {
+    right: 4px;
+}
+
+/* Adicionar efeito de reflexo na lateral */
+#player::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+                transparent 0%,
+                rgba(255,255,255,0.1) 20%,
+                rgba(255,255,255,0.2) 50%,
+                rgba(255,255,255,0.1) 80%,
+                transparent 100%);
+    border-radius: 8px;
+    pointer-events: none;
+}
+
+.controls {
+    text-align: center;
+}
+
+#start-game {
+    padding: 10px 20px;
+    font-size: 1.2em;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+#start-game:hover {
+    background-color: #45a049;
+}
+
+.instructions {
+    text-align: left;
+    background-color: #f8f8f8;
+    padding: 15px;
+    border-radius: 5px;
+}
+
+.instructions h3 {
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.instructions p {
+    margin-bottom: 5px;
+    color: #666;
+}
+
+.collision {
+    animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+@keyframes shake {
+    0%, 100% { transform: rotate(var(--rotation)) translate(0, 0); }
+    10%, 30%, 50%, 70%, 90% { transform: rotate(var(--rotation)) translate(-2px, 0); }
+    20%, 40%, 60%, 80% { transform: rotate(var(--rotation)) translate(2px, 0); }
+}
+
+@keyframes movingShadow {
+    from { box-shadow: 0 4px 8px rgba(0,0,0,0.3); }
+    to { box-shadow: 0 6px 12px rgba(0,0,0,0.5); }
+}
+
+#player.moving::before {
+    animation: movingShadow 0.3s infinite alternate;
+} 

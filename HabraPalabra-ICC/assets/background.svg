@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800">
+  <!-- Main background gradient -->
+  <defs>
+    <linearGradient id="backgroundGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2c3e50" />
+      <stop offset="100%" stop-color="#1a2530" />
+    </linearGradient>
+    
+    <!-- Grid pattern -->
+    <pattern id="gridPattern" width="200" height="200" patternUnits="userSpaceOnUse">
+      <path d="M 200 0 L 0 0 0 200" fill="none" stroke="#3a546a" stroke-width="2" />
+    </pattern>
+    
+    <!-- Subtle glow effect for decorative elements -->
+    <radialGradient id="glowEffect" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+      <stop offset="0%" stop-color="#f9d423" stop-opacity="0.2" />
+      <stop offset="100%" stop-color="#f9d423" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <!-- Base background -->
+  <rect width="800" height="800" fill="url(#backgroundGradient)" />
+  
+  <!-- Grid overlay -->
+  <rect width="800" height="800" fill="url(#gridPattern)" />
+  
+  <!-- Decorative elements -->
+  <!-- Subtle word-related icons/shapes in the corners -->
+  
+  <!-- Top left corner decorative element -->
+  <g transform="translate(80, 80)">
+    <circle cx="0" cy="0" r="60" fill="url(#glowEffect)" />
+    <path d="M-30,0 L30,0 M0,-30 L0,30" stroke="#f9d423" stroke-width="4" stroke-linecap="round" />
+  </g>
+  
+  <!-- Top right corner decorative element -->
+  <g transform="translate(720, 80)">
+    <circle cx="0" cy="0" r="60" fill="url(#glowEffect)" />
+    <path d="M-20,-20 L20,20 M-20,20 L20,-20" stroke="#f9d423" stroke-width="4" stroke-linecap="round" />
+  </g>
+  
+  <!-- Bottom left corner decorative element -->
+  <g transform="translate(80, 720)">
+    <circle cx="0" cy="0" r="60" fill="url(#glowEffect)" />
+    <path d="M-25,-15 L25,-15 M-25,0 L25,0 M-25,15 L25,15" stroke="#f9d423" stroke-width="4" stroke-linecap="round" />
+  </g>
+  
+  <!-- Bottom right corner decorative element -->
+  <g transform="translate(720, 720)">
+    <circle cx="0" cy="0" r="60" fill="url(#glowEffect)" />
+    <rect x="-20" y="-20" width="40" height="40" stroke="#f9d423" stroke-width="4" fill="none" />
+  </g>
+  
+  <!-- Center emblem -->
+  <g transform="translate(400, 400)">
+    <circle cx="0" cy="0" r="120" fill="url(#glowEffect)" opacity="0.5" />
+    <circle cx="0" cy="0" r="80" fill="none" stroke="#f9d423" stroke-width="3" stroke-dasharray="5,5" />
+    
+    <!-- W logo for Wordament -->
+    <path d="M-40,-20 L-25,20 L-10,-10 L5,20 L20,-10 L35,20 L50,-20" 
+          fill="none" stroke="#f9d423" stroke-width="6" stroke-linejoin="round" stroke-linecap="round" />
+  </g>
+  
+  <!-- Subtle particle effects scattered around -->
+  <g opacity="0.4">
+    <circle cx="150" cy="250" r="3" fill="#f9d423" />
+    <circle cx="650" cy="350" r="2" fill="#f9d423" />
+    <circle cx="250" cy="650" r="4" fill="#f9d423" />
+    <circle cx="450" cy="150" r="2" fill="#f9d423" />
+    <circle cx="350" cy="550" r="3" fill="#f9d423" />
+    <circle cx="550" cy="250" r="2" fill="#f9d423" />
+    <circle cx="200" cy="400" r="3" fill="#f9d423" />
+    <circle cx="600" cy="600" r="2" fill="#f9d423" />
+    <circle cx="300" cy="200" r="2" fill="#f9d423" />
+    <circle cx="700" cy="450" r="3" fill="#f9d423" />
+    <circle cx="100" cy="500" r="2" fill="#f9d423" />
+    <circle cx="500" cy="700" r="3" fill="#f9d423" />
+  </g>
+  
+  <!-- Subtle tile grid outline for game board -->
+  <g transform="translate(200, 200)" opacity="0.15">
+    <rect width="400" height="400" fill="none" stroke="#f9d423" stroke-width="3" />
+    <!-- Horizontal grid lines -->
+    <line x1="0" y1="100" x2="400" y2="100" stroke="#f9d423" stroke-width="2" />
+    <line x1="0" y1="200" x2="400" y2="200" stroke="#f9d423" stroke-width="2" />
+    <line x1="0" y1="300" x2="400" y2="300" stroke="#f9d423" stroke-width="2" />
+    
+    <!-- Vertical grid lines -->
+    <line x1="100" y1="0" x2="100" y2="400" stroke="#f9d423" stroke-width="2" />
+    <line x1="200" y1="0" x2="200" y2="400" stroke="#f9d423" stroke-width="2" />
+    <line x1="300" y1="0" x2="300" y2="400" stroke="#f9d423" stroke-width="2" />
+  </g>
+</svg>

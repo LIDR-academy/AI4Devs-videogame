@@ -1,0 +1,300 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.game-container {
+    position: relative;
+    width: 800px;
+    height: 600px;
+    background: linear-gradient(to bottom, #2c3e50, #34495e);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+    border: 4px solid #3498db;
+}
+
+.game-header {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    right: 20px;
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    background-color: #2c3e50;
+    color: white;
+    font-size: 1.2em;
+    z-index: 10;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    font-weight: bold;
+    backdrop-filter: blur(5px);
+}
+
+.game-board {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.safe-zone {
+    position: absolute;
+    width: 100%;
+    height: 80px;
+    background: linear-gradient(45deg, #2ecc71, #27ae60);
+    background-image: 
+        radial-gradient(circle at 10px 10px, #1e8449 2px, transparent 2px),
+        radial-gradient(circle at 30px 30px, #1e8449 2px, transparent 2px),
+        radial-gradient(circle at 50px 50px, #1e8449 2px, transparent 2px);
+    background-size: 40px 40px;
+    box-shadow: inset 0 0 20px rgba(46, 204, 113, 0.3);
+}
+
+.safe-zone.top {
+    top: 0;
+}
+
+.safe-zone.bottom {
+    bottom: 0;
+}
+
+.lane {
+    position: absolute;
+    width: 100%;
+    height: 80px;
+    background: linear-gradient(to right, #95a5a6, #7f8c8d);
+    border-top: 2px solid #bdc3c7;
+    border-bottom: 2px solid #bdc3c7;
+}
+
+.lane::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: repeating-linear-gradient(
+        to right,
+        #fff 0px,
+        #fff 30px,
+        transparent 30px,
+        transparent 60px
+    );
+}
+
+.lane-1 { top: 80px; }
+.lane-2 { top: 160px; }
+.lane-3 { top: 240px; }
+.lane-4 { top: 320px; }
+.lane-5 { top: 400px; }
+
+.frog {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    transition: transform 0.1s;
+    z-index: 5;
+    filter: drop-shadow(0 0 10px rgba(0, 184, 148, 0.3));
+}
+
+.frog svg {
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0 0 15px rgba(0, 184, 148, 0.5));
+}
+
+.vehicle {
+    position: absolute;
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    transition: left 0.016s linear;
+}
+
+.vehicle svg {
+    width: 100%;
+    height: 100%;
+}
+
+.vehicle.small {
+    width: 80px;
+    height: 60px;
+    filter: drop-shadow(0 0 10px rgba(231, 76, 60, 0.4));
+}
+
+.vehicle.medium {
+    width: 100px;
+    height: 70px;
+    filter: drop-shadow(0 0 10px rgba(52, 152, 219, 0.4));
+}
+
+.vehicle.large {
+    width: 120px;
+    height: 80px;
+    filter: drop-shadow(0 0 10px rgba(241, 196, 15, 0.4));
+}
+
+/* Estilos específicos para cada tipo de vehículo */
+.vehicle[data-type="Taxi"] {
+    filter: drop-shadow(0 0 10px rgba(241, 196, 15, 0.5));
+}
+
+.vehicle[data-type="Ambulancia"] {
+    filter: drop-shadow(0 0 10px rgba(231, 76, 60, 0.6));
+}
+
+.vehicle[data-type="Camión"] {
+    filter: drop-shadow(0 0 10px rgba(243, 156, 18, 0.5));
+}
+
+.vehicle.large[data-type="Camión"] {
+    width: 140px;
+    height: 75px;
+}
+
+.vehicle[data-type="Tronco"] {
+    filter: drop-shadow(0 0 10px rgba(139, 69, 19, 0.4));
+}
+
+.game-over,
+.start-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.85);
+    color: white;
+    text-align: center;
+    z-index: 20;
+    backdrop-filter: blur(5px);
+}
+
+.start-screen h1 {
+    font-size: 3.5em;
+    margin-bottom: 20px;
+    color: #2ecc71;
+    text-shadow: 0 0 20px rgba(46, 204, 113, 0.5);
+    animation: glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+    from {
+        text-shadow: 0 0 10px rgba(46, 204, 113, 0.5);
+    }
+    to {
+        text-shadow: 0 0 20px rgba(46, 204, 113, 0.8);
+    }
+}
+
+.start-screen p {
+    font-size: 1.4em;
+    margin: 10px 0;
+    color: #ecf0f1;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.game-over h2 {
+    font-size: 2.8em;
+    margin-bottom: 20px;
+    color: #e74c3c;
+    text-shadow: 0 0 20px rgba(231, 76, 60, 0.5);
+}
+
+.hidden {
+    display: none;
+}
+
+button {
+    margin-top: 20px;
+    padding: 15px 40px;
+    font-size: 1.3em;
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    color: white;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: bold;
+    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+}
+
+button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+    background: linear-gradient(135deg, #2980b9, #3498db);
+}
+
+@media (max-width: 850px) {
+    .game-container {
+        width: 95vw;
+        height: 70vh;
+    }
+    
+    .start-screen h1 {
+        font-size: 2.8em;
+    }
+    
+    .game-over h2 {
+        font-size: 2.2em;
+    }
+}
+
+.pause-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 2em;
+    z-index: 1000;
+}
+
+.pause-overlay.hidden {
+    display: none;
+}
+
+.frog.hit {
+    animation: hit 0.5s ease-in-out;
+    filter: drop-shadow(0 0 15px rgba(231, 76, 60, 0.8));
+}
+
+.frog.success {
+    animation: success 0.5s ease-in-out;
+    filter: drop-shadow(0 0 15px rgba(46, 204, 113, 0.8));
+}
+
+@keyframes hit {
+    0% { transform: scale(1) rotate(0deg); }
+    50% { transform: scale(1.2) rotate(5deg); }
+    100% { transform: scale(1) rotate(0deg); }
+}
+
+@keyframes success {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); filter: drop-shadow(0 0 20px rgba(46, 204, 113, 0.8)); }
+    100% { transform: scale(1); }
+} 

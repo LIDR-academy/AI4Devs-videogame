@@ -1,0 +1,15 @@
+For a complete game, you should add the following audio files:
+
+- title-music.mp3: Background music for the menu
+- battle-music.mp3: Background music for the gameplay
+- click.mp3: Sound effect for button clicks
+- spawn.mp3: Sound effect when a unit spawns
+- attack.mp3: Sound effect when a unit attacks
+- death.mp3: Sound effect when a unit dies
+- victory.mp3: Sound effect for winning
+- defeat.mp3: Sound effect for losing
+
+You can find royalty-free game sound effects on websites like:
+- https://freesound.org/
+- https://opengameart.org/
+- https://mixkit.co/free-sound-effects/game/

@@ -1,0 +1,547 @@
+/* Variables globales */
+:root {
+    --main-bg-color: #4CAF50;
+    --goal-color: #ffffff;
+    --goal-post-color: #f5f5f5;
+    --button-color: #3498db;
+    --button-hover: #2980b9;
+    --text-color: #333;
+    --success-color: #2ecc71;
+    --error-color: #e74c3c;
+    --warning-color: #f39c12;
+}
+
+/* Estilos generales */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+}
+
+body {
+    background-color: var(--main-bg-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+    overflow-x: hidden;
+}
+
+.game-container {
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    max-width: 800px;
+    width: 100%;
+    padding: 20px;
+    margin: 0 auto;
+}
+
+/* Marcador */
+.scoreboard {
+    display: flex;
+    justify-content: space-between;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    padding: 10px 20px;
+    margin-bottom: 20px;
+    font-size: 18px;
+    font-weight: bold;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Área de juego */
+.game-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.goal-area {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16/9;
+    max-width: 600px;
+    background-color: #8ac34a;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.goal-post {
+    position: absolute;
+    top: 15%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    height: 50%;
+    border: 10px solid var(--goal-post-color);
+    border-bottom: none;
+    box-shadow: 0 0 0 2px #888;
+    background-color: transparent;
+    z-index: 1;
+}
+
+.goal-zones {
+    position: absolute;
+    top: 15%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 79%;
+    height: 49%;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    z-index: 2;
+}
+
+/* Overlay para capturar los clics */
+.click-overlay {
+    position: absolute;
+    top: 15%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 79%;
+    height: 49%;
+    z-index: 10;
+    cursor: crosshair;
+}
+
+.zone {
+    border: 1px dashed rgba(255, 255, 255, 0.4);
+    transition: background-color 0.3s;
+}
+
+.zone.highlight {
+    background-color: rgba(52, 152, 219, 0.4);
+    border: 2px dashed rgba(255, 255, 255, 0.8);
+}
+
+.zone.target {
+    background-color: rgba(46, 204, 113, 0.5);
+}
+
+.zone.save {
+    background-color: rgba(231, 76, 60, 0.5);
+}
+
+.goalkeeper {
+    position: absolute;
+    width: 15%;
+    height: 30%;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="25" r="20" fill="%23FFD700"/><rect x="40" y="45" width="20" height="40" fill="%23FF0000"/><rect x="30" y="45" width="10" height="30" fill="%23FF0000"/><rect x="60" y="45" width="10" height="30" fill="%23FF0000"/><rect x="35" y="85" width="10" height="15" fill="%23000"/><rect x="55" y="85" width="10" height="15" fill="%23000"/></svg>');
+    background-repeat: no-repeat;
+    bottom: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
+    transition: all 0.5s ease-out;
+}
+
+.ball {
+    position: absolute;
+    width: 8%;
+    height: 8%;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="white" stroke="black" stroke-width="2"/><path d="M50 5 L85 30 L75 70 L25 70 L15 30 Z" fill="none" stroke="black" stroke-width="2"/><path d="M50 5 L50 95" fill="none" stroke="black" stroke-width="2"/><path d="M5 50 L95 50" fill="none" stroke="black" stroke-width="2"/></svg>');
+    background-repeat: no-repeat;
+    background-size: contain;
+    bottom: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 4;
+    transition: all 0.5s cubic-bezier(.17,.67,.35,1.54);
+}
+
+/* Controles */
+.controls {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 600px;
+}
+
+.shooting-controls, .goalkeeper-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.goalkeeper-controls {
+    display: none;
+}
+
+.direction-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 60px);
+    grid-template-rows: repeat(3, 60px);
+    gap: 5px;
+    margin: 10px 0;
+}
+
+.direction-btn, .goalkeeper-btn {
+    width: 100%;
+    height: 100%;
+    font-size: 20px;
+    background-color: var(--button-color);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.direction-btn:hover, .goalkeeper-btn:hover {
+    background-color: var(--button-hover);
+    transform: scale(1.05);
+}
+
+.direction-btn.selected, .goalkeeper-btn.selected {
+    background-color: var(--success-color);
+    transform: scale(1.1);
+}
+
+.power-control {
+    margin: 20px 0;
+    text-align: center;
+    width: 100%;
+    padding: 0 20px;
+}
+
+.power-bar-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-top: 10px;
+    width: 100%;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.power-bar {
+    flex-grow: 1;
+    height: 25px;
+    background: #ddd;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+    min-width: 300px;
+}
+
+.power-fill {
+    height: 100%;
+    width: 0%;
+    transition: width 0.1s linear;
+    background: linear-gradient(to right, 
+        #3498db 0%, /* Azul para potencia baja */
+        #2ecc71 40%, /* Verde para potencia media */
+        #e74c3c 70%, /* Rojo para potencia alta */
+        #c0392b 100% /* Rojo oscuro para máxima potencia */
+    );
+    position: relative;
+}
+
+.power-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        to bottom,
+        rgba(255,255,255,0.3) 0%,
+        rgba(255,255,255,0.2) 50%,
+        rgba(0,0,0,0.1) 51%,
+        rgba(0,0,0,0.2) 100%
+    );
+}
+
+.power-value {
+    min-width: 40px;
+    font-weight: bold;
+    color: #333;
+    font-size: 18px;
+    background: #f8f9fa;
+    padding: 5px 10px;
+    border-radius: 5px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* Clases para diferentes niveles de potencia */
+.power-low .power-fill {
+    background: linear-gradient(to right, #3498db, #4aa3df);
+    box-shadow: 0 0 10px rgba(52, 152, 219, 0.5);
+}
+
+.power-medium .power-fill {
+    background: linear-gradient(to right, #2ecc71, #27ae60);
+    box-shadow: 0 0 10px rgba(46, 204, 113, 0.5);
+}
+
+.power-high .power-fill {
+    background: linear-gradient(to right, #e74c3c, #c0392b);
+    box-shadow: 0 0 10px rgba(231, 76, 60, 0.5);
+}
+
+/* Ajustes responsivos para la barra de potencia */
+@media (max-width: 768px) {
+    .power-bar-container {
+        max-width: 100%;
+    }
+    
+    .power-bar {
+        min-width: 200px;
+        height: 20px;
+    }
+    
+    .power-value {
+        font-size: 16px;
+        padding: 3px 8px;
+    }
+}
+
+.instructions {
+    background-color: #f8f9fa;
+    border-left: 4px solid var(--button-color);
+    padding: 8px 15px;
+    margin: 10px 0;
+    border-radius: 5px;
+    font-size: 14px;
+    line-height: 1.4;
+    max-width: 90%;
+    text-align: left;
+}
+
+.instructions p {
+    margin: 0;
+}
+
+.instructions strong {
+    color: var(--button-color);
+}
+
+#shoot-btn, #save-btn {
+    padding: 10px 20px;
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+#shoot-btn:hover, #save-btn:hover {
+    background-color: #c0392b;
+    transform: scale(1.05);
+}
+
+/* Mensaje y estado del juego */
+.message {
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    height: 30px;
+    margin: 10px 0;
+    color: var(--text-color);
+}
+
+.game-status {
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+    margin: 10px 0;
+    color: var(--text-color);
+}
+
+/* Modal de fin de juego */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 10;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    max-width: 90%;
+    width: 400px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+#restart-btn {
+    padding: 10px 20px;
+    background-color: var(--button-color);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 18px;
+    margin-top: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+#restart-btn:hover {
+    background-color: var(--button-hover);
+    transform: scale(1.05);
+}
+
+/* Control de sonido */
+.sound-controls {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+#toggle-sound {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+/* Media queries para responsividad */
+@media (max-width: 768px) {
+    .direction-grid {
+        grid-template-columns: repeat(3, 50px);
+        grid-template-rows: repeat(3, 50px);
+    }
+    
+    .goal-post {
+        border-width: 8px;
+    }
+}
+
+@media (max-width: 576px) {
+    .scoreboard {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .direction-grid {
+        grid-template-columns: repeat(3, 40px);
+        grid-template-rows: repeat(3, 40px);
+    }
+    
+    .goal-post {
+        border-width: 6px;
+    }
+    
+    #shoot-btn, #save-btn {
+        padding: 8px 16px;
+        font-size: 16px;
+    }
+}
+
+/* Animaciones */
+@keyframes celebrate {
+    0%, 100% { transform: translateX(-50%) scale(1); }
+    25% { transform: translateX(-50%) scale(1.2) rotate(5deg); }
+    50% { transform: translateX(-50%) scale(1.1) rotate(-5deg); }
+    75% { transform: translateX(-50%) scale(1.2) rotate(5deg); }
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 90% { transform: translateX(-1px); }
+    20%, 80% { transform: translateX(2px); }
+    30%, 50%, 70% { transform: translateX(-4px); }
+    40%, 60% { transform: translateX(4px); }
+}
+
+.celebrate {
+    animation: celebrate 1s ease-in-out;
+}
+
+.shake {
+    animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+.hidden {
+    display: none;
+}
+
+.fade-in {
+    animation: fadeIn 0.5s forwards;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Estilos específicos para el desempate */
+.tiebreaker {
+    color: var(--warning-color);
+    font-weight: bold;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+}
+
+#round-status {
+    transition: all 0.3s ease;
+}
+
+/* Guía de teclas numéricas */
+.key-guide {
+    display: flex;
+    justify-content: center;
+    margin: 10px 0 20px 0;
+}
+
+.key-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 30px);
+    grid-template-rows: repeat(3, 30px);
+    gap: 5px;
+    background-color: rgba(52, 152, 219, 0.1);
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.key-grid div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: bold;
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    color: var(--text-color);
+}
+
+.key-grid div.highlight {
+    background-color: var(--button-color);
+    color: white;
+}
+
+@media (max-width: 768px) {
+    .key-guide {
+        display: none; /* Ocultar en dispositivos móviles */
+    }
+} 

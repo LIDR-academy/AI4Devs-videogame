@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reversi Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-container">
+        <h1>Reversi</h1>
+        <div id="size-selector">
+            <h2>Select Board Size:</h2>
+            <button data-size="4">4x4</button>
+            <button data-size="6">6x6</button>
+            <button data-size="8">8x8</button>
+            <button data-size="10">10x10</button>
+        </div>
+        <div id="board" class="hidden"></div>
+        <div id="forfeit-modal" class="modal hidden">
+            <div class="modal-content">
+                <p id="forfeit-message"></p>
+                <button id="acknowledge-forfeit">Continue</button>
+            </div>
+        </div>
+        <div id="status" class="hidden">Current player: Black</div>
+    </div>
+    <script src="logic.js"></script>
+</body>
+</html>

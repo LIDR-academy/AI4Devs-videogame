@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Tres en Raya</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="./style.css" rel="stylesheet" />
+</head>
+<body>
+  <div class="card" id="setupForm">
+    <h2>Inicio del Juego</h2>
+    <div class="input-group">
+      <label for="player1">Nombre del Jugador 1</label>
+      <input type="text" id="player1" placeholder="Jugador 1">
+    </div>
+    <div class="input-group">
+      <label for="color1">Color del Jugador 1</label>
+      <input type="color" id="color1" value="#ff0000">
+    </div>
+    <div class="input-group">
+      <label for="player2">Nombre del Jugador 2</label>
+      <input type="text" id="player2" placeholder="Jugador 2">
+    </div>
+    <div class="input-group">
+      <label for="color2">Color del Jugador 2</label>
+      <input type="color" id="color2" value="#0000ff">
+    </div>
+    <button onclick="startGame()">Empezar partida</button>
+  </div>
+
+  <div class="card" id="gameBoard" style="display:none;">
+    <h2 id="turnIndicator">Turno de:</h2>
+    <div class="board" id="board"></div>
+  </div>
+
+  <div class="card" id="postGame" style="display:none;">
+    <h2>¿Jugar otra partida?</h2>
+    <button onclick="resetGame()">Sí, volver a jugar</button>
+  </div>
+
+  <div class="card" id="rankingSection" style="margin-top: 2rem; display: none;">
+    <h2>Ranking de Partidas</h2>
+    <div id="rankingList"></div>
+  </div>
+  <script>
+    let gameData = {};
+
+    function startGame() {
+    const name1 = document.getElementById("player1").value.trim();
+    const name2 = document.getElementById("player2").value.trim();
+    const color1 = document.getElementById("color1").value;
+    const color2 = document.getElementById("color2").value;
+
+    if (!name1 || !name2) {
+        alert("Por favor, introduce los nombres de ambos jugadores.");
+        return;
+    }
+
+    gameData = {
+        player1: { name: name1, color: color1, symbol: '●' },
+        player2: { name: name2, color: color2, symbol: '◯' },
+        currentPlayer: 'player1',
+        boardState: Array(9).fill(null),
+        gameActive: true
+    };
+
+    document.getElementById("setupForm").style.display = "none";
+    document.getElementById("gameBoard").style.display = "block";
+    renderBoard();
+    updateTurnIndicator();
+    }
+
+    function renderBoard() {
+    const board = document.getElementById("board");
+    board.innerHTML = "";
+
+    for (let i = 0; i < 9; i++) {
+        const cell = document.createElement("div");
+        cell.classList.add("cell");
+        cell.dataset.index = i;
+        cell.addEventListener("click", handleCellClick);
+        board.appendChild(cell);
+    }
+    }
+
+    function updateTurnIndicator() {
+    const player = gameData[gameData.currentPlayer];
+    document.getElementById("turnIndicator").textContent = `Turno de: ${player.name}`;
+    }
+
+    function handleCellClick(e) {
+    const index = e.target.dataset.index;
+    const { boardState, currentPlayer } = gameData;
+
+    if (!gameData.gameActive || boardState[index]) return;
+
+    const current = gameData[currentPlayer];
+    boardState[index] = current.symbol;
+
+    e.target.textContent = current.symbol;
+    e.target.style.color = current.color;
+
+    if (checkWinner()) return;
+
+    if (boardState.every(cell => cell !== null)) {
+        saveDraw();
+        return;
+    }
+
+    gameData.currentPlayer = currentPlayer === 'player1' ? 'player2' : 'player1';
+    updateTurnIndicator();
+    }
+
+    function checkWinner() {
+    const b = gameData.boardState;
+    const combos = [
+        [0,1,2], [3,4,5], [6,7,8],
+        [0,3,6], [1,4,7], [2,5,8],
+        [0,4,8], [2,4,6]
+    ];
+
+    const winner = combos.find(([a, bIndex, c]) =>
+        b[a] && b[a] === b[bIndex] && b[a] === b[c]
+    );
+
+    if (winner) {
+        const current = gameData[gameData.currentPlayer];
+        alert(`${current.name} ha ganado 🎉`);
+        saveResult(current.name, getOpponentName(current.name), "Victoria");
+        endGame();
+        return true;
+    }
+
+    return false;
+    }
+
+    function getOpponentName(currentName) {
+    return gameData.player1.name === currentName
+        ? gameData.player2.name
+        : gameData.player1.name;
+    }
+
+    function endGame() {
+    gameData.gameActive = false;
+    document.getElementById("postGame").style.display = "block";
+    loadRanking();
+    }
+
+    function saveResult(winner, loser, result) {
+    const ranking = JSON.parse(localStorage.getItem("ranking") || "[]");
+    ranking.unshift({
+        date: new Date().toLocaleString(),
+        winner,
+        loser,
+        result
+    });
+    localStorage.setItem("ranking", JSON.stringify(ranking.slice(0, 10)));
+    }
+
+    function saveDraw() {
+    alert("Empate 🤝");
+    saveResult(gameData.player1.name, gameData.player2.name, "Empate");
+    endGame();
+    }
+
+    function loadRanking() {
+    const ranking = JSON.parse(localStorage.getItem("ranking") || "[]");
+    const container = document.getElementById("rankingList");
+    container.innerHTML = "";
+    if (ranking.length === 0) {
+        container.innerHTML = "<p>No hay partidas registradas todavía.</p>";
+    } else {
+        ranking.forEach(r => {
+        const div = document.createElement("div");
+        div.className = "ranking-item";
+        div.innerHTML = `
+            <strong>${r.result}</strong> - ${r.winner} vs ${r.loser} <br>
+            <small>${r.date}</small>
+        `;
+        container.appendChild(div);
+        });
+    }
+    document.getElementById("rankingSection").style.display = "block";
+    }
+
+    function resetGame() {
+    document.getElementById("gameBoard").style.display = "none";
+    document.getElementById("postGame").style.display = "none";
+    document.getElementById("setupForm").style.display = "block";
+    document.getElementById("rankingSection").style.display = "block";
+    }
+  </script>
+</body>
+</html>

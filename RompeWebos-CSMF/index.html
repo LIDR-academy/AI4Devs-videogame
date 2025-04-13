@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RompeWebos</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>RompeWebos</h1>
+    <div id="difficulty-buttons">
+        <button onclick="setDifficulty('easy')">Fácil</button>
+        <button onclick="setDifficulty('medium')">Medio</button>
+        <button onclick="setDifficulty('hard')">Difícil</button>
+        <div class="separator"></div>
+        <button id="restart" onclick="initGame()">Reiniciar</button>
+    </div>
+    <hr/>
+    <div id="game-container"></div>
+    <script src="script.js"></script>
+</body>
+</html>

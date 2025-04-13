@@ -1,0 +1,135 @@
+/* Estilos generales */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Courier New', monospace;
+    background-color: #000;
+    color: #fff;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.game-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    max-width: 800px;
+    max-height: 600px;
+}
+
+/* Estilos de las pantallas */
+.screen {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.hidden {
+    display: none;
+}
+
+/* Pantalla de inicio */
+#start-screen h1 {
+    font-size: 3rem;
+    margin-bottom: 2rem;
+    letter-spacing: 0.5rem;
+}
+
+.instructions {
+    margin-bottom: 2rem;
+    border: 1px solid #fff;
+    padding: 1rem;
+    border-radius: 4px;
+    width: 80%;
+}
+
+.instructions h2 {
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}
+
+.instructions p {
+    margin: 0.5rem 0;
+    font-size: 1rem;
+}
+
+/* Botones */
+button {
+    background: transparent;
+    color: #fff;
+    border: 1px solid #fff;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    cursor: pointer;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 0.1rem;
+    transition: all 0.3s ease;
+}
+
+button:hover {
+    background-color: #fff;
+    color: #000;
+}
+
+/* Pantalla de juego */
+#game-canvas {
+    background-color: #000;
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 1px solid #fff;
+}
+
+.hud {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    z-index: 10;
+}
+
+/* Pantalla de Game Over */
+#game-over-screen h1 {
+    color: #f00;
+    font-size: 3rem;
+    margin-bottom: 2rem;
+}
+
+.final-score {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+/* Estilos para dispositivos móviles */
+@media (max-width: 600px) {
+    #start-screen h1, #game-over-screen h1 {
+        font-size: 2rem;
+    }
+    
+    .instructions {
+        width: 90%;
+    }
+    
+    .instructions p {
+        font-size: 0.8rem;
+    }
+    
+    .hud {
+        font-size: 0.7rem;
+    }
+} 

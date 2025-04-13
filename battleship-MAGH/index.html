@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Battleship 3D - MAGH</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="game-container">
+        <header>
+            <h1>Battleship 3D</h1>
+            <div id="game-status">
+                <span id="turn-indicator">Tu turno</span>
+                <div id="ships-counter">
+                    <div class="player-ships">
+                        <h3>Tus barcos</h3>
+                        <p id="player-ships-count">5</p>
+                    </div>
+                    <div class="enemy-ships">
+                        <h3>Barcos enemigos</h3>
+                        <p id="enemy-ships-count">5</p>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="game-boards">
+            <div class="board-container">
+                <h2>Tu flota</h2>
+                <div id="player-board" class="board isometric-board"></div>
+                <div class="ship-legend">
+                    <div class="legend-item">
+                        <div class="legend-color legend-carrier"></div>
+                        <span>Portaviones</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color legend-battleship"></div>
+                        <span>Acorazado</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color legend-cruiser"></div>
+                        <span>Crucero</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color legend-submarine"></div>
+                        <span>Submarino</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color legend-destroyer"></div>
+                        <span>Destructor</span>
+                    </div>
+                </div>
+            </div>
+            <div class="board-container">
+                <h2>Flota enemiga</h2>
+                <div id="enemy-board" class="board isometric-board"></div>
+                <div class="ship-legend">
+                    <div class="legend-item">
+                        <div class="legend-color legend-carrier"></div>
+                        <span>Portaviones</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color legend-battleship"></div>
+                        <span>Acorazado</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color legend-cruiser"></div>
+                        <span>Crucero</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color legend-submarine"></div>
+                        <span>Submarino</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color legend-destroyer"></div>
+                        <span>Destructor</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="controls">
+            <button id="start-game">Iniciar Juego</button>
+            <button id="random-placement">Colocación Aleatoria</button>
+            <button id="reset-game" style="display: none;">Reiniciar Juego</button>
+        </div>
+
+        <div id="placement-controls">
+            <div class="ship-selection">
+                <h3>Selecciona y coloca tus barcos:</h3>
+                <div class="ship-options">
+                    <div class="ship-option" data-ship="carrier" data-size="5">
+                        <span>Portaviones (5)</span>
+                    </div>
+                    <div class="ship-option" data-ship="battleship" data-size="4">
+                        <span>Acorazado (4)</span>
+                    </div>
+                    <div class="ship-option" data-ship="cruiser" data-size="3">
+                        <span>Crucero (3)</span>
+                    </div>
+                    <div class="ship-option" data-ship="submarine" data-size="3">
+                        <span>Submarino (3)</span>
+                    </div>
+                    <div class="ship-option" data-ship="destroyer" data-size="2">
+                        <span>Destructor (2)</span>
+                    </div>
+                </div>
+                <div class="orientation-control">
+                    <button id="toggle-orientation">Rotar Barco</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="game-modal" class="modal">
+        <div class="modal-content">
+            <h2 id="modal-title">¡Bienvenido a Battleship 3D!</h2>
+            <p id="modal-message">Coloca tus barcos en el tablero para comenzar.</p>
+            <button id="modal-close">Cerrar</button>
+        </div>
+    </div>
+
+    <script src="objloader.js"></script>
+    <script src="game.js"></script>
+    <script src="ui.js"></script>
+</body>
+</html> 

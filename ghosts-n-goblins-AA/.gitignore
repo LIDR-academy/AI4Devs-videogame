@@ -1,0 +1,7 @@
+# Ignore in all directories
+**/.DS_Store
+**/.env
+**/.env.example
+**/.specstory
+**/node_modules
+**/prompts_master.md
