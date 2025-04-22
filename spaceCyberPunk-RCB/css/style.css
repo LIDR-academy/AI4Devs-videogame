@@ -1,0 +1,53 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #000;
+    color: #0ff;
+    font-family: 'Orbitron', sans-serif;
+    overflow: hidden;
+}
+
+canvas {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+}
+
+/* Estilos generales para interfaz */
+.ui-text {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    color: #0ff;
+    text-shadow: 0 0 10px #0ff;
+    font-size: 1.2rem;
+    z-index: 10;
+}
+
+.start-screen,
+.pause-screen,
+.game-over-screen {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #fff;
+    text-shadow: 0 0 15px #f0f, 0 0 5px #0ff;
+    font-size: 2rem;
+    text-align: center;
+    z-index: 10;
+    display: none;
+}
+
+.visible {
+    display: block;
+}
