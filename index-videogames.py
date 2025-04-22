@@ -39,7 +39,8 @@ def get_icon_for_game(game_name):
         "tetris-dad": "th-large",
         "tic tac toe": "grip-horizontal",
         "tiny kingdom": "chess-rook",
-        "tres en raya": "th"
+        "tres en raya": "th",
+        "juego vocales": "font"
     }
     
     # Normalización del nombre para búsqueda
