@@ -1,0 +1,19 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin-top: 50px;
+}
+
+h1 {
+    color: #333;
+}
+
+/* Style for the score text */
+#score {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    font-size: 32px;
+    color: white;
+    text-shadow: 2px 2px 4px #000000;
+} 
