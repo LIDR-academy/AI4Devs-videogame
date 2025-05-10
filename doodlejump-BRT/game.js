@@ -159,6 +159,14 @@ const PLATFORM_GAP_MAX_MIN = 160;   // Distancia mínima en máxima dificultad
 const PLATFORM_GAP_MAX_MAX = 240;   // Distancia máxima en máxima dificultad
 const DIFFICULTY_PROGRESS_MAX = 300; // Puntuación a la que se alcanza la máxima dificultad
 
+// Umbral y parámetros para plataformas móviles
+const MOBILE_PLATFORM_SCORE_THRESHOLD = 200;
+const MOBILE_PLATFORM_PROB_MAX = 0.4; // Probabilidad máxima de plataformas móviles
+const MOBILE_PLATFORM_SPEED_MIN = 1.2;
+const MOBILE_PLATFORM_SPEED_MAX = 2.8;
+const MOBILE_PLATFORM_RANGE_MIN = 40;
+const MOBILE_PLATFORM_RANGE_MAX = 120;
+
 // Calcular la altura máxima de salto del personaje
 function getMaxJumpHeight() {
     // Fórmula física: h = v^2 / (2g)
@@ -198,8 +206,6 @@ function createPlatform() {
     const progress = Math.max(0, Math.min(1, gameState.score / DIFFICULTY_PROGRESS_MAX));
     const minGap = lerp(PLATFORM_GAP_BASE_MIN, PLATFORM_GAP_MAX_MIN, progress);
     const maxGap = lerp(PLATFORM_GAP_BASE_MAX, PLATFORM_GAP_MAX_MAX, progress);
-
-    // Calcular la altura máxima de salto permitida
     const maxJumpHeight = getMaxJumpHeight() - JUMP_MARGIN;
     const maxAllowedGap = Math.min(maxGap, maxJumpHeight);
 
@@ -275,6 +281,24 @@ function createPlatform() {
         y = GAME_HEIGHT - 100;
     }
 
+    // Determinar si la plataforma será móvil
+    let isMobile = false;
+    let mobileProps = null;
+    if (gameState.score >= MOBILE_PLATFORM_SCORE_THRESHOLD) {
+        // Probabilidad progresiva desde 0% hasta MOBILE_PLATFORM_PROB_MAX
+        const mobileProbProgress = Math.min(1, (gameState.score - MOBILE_PLATFORM_SCORE_THRESHOLD) / 2000);
+        const mobileProb = MOBILE_PLATFORM_PROB_MAX * mobileProbProgress;
+        if (Math.random() < mobileProb) {
+            isMobile = true;
+            // Propiedades de movimiento
+            const direction = Math.random() < 0.5 ? 1 : -1;
+            const speed = MOBILE_PLATFORM_SPEED_MIN + Math.random() * (MOBILE_PLATFORM_SPEED_MAX - MOBILE_PLATFORM_SPEED_MIN);
+            const range = MOBILE_PLATFORM_RANGE_MIN + Math.random() * (MOBILE_PLATFORM_RANGE_MAX - MOBILE_PLATFORM_RANGE_MIN);
+            const originX = x;
+            mobileProps = { direction, speed, range, originX };
+        }
+    }
+
     // Añadir variación en el ancho de la plataforma
     const widthVariation = Math.random() * 30 - 15;
     const platformWidth = PLATFORM_WIDTH + widthVariation;
@@ -283,7 +307,9 @@ function createPlatform() {
         x: x,
         y: y,
         width: platformWidth,
-        height: PLATFORM_HEIGHT
+        height: PLATFORM_HEIGHT,
+        isMobile: isMobile,
+        ...mobileProps
     };
     
     gameState.platforms.push(platform);
@@ -367,6 +393,25 @@ function updateCamera() {
     if (targetY < gameState.camera.y) {
         gameState.camera.y = targetY;
     }
+}
+
+// Actualizar plataformas móviles en cada frame
+function updateMobilePlatforms() {
+    gameState.platforms.forEach(platform => {
+        if (platform.isMobile) {
+            platform.x += platform.speed * platform.direction;
+            // Limitar el movimiento al rango definido
+            if (platform.x > platform.originX + platform.range) {
+                platform.x = platform.originX + platform.range;
+                platform.direction *= -1;
+            } else if (platform.x < platform.originX - platform.range) {
+                platform.x = platform.originX - platform.range;
+                platform.direction *= -1;
+            }
+            // Asegurar que no salga de la pantalla
+            platform.x = Math.max(0, Math.min(GAME_WIDTH - platform.width, platform.x));
+        }
+    });
 }
 
 // Actualizar el estado del juego
@@ -475,6 +520,9 @@ function update() {
 
     // Actualizar la cámara
     updateCamera();
+
+    // Actualizar plataformas móviles en cada frame
+    updateMobilePlatforms();
 }
 
 // Dibujar el juego
