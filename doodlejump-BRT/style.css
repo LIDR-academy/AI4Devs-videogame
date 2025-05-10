@@ -31,9 +31,10 @@ body {
 
 .score-container {
     position: absolute;
+    background-color: transparent;
     top: 20px;
     left: 20px;
-    color: #333;
+    color: #e3e3e3;
     font-size: 20px;
     font-weight: bold;
     z-index: 10;

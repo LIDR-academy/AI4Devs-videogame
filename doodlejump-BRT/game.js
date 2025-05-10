@@ -152,6 +152,26 @@ let consecutiveExtremeCount = 0;
 // Constante para el factor de parallax del fondo
 const PARALLAX_FACTOR = 0.02; // El fondo se mueve a la mitad de la velocidad de la cámara
 
+// Variables para dificultad progresiva de la distancia entre plataformas
+const PLATFORM_GAP_BASE_MIN = 80;   // Distancia mínima inicial
+const PLATFORM_GAP_BASE_MAX = 140;  // Distancia máxima inicial
+const PLATFORM_GAP_MAX_MIN = 160;   // Distancia mínima en máxima dificultad
+const PLATFORM_GAP_MAX_MAX = 240;   // Distancia máxima en máxima dificultad
+const DIFFICULTY_PROGRESS_MAX = 300; // Puntuación a la que se alcanza la máxima dificultad
+
+// Calcular la altura máxima de salto del personaje
+function getMaxJumpHeight() {
+    // Fórmula física: h = v^2 / (2g)
+    // JUMP_FORCE es negativo, por eso usamos Math.abs
+    return (Math.abs(JUMP_FORCE) * Math.abs(JUMP_FORCE)) / (2 * GRAVITY);
+}
+const JUMP_MARGIN = 20; // Margen de seguridad en píxeles
+
+// Función de interpolación lineal
+function lerp(a, b, t) {
+    return a + (b - a) * t;
+}
+
 // Inicializar plataformas
 function initializePlatforms() {
     gameState.platforms = [];
@@ -174,6 +194,15 @@ function initializePlatforms() {
 function createPlatform() {
     const lastPlatform = gameState.platforms[gameState.platforms.length - 1];
     
+    // Calcular el progreso de dificultad basado en la puntuación
+    const progress = Math.max(0, Math.min(1, gameState.score / DIFFICULTY_PROGRESS_MAX));
+    const minGap = lerp(PLATFORM_GAP_BASE_MIN, PLATFORM_GAP_MAX_MIN, progress);
+    const maxGap = lerp(PLATFORM_GAP_BASE_MAX, PLATFORM_GAP_MAX_MAX, progress);
+
+    // Calcular la altura máxima de salto permitida
+    const maxJumpHeight = getMaxJumpHeight() - JUMP_MARGIN;
+    const maxAllowedGap = Math.min(maxGap, maxJumpHeight);
+
     // Calcular la posición X asegurando que esté dentro de la pantalla
     let x;
     if (lastPlatform) {
@@ -234,16 +263,14 @@ function createPlatform() {
         lastPlatformPosition = 'center';
     }
 
-    // Calcular la posición Y asegurando que esté dentro del rango visible
+    // Calcular la posición Y usando la dificultad progresiva y el límite de salto
     let y;
     if (lastPlatform) {
-        const baseGap = PLATFORM_GAP.MIN + Math.random() * (PLATFORM_GAP.MAX - PLATFORM_GAP.MIN);
+        const baseGap = minGap + Math.random() * (maxAllowedGap - minGap);
         const heightVariation = Math.random() * 40 - 20;
         y = lastPlatform.y - (baseGap + heightVariation);
-        
-        // Asegurar que la plataforma no esté demasiado lejos
-        const maxGap = PLATFORM_GAP.MAX * 1.2;
-        y = Math.max(lastPlatform.y - maxGap, y);
+        const maxGapLimit = maxAllowedGap * 1.2;
+        y = Math.max(lastPlatform.y - maxGapLimit, y);
     } else {
         y = GAME_HEIGHT - 100;
     }
@@ -555,16 +582,16 @@ function draw() {
 // Nueva función para dibujar la UI
 function drawUI() {
     // Limpiar el área de la puntuación
-    ctx.clearRect(0, 0, 200, 50);
+    //ctx.clearRect(0, 0, 200, 50);
     
     // Dibujar fondo para la puntuación
     //ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
     //ctx.fillRect(10, 10, 180, 40);
     
     // Dibujar puntuación
-    ctx.fillStyle = '#000';
-    ctx.font = 'bold 24px Arial';
-    ctx.textAlign = 'left';
+    //ctx.fillStyle = '#000';
+    //ctx.font = 'bold 24px Arial';
+    //ctx.textAlign = 'left';
     //ctx.fillText(`Puntuación: ${gameState.score}`, 20, 35);
 }
 
